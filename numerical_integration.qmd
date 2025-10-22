@@ -1,0 +1,7 @@
+# Numerical integration
+
+Finite differences
+
+Euler-Cromer
+
+Runge-Kutta?

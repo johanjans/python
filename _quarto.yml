@@ -54,7 +54,7 @@ book:
       chapters:
         - kinematics.qmd
         - differential_equations.qmd
-        - simulations.qmd
+        - numerical_integration.qmd
         - fusion360api.qmd
 #comments:
 #  hypothesis: true  
