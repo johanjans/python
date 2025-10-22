@@ -1,0 +1,5 @@
+::: {.hidden}
+
+\def\vec#1{\overrightarrow{#1}}
+\def\tr{^\mathsf{T}}
+:::

@@ -1,0 +1,16 @@
+---
+title: "Acknowledgements"
+---
+
+The principles and school of thought is inspired by my old teacher Bertil Nilsson, who introduced us to computational thinking. Nilsson utilized computer based mathematics [@Gaard]  for several decades now, focusing more on mathematical modeling and analysis rather than manual numerical or symbolic computations, which are handled by the computer.
+
+The idea for this works originated over several years of teaching mechanics and solidmechanics courses on several levels at the school of engineering. The work is influenced by the students as well as discussions held with other profesionals in the field.
+
+This approach is also influenced by Conrad Wolfram's ideas. In The Math(s) Fix [@Wolfram2020], he argues that computers can and should handle routine computations and symbolic manipulations, allowing humans to focus on higher-level problem-solving. He also emphasizes the importance of computational thinking—breaking down complex problems, formulating them in a way that a computer can process, and interpreting computational results to gain deeper insights.
+
+Visualizing mathematical and mechanical concepts is another key aspect of this work. Beyond simply illustrating ideas for the reader, we actively encourage students to use visualization extensively as a tool for verifying and refining their models. This approach to thinking is inspired by Grant Sanderson of [3 Blue 1 Brown](https://www.3blue1brown.com/).
+
+This site is inspired by the [Computational Thinking course](https://computationalthinking.mit.edu/) given at MIT, as well as the [Underactuated Robotics course](https://underactuated.mit.edu/index.html).
+
+We have carefully chosen python along with the [marimo editor](https://marimo.io/) for all computer supported tasks. The site itself is created using [quarto](https://quarto.org/), [python](https://www.python.org/), [jupyter notebook](https://jupyter.org/) in [VS Code](https://code.visualstudio.com/). We greatly appriciate the work that the community has done to provide such great tools. 
+

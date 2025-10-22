@@ -1,0 +1,235 @@
+# Installing python and setup
+
+## Manual installation
+
+### uv - Python and package manager
+[uv](https://docs.astral.sh/uv/) is **fast** and easy to install and use. It not only manages virtual environments, but also makes it easy to install and switch between different python versions. Use the three tabs below to select which type of computer you are using, university or private, windows or unix.
+
+::: {.panel-tabset}
+
+#### JU PC (Win)
+Search for and start `cmd.exe` using the start menu, then run the following:
+
+```cmd
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+This will install `uv` to your user profile in e.g., `C:\Users\yourusername\.local\bin`
+
+#### Private PC (Win)
+Search for and start `cmd.exe` using the start menu, then run the following:
+
+```cmd
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+This will install `uv` to your user profile in e.g., `C:\Users\yourusername\.local\bin`
+
+#### Private PC (macOS/Linux)
+Start the terminal application, then run the following:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+:::
+
+### Install python
+
+::: {.panel-tabset}
+
+#### JU PC (Win)
+Restart `cmd.exe`, then run the following:
+
+```cmd
+uv python install
+```
+
+This will install the latest version of `python` to your user profile in e.g., `C:\Users\yourusername\.local\bin`
+
+#### Private PC (Win)
+Restart `cmd.exe`, then run the following:
+
+```cmd
+uv python install
+```
+
+This will install the latest version of `python` to your user profile in e.g., `C:\Users\yourusername\.local\bin`
+
+#### Private PC (macOS/Linux)
+Restart the terminal application, then run the following:
+
+```bash
+uv python install
+```
+
+:::
+
+### Create a virtual environment
+
+::: {.panel-tabset}
+
+#### JU PC (Win)
+In `cmd.exe` run the following:
+
+```cmd
+cd /d %UserProfile%\"OneDrive - Jonkoping University"
+uv venv .venv
+```
+
+This will create a new folder called `.venv` in the current directory which contains a fresh python installation. Once the above command has finnished running, "step into" the virtual environment with:
+
+```cmd
+.venv\Scripts\activate.bat
+```
+
+You should now see `(venv)` to the left in the terminal, before the path.
+
+Now, we need to install marimo and other packages that we are going to use:
+
+```cmd
+uv pip install marimo numpy sympy matplotlib pandas imageio
+```
+
+This command will download and install the packages, which can take some time depending on your internet connection.
+
+#### Private PC (Win)
+In `cmd.exe` run the following:
+
+```cmd
+cd /d %UserProfile%
+uv venv .venv
+```
+
+This will create a new folder called `.venv` in the current directory which contains a fresh python installation. Once the above command has finnished running, "step into" the virtual environment with:
+
+```cmd
+.venv\Scripts\activate.bat
+```
+
+You should now see `(venv)` to the left in the terminal, before the path.
+
+Now, we need to install marimo and other packages that we are going to use:
+
+```cmd
+uv pip install marimo numpy sympy matplotlib pandas imageio
+```
+
+This command will download and install the packages, which can take some time depending on your internet connection.
+
+#### Private PC (macOS/Linux)
+In the terminal application, run the following:
+
+```bash
+cd ~
+uv venv .venv
+```
+
+This will create a new folder called `.venv` in the current directory which contains a fresh python installation. Once the above command has finnished running, "step into" the virtual environment with:
+
+```bash
+source .venv/bin/activate
+```
+
+You should now see `(venv)` to the left in the terminal, before the path.
+
+Now, we need to install marimo and other packages that we are going to use:
+
+```cmd
+uv pip install marimo numpy sympy matplotlib pandas imageio
+```
+
+This command will download and install the packages, which can take some time depending on your internet connection.
+
+:::
+
+
+
+
+### Starting marimo - shortcut
+
+Start your favourite text-editor and put the following contents in a new file:
+
+::: {.panel-tabset}
+
+#### JU PC (Win)
+```cmd
+call "%UserProfile%\OneDrive - Jonkoping University\.venv\Scripts\activate.bat"
+marimo edit
+pause
+```
+Save the file as `START_MARIMO.bat` somewhere easily acessible, and make sure that you selected "All files" instead of "text files" before you press save.
+
+#### Private PC (Win)
+```cmd
+call %UserProfile%\.venv\Scripts\activate.bat
+marimo edit
+pause
+```
+Save the file as `START_MARIMO.bat` somewhere easily acessible, and make sure that you selected "All files" instead of "text files" before you press save.
+
+#### Private PC (macOS/Linux)
+```bash
+#!/bin/bash
+source ~/.venv/bin/activate && marimo edit
+```
+Save the file as `start_marimo.sh` somewhere easily acessible, and then run:
+```bash
+chmod +x start_marimo.sh
+```
+
+::: 
+
+Double click your new shortcut to start marimo. It will start from the directory where the shortcut is located, so you might want to move it to a directory where you keep your marimo projects.
+
+## Marimo installer (Windows only)
+
+If you want a more user-friendly way to install marimo, you can use the marimo installer for Windows. Download it from [here](https://github.com/cenmir/marimo-installer/archive/refs/heads/main.zip).
+
+::: {.panel-tabset}
+
+#### JU PC (Win)
+
+1. Right-click the downloaded zip file and select "more options" -> properties, then check "unblock" and press OK.
+2. Double-click the zip file and go into marimo-installer-main and double-click `setup.bat`.
+
+
+#### Private PC (Win)
+
+unzip it somewhere easily accessible. Then, run `setup.bat` and follow the instructions.
+
+
+:::
+
+
+
+
+### What the installer does
+
+The installer will:
+
+- Install the package manager uv
+- Install the latest version of Python
+- Create a virtual environment at `C:\Users\username\venvs\default`
+- Install packages, including Marimo, into the virtual environment along with numpy, sympy, matplotlib, pandas, pyqt6, pyqtgraph and scipy. This is configurable using the `requirements.txt` file.
+- Copy the run scripts to a folder in `C:\Users\username\marimo` and put that folder in your user PATH environment variable
+- Create shortcuts to launch Marimo
+- Create a context menu entry to open folders in Marimo (very useful for opening projects!)
+
+See the installation video below for a step-by-step guide (in swedish):
+
+{{< video https://www.youtube.com/watch?v=qcwZ5bx_egI >}}
+
+### Usage
+
+![](https://i.imgur.com/dowpY0T.png)
+
+- You can launch Marimo by right-clicking in a folder and selecting "Open in Marimo" or by using the shortcut created on your desktop.
+- You can also run Marimo from the command line by typing `m`.
+- You can update Marimo and the installed packages by right-clicking on the `update.ps1` file and selecting "Run with PowerShell".
+- If you want to uninstall Marimo, you can run the `uninstall.ps1` file and selecting "Run with PowerShell".
+
+
+### Easy .venv setup for new projects for vs-code users
+
+There is a useful file in Scripts called `init.bat` which you can copy to a new project folder and double-clicking it will create a virtual environment (.venv) for that project and install the above mentioned packages. Useful if you want to keep dependencies separate between projects. VS-Code will automatically detect the .venv folder and use it as the Python interpreter for that project.

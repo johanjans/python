@@ -1,0 +1,3 @@
+# Fundamentals
+
+Variables, data types, control flow (if/else, loops).

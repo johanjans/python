@@ -1,0 +1,100 @@
+project:
+  type: book
+  output-dir: _book
+  preview:
+    port: 4200
+
+book:
+  title: "Scientific Programming"
+  subtitle: "A computer supported approach to engineering mathematics"
+  author: 
+    - name: "Mirza Cenanovic"
+      affiliation: "Jönköping University, School of Engineering"
+      email: "mirza.cenanovic@ju.se"
+    - name: "Johan Jansson"
+      affiliation: "Jönköping University, School of Engineering"
+      email: "johan.jansson@ju.se"
+    - name: "Carl-Johan Jonsson"
+      affiliation: "Jönköping University, School of Engineering"
+      email: "Carl-Johan.Jonsson@ju.se"
+  page-navigation: true
+  sidebar:
+    #style: "floating"
+    search: true
+    collapse-level: 2
+    
+  chapters:
+    - index.qmd
+    - python_installation.qmd
+    - acknowlegments.qmd
+    - part: "General basics"
+      chapters:
+        - fundamentals.qmd
+        - functions.qmd
+        - data_structures.qmd
+        - file_io.qmd
+        - best_practices.qmd
+        - object_oriented_programming.qmd
+    - part: "NumPy"
+      chapters:
+        - numpy_arrays.qmd
+        - numpy_array_operations.qmd
+        - numpy_linear_algebra.qmd
+        - numpy_array_manipulation.qmd
+    - part: "SymPy"
+      chapters:
+        - sympy_basics.qmd
+        - sympy_calculus.qmd
+        - sympy_equations.qmd
+        - sympy_vectors.qmd
+    - part: "Visualization"
+      chapters: 
+        - matplotlib.qmd
+    - part: "Applications"
+      chapters:
+        - kinematics.qmd
+        - differential_equations.qmd
+        - simulations.qmd
+        - fusion360api.qmd
+#comments:
+#  hypothesis: true  
+filters:
+  - lastModified.lua
+
+format:
+  
+  html:
+    cover-image: graphics/right-hand.png
+    #page-layout: full
+    theme:
+      dark: [darkly, dark.scss, custom.scss]
+      light: [flatly, light.scss, custom.scss]
+    filters:
+      - hint.lua
+      - color-emphasis.lua
+    toc: true
+    bibliography: references.bib
+    csl: elsevier-vancouver.csl
+    code-fold: True
+    html-math-method:
+      #method: katex
+      method: mathjax
+      url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
+    #embed-resources: true
+    header-includes: |
+      <link href='https://fonts.googleapis.com/css?family=Vollkorn' rel='stylesheet'>
+      <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css">
+    include-after-body: 
+      - footer.html
+    number-sections: true
+    number-depth: 1
+      
+  #pdf:
+  #  documentclass: book
+
+  #latex:
+  #  preamble: |
+  #    \usepackage{xcolor}
+
+
+

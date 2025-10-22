@@ -1,0 +1,3 @@
+# SymPy basics
+
+Defining symbols, expressions, substitution (.subs()).

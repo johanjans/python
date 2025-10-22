@@ -1,0 +1,3 @@
+# Linear algebra
+
+Matrix multiplication ($\cdot$), determinants, solving systems of equations (numpy.linalg).

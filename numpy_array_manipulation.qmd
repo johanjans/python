@@ -1,0 +1,3 @@
+# NumPy array manipulation
+
+Reshaping, stacking, splitting.
