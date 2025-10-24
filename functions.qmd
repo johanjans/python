@@ -1,3 +1,80 @@
 # Functions
 
-Defining, scope, arguments, $\lambda$ functions.
+Functions are reusable blocks of code that perform a specific task. They help organize programs, make code more readable, and promote code reuse. In general, you should always apply the principle of "DRY" (Do not Repeat Yourself).
+
+## Definitions
+
+A function is defined using the `def` keyword, followed by the function name, parentheses `()`, and a colon `:`. The code block that makes up the function must be indented. To execute the code within a function, you call it by its name followed by parentheses.
+
+````python
+# Defining the function
+def greet(name):
+    """This function takes a name and returns a greeting string."""
+    return f"Hello, {name}!"
+
+# Calling the function
+message = greet("Scientific Programmer")
+print(message)
+````
+
+The `return` statement is used to send a value back to the place where the function was called. If no `return` statement is present, the function implicitly returns the special value `None`.
+
+## Arguments
+
+Arguments are the values you pass into the function when you call it, and they are defined as **parameters** in the function definition. **Positional arguments** are matched to parameters based on their position. **Keyword arguments** are explicitly named when calling the function. This makes the call clearer and allows you to skip positions.
+
+````python
+def describe_pet(animal, name):
+    print(f"I have a {animal} named {name}.")
+
+# 1. Positional call (order matters)
+describe_pet("dog", "Fido")
+
+# 2. Keyword call (order doesn't matter)
+describe_pet(name="Luna", animal="cat")
+````
+
+You can assign a default value to a parameter. If the caller doesn't provide an argument for that parameter, the default value is used.
+
+````python
+def power(base, exponent=2): # exponent has a default value of 2
+    return base ** exponent
+
+print(power(5))        # Uses default exponent=2. Output: 25
+print(power(5, 3))     # Overrides default with exponent=3. Output: 125
+````
+
+## Scope
+
+Scope refers to the region of a program where a variable is accessible. In Python, the two main scopes are **Local** and **Global**.
+**Local scope**: Variables defined inside a function are local. They only exist while the function is executing and cannot be accessed from the outside.
+**Global scope**: Variables defined outside any function (at the top level of the script) are global. They can be accessed by any code, including functions.
+
+````python
+global_var = "I am a global string"
+
+def my_function():
+    local_var = "I am a local string"
+    print(local_var)  # Accessible
+    print(global_var) # Accessible
+
+my_function()
+print(local_var) # NameError: name 'local_var' is not defined outside the function
+````
+
+It's best practice to minimize the use of global variables inside functions to keep them self-contained and predictable.
+
+## Lambda functions
+A **lambda function** (or "anonymous" function) is a small, *single-expression* function that you don't formally define with `def`. They are primarily used when you need a function for a short period of time. The syntax is: `lambda arguments: expression`.
+
+````python
+# Regular function equivalent:
+# def multiply_by_two(x):
+#     return x * 2
+
+# Lambda function for the same task
+multiply_by_two = lambda x: x * 2
+
+result = multiply_by_two(10)
+print(result) # Output: 20
+````
