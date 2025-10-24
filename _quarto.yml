@@ -45,7 +45,7 @@ book:
         - scipy_interpolation.qmd
     - part: "SymPy"
       chapters:
-        - sympy_basics.qmd
+        - sympy_expressions.qmd
         - sympy_calculus.qmd
         - sympy_equations.qmd
         - sympy_vectors.qmd

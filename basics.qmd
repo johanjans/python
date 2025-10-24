@@ -1,3 +1,90 @@
 # Basics
 
-Variables, data types, control flow (if/else, loops).
+This tutorial covers the basic building blocks of Python: **variables**, **data types**, and **flow control** structures.
+
+## Variables
+
+A **variable** is simply a name you give to a storage location in memory, allowing you to hold and manipulate data. Python is *dynamically typed*, meaning you don't have to declare the variable type beforehand; it's determined automatically when you assign a value.
+
+Assignment: Use the single equals sign `=` to assign a value.
+Naming: Use descriptive names in "snake_case", e.g. vehicle_mass, applied_force)
+
+````python
+# Input data
+age = 40                # [years]
+length = 185.3          # [cm]
+first_name = "Johan"
+is_registered = True
+````
+
+## Data types
+
+These are the fundamental ways Python represents information:
+
+| Type        | Name           | Description                                         | Example               |
+| ----------- | -------------- | --------------------------------------------------- | --------------------- |
+| int         | Integer        | Whole numbers (positive, negative or zero).         | `10`, `-5`            |
+| float       | Floating-point | Numbers with a decimal point.                       | `3.14`, `99.9`        |
+| str         | String         | A sequence of characters (text), enclosed in quotes | `"Hello"`, `'Python'` |
+| bool        | Boolean        | Represents truth values, either `True` or `False`   | `True`, `False`       |
+
+To check the data type of a specific variable, use the `typeof()` function.
+
+````python
+typeof(first_name)
+````
+
+The above command will return 'str', indicating that the variable `first_name` is a String.
+
+## Flow control
+
+Flow control structures dictate the order in which your code executes. They allow your program to make decisions and repeat actions.
+
+### Conditional statements
+
+Conditional statements execute different blocks of code based on whether a condition is True or False.
+
+| Keyword    | Purpose                                                                                |
+| ---------- | -------------------------------------------------------------------------------------- | 
+| if         | Executes code if the condition is `True`.                                              |
+| elif       | (Else if) Checks a new condition if the previous `if`/ `elif` conditions were `False`. |
+| else       | Executes code if *all* preceding conditions were `False`                               |
+
+Note that Python uses **indentation** (usually four spaces) to define code blocks.
+
+````python
+score = 85
+
+if score >= 90:
+    print("Grade: A")
+elif score >= 80:
+    print("Grade: B")
+else:
+    print("Grade: C or lower")
+````
+
+### Loops
+
+Loops are used to execute a block of code multiple times.
+
+The `for` loop is used for **iterating** over a sequence (like a list, string or range of numbers).
+
+````python
+# Iterating over a range of numbers
+for i in range(3): # range(3) gives numbers 0, 1, 2
+    print(f"Count: {i}") 
+# Output: Count: 0, Count: 1, Count: 2
+````
+
+The `while` loop executes a block of code **as long as** its specified condition remains `True`.
+
+````python
+counter = 0
+
+while counter < 3:
+    print(f"Counting up: {counter}")
+    counter += 1 # Important: updates the counter to eventually end the loop
+# Output: Counting up: 0, Counting up: 1, Counting up: 2
+````
+
+*Be careful not to create infinite loops, ex. by forgetting to update the counter!*
