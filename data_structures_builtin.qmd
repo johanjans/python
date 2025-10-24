@@ -1,4 +1,4 @@
-# Data structures (built-in)
+# Data structures
 
 Data structures are containers that organize and store data in a specific layout, enabling efficient access and modification. Python offers powerful built-in structures and specialized external libraries like Pandas.
 
@@ -9,10 +9,10 @@ A list is an ordered, mutable (changeable) collection of items. They are the mos
 ````python
 grades = [90, 75, 90, 88] # Create a list
 grades.append(95)         # Add an item (Mutate)
-print(grades[1])          # Access item at index 1 (75)
+print(grades[0])          # Access item at index 0 (90)
 ````
 
-Note that Python is a "zero-indexed" language, meaning that items
+Note that Python is a "zero-indexed" language, meaning that the first item is accessed at position [0].
 
 ## Tuples 
 

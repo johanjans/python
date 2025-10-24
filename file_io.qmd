@@ -1,3 +1,85 @@
 # File I/O
 
-Reading and writing common file types (CSV, text).
+File I/O is the process of reading data from a file or writing data to a file. This is crucial for handling persistent data, configuration, and data sets. 
+
+## Opening and closing files
+
+To interact with any file, you must first open it. The best practice is to use the `with` statement, which automatically handles closing the file, even if errors occur. The `open()` function requires a file path, and a `mode` (what you intend to do with the file). 
+
+| Mode | Purpose                                                                                |
+| ---- | -------------------------------------------------------------------------------------- | 
+| `r`  | Read (default). File pointer is at the beginning.                                      |
+| `w`  | Write. Overwrites the file if it exists. Creates it if it doesn't.                     |
+| `a`  | Append. Adds new content to the end of the file. Creates it if it doesn't.             |
+| `b`  | Binary mode (used with r, w, or a).                                                    |
+| `t`  | Text mode (default, used with r, w, or a).                                             |
+
+````python
+# Open for reading in text mode ('rt' is the default for 'r')
+with open("data.txt", 'r') as file:
+    content = file.read()
+    # The file is automatically closed when the 'with' block ends
+````
+
+Files are fundamentally stored as sequences of bytes, but how those bytes are interpreted defines the format. 
+
+In ASCII/Text format, bytes are interpreted as human-readable characters (letters, numbers, symbols) according to an encoding standard (like UTF-8 🔥 or ASCII). This is what happens when using the default text mode (`t`). This is common for files such as source code, configuration files, text logs, and simple data tables (CSV).
+
+In binary format, bytes are read directly as raw data (e.g., machine code, image pixels, compressed files) without character encoding. This is what happens when using binary mode (`b`). This is common for images (PNG, JPG), audio files, executables, and serialized Python objects (using the pickle module).
+
+## Reading from text files
+
+Text files are the simplest format, typically used for configuration or raw log data. Three commonly used methods are: `file.read()` which reads the entire file content into a single string, `file.readline()` which reads just one line from the file, and `file.readlines()` which reads all lines into a **list of strings**, where each element is one line.
+
+````python
+# Example: Reading line by line (efficient for large files)
+with open("data.txt", 'r') as f:
+    for line in f:
+        print(line.strip()) # the strip() function removes the newline character "\n" - try with and without!
+````
+
+## Writing to text files
+
+Use the `write()` method to place strings into the file. Remember the need for explicit newline characters (`\n`).
+
+````python
+with open("output.txt", 'w') as f:
+    f.write("First line of data.\n")
+    f.write("Second line of data.")
+# "output.txt" now contains the two lines.
+````
+
+## Reading from CSV-files
+
+CSV (Comma Separated Values) files are the standard format for exchanging tabular data. Python's built-in `csv` module simplifies working with them. The `csv.reader` object treats each row as a list of strings.
+
+````python
+import csv
+
+with open('grades.csv', 'r', newline='') as f:
+    reader = csv.reader(f)
+    header = next(reader) # Read the header row
+    for row in reader:
+        # Each 'row' is a list: ['Name', 'Score']
+        print(f"Name: {row[0]}, Score: {row[1]}")
+````
+
+## Writing to CSV-files
+
+The `csv.writer` object formats your data (lists or tuples) into proper CSV syntax.
+
+````python
+import csv
+
+data_rows = [
+    ['Product', 'Price'],
+    ['Laptop', 1200],
+    ['Monitor', 300]
+]
+
+with open('products.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerows(data_rows) # Writes all rows at once
+````
+
+Note: The `newline=''` argument in `open()` prevents extra blank rows in the output CSV.

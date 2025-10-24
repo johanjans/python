@@ -32,8 +32,8 @@ book:
         - basics.qmd
         - functions.qmd
         - data_structures_builtin.qmd
-        - file_io.qmd
         - objects.qmd
+        - file_io.qmd
         - debugging.qmd
         - version_control.qmd
         - best_practices.qmd
