@@ -6,15 +6,14 @@ This tutorial covers the basic building blocks of Python: **variables**, **data 
 
 A **variable** is simply a name you give to a storage location in memory, allowing you to hold and manipulate data. Python is *dynamically typed*, meaning you don't have to declare the variable type beforehand; it's determined automatically when you assign a value.
 
-Assignment: Use the single equals sign `=` to assign a value.
-Naming: Use descriptive names in "snake_case", e.g. vehicle_mass, applied_force)
+Use the single equals sign `=` to assign a value. When naming variables, use descriptive names in "snake_case", e.g. vehicle_mass, applied_force
 
 ````python
 # Input data
 age = 40                # [years]
 length = 185.3          # [cm]
 first_name = "Johan"
-is_registered = True
+is_awesome = True
 ````
 
 ## Data types
@@ -38,7 +37,7 @@ The above command will return 'str', indicating that the variable `first_name` i
 
 ## Flow control
 
-Flow control structures dictate the order in which your code executes. They allow your program to make decisions and repeat actions.
+Flow control structures determine the order in which your code executes. They allow your program to make decisions and repeat actions.
 
 ### Conditional statements
 
@@ -56,11 +55,11 @@ Note that Python uses **indentation** (usually four spaces) to define code block
 score = 85
 
 if score >= 90:
-    print("Grade: A")
+    print("Grade: 5")
 elif score >= 80:
-    print("Grade: B")
+    print("Grade: 4")
 else:
-    print("Grade: C or lower")
+    print("Grade: 3 or lower")
 ````
 
 ### Loops
@@ -70,10 +69,8 @@ Loops are used to execute a block of code multiple times.
 The `for` loop is used for **iterating** over a sequence (like a list, string or range of numbers).
 
 ````python
-# Iterating over a range of numbers
-for i in range(3): # range(3) gives numbers 0, 1, 2
-    print(f"Count: {i}") 
-# Output: Count: 0, Count: 1, Count: 2
+for i in range(3): # range(3) returns the numbers 0, 1, 2
+    print(i) # outputs: 0, 1 and 2
 ````
 
 The `while` loop executes a block of code **as long as** its specified condition remains `True`.
@@ -82,9 +79,8 @@ The `while` loop executes a block of code **as long as** its specified condition
 counter = 0
 
 while counter < 3:
-    print(f"Counting up: {counter}")
-    counter += 1 # Important: updates the counter to eventually end the loop
-# Output: Counting up: 0, Counting up: 1, Counting up: 2
+    print(counter) # outputs: 0, 1 and 2
+    counter += 1 # same thing as counter = counter + 1
 ````
 
 *Be careful not to create infinite loops, ex. by forgetting to update the counter!*
