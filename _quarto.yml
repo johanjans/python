@@ -29,7 +29,7 @@ book:
     - acknowlegments.qmd
     - part: "Programming fundamentals"
       chapters:
-        - fundamentals.qmd
+        - basics.qmd
         - functions.qmd
         - data_structures.qmd
         - file_io.qmd
