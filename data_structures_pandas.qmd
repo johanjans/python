@@ -1,0 +1,34 @@
+# Data structures (Pandas)
+
+Pandas is a fundamental library for scientific programming and data analysis, built on top of NumPy. Its primary structures are designed to handle labeled and relational data efficiently.
+
+## Series
+
+A Series is a one-dimensional array-like object that can hold any data type (integers, strings, floats, etc.) and has an associated array of data **labels**, called the **index**. It's essentially a column in a spreadsheet.
+
+````python
+import pandas as pd
+
+# Create a Series from a list
+s = pd.Series([10, 20, 30], index=['A', 'B', 'C'])
+print(s['B']) # Access value by label 'B': 20
+````
+
+## DataFrames
+
+A DataFrame is a two-dimensional, size-mutable, and potentially heterogeneous (can hold different data types) tabular data structure with labeled axes (rows and columns). It's the most commonly used Pandas object and is conceptually similar to a spreadsheet or a SQL table.
+
+````python
+# Create a DataFrame from a dictionary
+data = {
+    'City': ['London', 'Paris'],
+    'Population': [8.9, 2.1]
+}
+df = pd.DataFrame(data)
+
+# Access a column (Series)
+print(df['City'])
+# Output:
+# 0    London
+# 1     Paris
+````

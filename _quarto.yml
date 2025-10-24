@@ -31,7 +31,7 @@ book:
       chapters:
         - basics.qmd
         - functions.qmd
-        - data_structures.qmd
+        - data_structures_builtin.qmd
         - file_io.qmd
         - objects.qmd
         - debugging.qmd
@@ -43,6 +43,7 @@ book:
         - numpy_linear_algebra.qmd
         - scipy_optimization.qmd
         - scipy_interpolation.qmd
+        - data_structures_pandas.qmd
     - part: "SymPy"
       chapters:
         - sympy_expressions.qmd

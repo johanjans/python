@@ -1,4 +1,0 @@
-# Data structures
-
-Lists, tuples, dictionaries, sets.
-Pandas, series and dataframes
