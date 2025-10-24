@@ -33,12 +33,16 @@ book:
         - functions.qmd
         - data_structures.qmd
         - file_io.qmd
-        - object_oriented_programming.qmd
+        - objects.qmd
+        - debugging.qmd
+        - version_control.qmd
         - best_practices.qmd
-    - part: "NumPy"
+    - part: "NumPy/SciPy"
       chapters:
         - numpy_arrays.qmd
         - numpy_linear_algebra.qmd
+        - scipy_optimization.qmd
+        - scipy_interpolation.qmd
     - part: "SymPy"
       chapters:
         - sympy_basics.qmd

@@ -1,3 +1,0 @@
-# Object orientation
-
-Just the basics... objects, methods, attributes, instantiation

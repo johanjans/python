@@ -1,3 +1,5 @@
-# NumPy arrays
+# Arrays
 
 Creating, indexing, slicing, array attributes (shape, dtype).
+Element-wise operations, broadcasting.
+Reshaping, stacking, splitting.
