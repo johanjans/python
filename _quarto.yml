@@ -27,29 +27,28 @@ book:
     - index.qmd
     - python_installation.qmd
     - acknowlegments.qmd
-    - part: "General basics"
+    - part: "Programming fundamentals"
       chapters:
         - fundamentals.qmd
         - functions.qmd
         - data_structures.qmd
         - file_io.qmd
-        - best_practices.qmd
         - object_oriented_programming.qmd
+        - best_practices.qmd
     - part: "NumPy"
       chapters:
         - numpy_arrays.qmd
-        - numpy_array_operations.qmd
         - numpy_linear_algebra.qmd
-        - numpy_array_manipulation.qmd
     - part: "SymPy"
       chapters:
         - sympy_basics.qmd
         - sympy_calculus.qmd
         - sympy_equations.qmd
         - sympy_vectors.qmd
-    - part: "Visualization"
+    - part: "Matplotlib"
       chapters: 
-        - matplotlib.qmd
+        - 2D-plots.qmd
+        - 3D-plots.qmd
     - part: "Applications"
       chapters:
         - kinematics.qmd
