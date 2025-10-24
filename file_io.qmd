@@ -35,7 +35,7 @@ Text files are the simplest format, typically used for configuration or raw log 
 # Example: Reading line by line (efficient for large files)
 with open("data.txt", 'r') as f:
     for line in f:
-        print(line.strip()) # the strip() function removes the newline character "\n" - try with and without!
+        print(line.strip()) # the strip() function removes the newline character "\n"
 ````
 
 ## Writing to text files

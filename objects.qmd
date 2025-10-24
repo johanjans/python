@@ -1,3 +1,72 @@
 # Objects
 
-Just the basics... objects, methods, attributes, instantiation
+Object-Oriented Programming (OOP) is a paradigm centered around the concept of **objects**, which are *instances* of **classes**. OOP helps structure complex programs by modeling real-world entities. We just need the basics!
+
+## Classes
+
+A class is a blueprint or a template for creating objects. It defines the set of **attributes** (data/variables) and **methods** (functions/behavior) that all objects created from it will have. The keyword `class` is used to define a class. Class names are typically written in "CamelCase" (e.g., Car, DataModel).
+
+````python
+class Particle:
+    # This is the blueprint for a particle object
+    pass
+````
+
+An object (or instance) is a concrete realization of a class. Creating an object from a class is called **instantiation**.
+
+````python
+# Instantiation: creating two Particle objects
+p1 = Particle()
+p2 = Particle()
+````
+
+`p1` and `p2` are distinct objects; they have their own independent data.
+
+## Attributes
+
+Attributes are variables that store data specific to an object. They represent the characteristics or state of the object.
+
+The special method __init__ (the constructor) is automatically called when a new object is created. It's used to set up the initial state of the object, often by accepting initial values (parameters). The first parameter of any instance method, including __init__, must be self, which is a reference to the instance being created.
+
+````python
+class Vector:
+    # Constructor method
+    def __init__(self, x_component, y_component):
+        # Attributes are created and assigned to 'self'
+        self.x = x_component
+        self.y = y_component
+
+# Instantiate a Vector object
+v = Vector(x_component=3.0, y_component=4.0)
+````
+
+You access an object's attributes using the dot notation (`object.attribute_name`).
+
+````python
+print(v.x)     # Output: 3.0
+v.y = 5.0      # Attributes can be modified directly
+print(v.y)     # Output: 5.0
+````
+
+## Methods
+
+Methods are functions defined inside a class that operate on the object's attributes. They define the behavior and capabilities of the object. Like __init__, all instance methods must take self as their first parameter.
+
+````python
+class Circle:
+    def __init__(self, radius):
+        self.radius = radius
+
+    # Instance method to calculate area
+    def calculate_area(self):
+        # Methods access attributes via 'self'
+        pi = 3.14159
+        return pi * self.radius ** 2
+
+# Instantiate and call the method
+c = Circle(radius=10)
+area = c.calculate_area()
+print(f"Area: {area}") # Output: Area: 314.159
+````
+
+When you call `c.calculate_area()`, Python automatically passes the object `c` as the first argument to the `calculate_area method`, where it is received by the `self` parameter. This allows the method to access and modify the specific object's data (e.g., `self.radius`).
