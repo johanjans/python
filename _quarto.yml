@@ -51,8 +51,8 @@ book:
         - sympy_calculus.ipynb
     - part: "Matplotlib"
       chapters: 
-        - 2D-plots.qmd
-        - 3D-plots.qmd
+        - 2D-plots.ipynb
+        - 3D-plots.ipynb
     - part: "Applications"
       chapters:
         - kinematics.qmd
