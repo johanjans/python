@@ -27,10 +27,10 @@ These are the fundamental ways Python represents information:
 | str         | String         | A sequence of characters (text), enclosed in quotes | `"Hello"`, `'Python'` |
 | bool        | Boolean        | Represents truth values, either `True` or `False`   | `True`, `False`       |
 
-To check the data type of a specific variable, use the `typeof()` function.
+To check the data type of a specific variable, use the `type()` function.
 
 ````python
-typeof(first_name)
+type(first_name)
 ````
 
 The above command will return 'str', indicating that the variable `first_name` is a String.
@@ -82,5 +82,3 @@ while counter < 3:
     print(counter) # outputs: 0, 1 and 2
     counter += 1 # same thing as counter = counter + 1
 ````
-
-*Be careful not to create infinite loops, ex. by forgetting to update the counter!*

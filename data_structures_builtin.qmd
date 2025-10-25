@@ -1,6 +1,6 @@
 # Data structures
 
-Data structures are containers that organize and store data in a specific layout, enabling efficient access and modification. Python offers powerful built-in structures and specialized external libraries like Pandas.
+Data structures are containers that organize and store data in a specific layout, enabling efficient access and modification.
 
 ## Lists
 
@@ -36,6 +36,41 @@ student = {
 }
 print(student["major"])    # Access value by the key: Physics (Performing a "lookup")
 student["major"] = "Mechanical engineering" # Change the value ("Mutate")
+````
+
+Dictionaries provide methods to easily access their keys, values, or key-value pairs as view objects. 
+
+The `.keys()` method returns a view object that displays a list of all the keys in the dictionary. This view reflects any changes made to the dictionary.
+
+````python
+student_keys = student.keys()
+print(student_keys) # Output: dict_keys(['name', 'id', 'major'])
+
+# Example of using the view
+for key in student_keys:
+    print(key)
+````
+
+The `.values()` method returns a view object that displays a list of all the values in the dictionary. Like `.keys()`, this view is dynamic and reflects changes.
+
+````python
+student_values = student.values()
+print(student_values) # Output: dict_values(['Alex', 101, 'Physics'])
+
+# Example of using the view
+if 101 in student_values:
+    print("ID 101 is present.")
+````
+
+The `.items()` method returns a view object that displays a list of the dictionary's key-value pairs as tuples. This is often the most convenient way to iterate over both keys and values simultaneously.
+
+````python
+student_items = student.items()
+print(student_items) # Output: dict_items([('name', 'Alex'), ('id', 101), ('major', 'Physics')])
+
+# Example of unpacking items during iteration
+for key, value in student_items:
+    print(f"{key}: {value}")
 ````
 
 ## Sets
