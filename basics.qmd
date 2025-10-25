@@ -11,7 +11,7 @@ This tutorial covers the basic building blocks of Python: **variables**, **data 
 
 ## Variables
 
-A **variable** is simply a name you give to a storage location in memory, allowing you to hold and manipulate data. Python is *dynamically typed*, meaning you don't have to declare the variable type beforehand; it's determined automatically when you assign a value.
+A **variable** is simply a name you give to a storage location in memory, allowing you to hold and manipulate data. Python is *dynamically typed*, meaning you don't have to declare the variable data type beforehand; it's determined automatically when you assign a value.
 
 Use the single equals sign `=` to assign a value. When naming variables, use descriptive names in "snake_case", e.g. vehicle_mass, applied_force, etc.
 
@@ -30,17 +30,18 @@ These are the fundamental ways Python represents information:
 | Type        | Name           | Description                                         | Example               |
 | ----------- | -------------- | --------------------------------------------------- | --------------------- |
 | int         | Integer        | Whole numbers (positive, negative or zero).         | `10`, `-5`            |
-| float       | Floating-point | Numbers with a decimal point.                       | `3.14`, `99.9`        |
+| float       | Floating       | Numbers with a decimal point.                       | `3.14`, `99.9`        |
 | str         | String         | A sequence of characters (text), enclosed in quotes | `"Hello"`, `'Python'` |
 | bool        | Boolean        | Represents truth values, either `True` or `False`   | `True`, `False`       |
 
 To check the data type of a specific variable, use the `type()` function.
 
 ```{python}
-type(first_name)
+print(type(first_name))
+print(type(age))
 ```
 
-The above command will return 'str', indicating that the variable `first_name` is a String.
+The above commands return 'str' and 'int' respectively, indicating that the variable `first_name` is a String, and that the variable `age` is an Integer.
 
 ## Flow control
 
@@ -63,29 +64,58 @@ score = 85
 
 if score >= 90:
     print("Grade: 5")
-elif score >= 80:
+elif score >= 75:
     print("Grade: 4")
+elif score >= 60
+    print("Grade: 3")
 else:
-    print("Grade: 3 or lower")
+    print("Grade: U")
 ```
 
 ### Loops
 
 Loops are used to execute a block of code multiple times.
 
-The `for` loop is used for **iterating** over a sequence (like a list, string or range of numbers).
-
-```{python}
-for i in range(3): # range(3) returns the numbers 0, 1, 2
-    print(i) # outputs: 0, 1 and 2
-```
-
 The `while` loop executes a block of code **as long as** its specified condition remains `True`.
 
 ```{python}
 counter = 0
 
-while counter < 3:
-    print(counter) # outputs: 0, 1 and 2
-    counter += 1 # same thing as counter = counter + 1
+while counter < 5:
+    print(counter)
+    counter = counter + 1 # can also be written as counter += 1
+```
+
+The `for` loop is used for iterating over a sequence (like a list, string or range of numbers). In the following example, the `range()` function is used to create three numbers, starting with zero.
+
+```{python}
+for i in range(3): 
+    print(i)
+```
+
+The `range()` function is commonly used to define for-loops. It can be used in three main ways:
+1. `range(stop)`: A single stop parameter is specified, where the returned numbers will start with a zero (just like in the example above).
+2. `range(start, stop)`: The start parameter can be set to something other than zero, followed by the stop parameter.
+3. `range(start, stop, step)`: The start and stop parameters are specified, followed by the step-parameter which can be both positive or negative.
+
+```{python}
+for i in range(7, 10):
+    print(i)
+```
+
+Note that the total amount of numbers returned from `range(start, stop)` is stop - start.
+
+```{python}
+for i in range(10, 0, -2):
+    print(i)
+```
+
+*Nested* for-loops can be used to iterate over multiple variables at the same time.
+
+```{python}
+x_values = 2
+y_values = 5
+for x in range(x_values):
+    for y in range(y_values): 
+        print(x, y)
 ```
