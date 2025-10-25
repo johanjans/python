@@ -1,3 +1,0 @@
-# Expressions
-
-Defining symbols, expressions, substitution (.subs()).

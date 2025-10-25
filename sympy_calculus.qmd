@@ -1,3 +1,0 @@
-# Calculus
-
-Derivatives (diff), Integrals (integrate), Limits (limit).

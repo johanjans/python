@@ -46,10 +46,9 @@ book:
         - data_structures_pandas.qmd
     - part: "SymPy"
       chapters:
-        - sympy_expressions.qmd
-        - sympy_calculus.qmd
-        - sympy_equations.qmd
-        - sympy_vectors.qmd
+        - sympy_expressions.ipynb
+        - sympy_equations.ipynb
+        - sympy_calculus.ipynb
     - part: "Matplotlib"
       chapters: 
         - 2D-plots.qmd

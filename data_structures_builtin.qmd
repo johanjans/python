@@ -35,7 +35,7 @@ student = {
     "major": "Physics"
 }
 print(student["major"])    # Access value by the key: Physics (Performing a "lookup")
-student["major"] = "Mechanical engineering" # Change the value ("Mutate")
+student["major"] = "Engineering" # Change the value ("Mutate")
 ````
 
 Dictionaries provide methods to easily access their keys, values, or key-value pairs. 
@@ -55,7 +55,7 @@ The `.values()` method returns a list of all the values in the dictionary. Like 
 
 ````python
 student_values = student.values()
-print(student_values) # Output: dict_values(['Alex', 101, 'Physics'])
+print(student_values) # Output: dict_values(['Alex', 101, 'Engineering'])
 
 # Example usage
 if 101 in student_values:
@@ -66,7 +66,7 @@ The `.items()` method returns a list of the dictionary's key-value pairs as tupl
 
 ````python
 student_items = student.items()
-print(student_items) # Output: dict_items([('name', 'Alex'), ('id', 101), ('major', 'Physics')])
+print(student_items) # Output: dict_items([('name', 'Alex'), ('id', 101), ('major', 'Engineering')])
 
 # Example of unpacking items during iteration
 for key, value in student_items:
