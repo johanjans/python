@@ -1,3 +1,10 @@
+---
+format:
+  html:
+    code-fold: false
+jupyter: python3
+---
+
 # Numerical integration
 
 Finite differences

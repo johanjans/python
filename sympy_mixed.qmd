@@ -5,6 +5,4 @@ format:
 jupyter: python3
 ---
 
-# Debugging
-
-Tracebacks, using a debugger, try-except blocks.
+# SymPy mixed

@@ -1,3 +1,10 @@
+---
+format:
+  html:
+    code-fold: false
+jupyter: python3
+---
+
 # Pandas
 
 Pandas is a fundamental library for scientific programming and data analysis, built on top of NumPy. Its primary structures are designed to handle labeled and relational data efficiently.

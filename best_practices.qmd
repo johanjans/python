@@ -1,3 +1,10 @@
+---
+format:
+  html:
+    code-fold: false
+jupyter: python3
+---
+
 # Best practices
 
 Documentation (docstrings), comments, basic debugging. Verification. DRY, KISS.

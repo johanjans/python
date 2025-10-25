@@ -1,3 +1,10 @@
+---
+format:
+  html:
+    code-fold: false
+jupyter: python3
+---
+
 # Functions
 
 Functions are reusable blocks of code that perform a specific task. They help organize programs, make code more readable, and promote code reuse. In general, you should always apply the principle of "DRY" (Do not Repeat Yourself).

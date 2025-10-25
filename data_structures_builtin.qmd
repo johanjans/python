@@ -1,3 +1,10 @@
+---
+format:
+  html:
+    code-fold: false
+jupyter: python3
+---
+
 # Data structures
 
 Data structures are containers that organize and store data in a specific layout, enabling efficient access and modification.

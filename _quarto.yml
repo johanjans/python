@@ -46,13 +46,11 @@ book:
         - data_structures_pandas.qmd
     - part: "SymPy"
       chapters:
-        - sympy_expressions.ipynb
-        - sympy_equations.ipynb
-        - sympy_calculus.ipynb
+        - sympy_mixed.qmd
     - part: "Matplotlib"
       chapters: 
-        - 2D-plots.ipynb
-        - 3D-plots.ipynb
+        - 2D-plots.qmd
+        - 3D-plots.qmd
     - part: "Applications"
       chapters:
         - kinematics.qmd

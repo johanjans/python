@@ -1,3 +1,10 @@
+---
+format:
+  html:
+    code-fold: false
+jupyter: python3
+---
+
 # Objects
 
 Object-Oriented Programming (OOP) is a paradigm centered around the concept of **objects**, which are *instances* of **classes**. OOP helps structure complex programs by modeling real-world entities. We just need the basics!
