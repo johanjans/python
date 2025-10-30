@@ -11,82 +11,86 @@ Data structures are containers that organize and store data in a specific layout
 
 ## Lists
 
-A list is an ordered, mutable (changeable) collection of items. They are the most flexible sequence type and are defined using square brackets `[]`. Lists are **ordered**, which means that items maintain the order in which they were inserted. Lists are **mutable**, which means that you can add, remove and change items after creation. Duplicates are allowed, meaning that the same valuer can appear multiple times in a list.
+A list is an ordered, mutable (changeable) collection of items. They are the most flexible sequence type and are defined using square brackets `[]`. Lists are **ordered**, which means that items maintain the order in which they were inserted. Lists are **mutable**, which means that you can add, remove and change items after creation. Duplicates are allowed, meaning that the same value can appear multiple times in a list.
 
-````python
-grades = [90, 75, 90, 88] # Create a list
-grades.append(95)         # Add an item (Mutate)
-print(grades[0])          # Access item at index 0 (90)
-````
+```{python}
+grades = [30, 75, 90, 88] # Create a list
+grades.append(95)         # Add an item (Mutate) to the end of the list
+print(grades[0])          # Access item at index 0 (30)
+print(grades[-1])         # Access item at the last index (95)
+print(grades[2:3])        # Access the third and fourth index
+print(grades[:2])         # Access all indicies up to the third
+print(grades[2:])         # Access all indicies from the third to the last
+grades.pop(0)             # Removes the first entry in the list
+sorted_grades = grades.sort(reverse=True) # sorts in descending order
+grades.count(75)          # Counts the number of occurences of 75
+grades.insert(0, "30")    # Inserts 30 as the first number in the list
 
-Note that Python is a "zero-indexed" language, meaning that the first item is accessed at position [0].
+```
+
+Note that Python is a "zero-indexed" language, meaning that the first item is accessed at position [0]. The length of a list can be retrieved by using `len()`, for example: `print(len(grades))`. An empty list can be initialized with `new_empty_list = []` or `new_empty_list = list()`.
 
 ## Tuples 
 
 A tuple is an ordered, immutable (unchangeable) collection of items - where the same item can appear multiple times. They are often used for fixed collections of related data and are defined using parentheses `()`. Tuples are **immutable**, which means that you cannot change, add or remove items after creation.
 
-````python
-coordinates = (10.5, 20.1)  # Create a tuple
+```{python}
+coordinates = (10.5, 20.1) # "Packing" (creating) a tuple
 # coordinates[0] = 5       # This would cause an error since tuples are immutable!
-print(coordinates[0])       # Access item at index 0 (10.5)
-````
+print(coordinates[0])      # Access item at index 0 (10.5)
+(x_c, y_c) = coordinates   # "Unpacking" a tuple - into the variables x_c and y_c
+```
+
+The length of a tuple can be retrieved by using `len()`, for example: `print(len(coordinates))`. Tuples can contain any number of items, and of different data types. For example `tuple = ("hello", "world", 123, 25.5, True, [1, 2 ,3])`. Tuple items can be accessed just like lists, i.e. `tuple[0]` for the first item, etc.  
 
 ## Dictionaries
 
 A dictionary is an ordered, mutable collection of unique key-value pairs. They are optimized for retrieving values based on a key and are defined using curly braces `{}`. The dictionary keys must be unique, which allows for fast lookups.
 
-````python
+```{python}
 student = {
     "name": "Alex",
     "id": 101,
     "major": "Physics"
 }
-print(student["major"])    # Access value by the key: Physics (Performing a "lookup")
-student["major"] = "Engineering" # Change the value ("Mutate")
-````
+student["major"] = "Engineering" # Change the value ("mutate")
+print(student["major"])    # Access value by the key: major (performing a "lookup")
+```
 
-Dictionaries provide methods to easily access their keys, values, or key-value pairs. 
+Dictionaries provide methods to easily access their keys, values, or key-value pairs. The `.keys()` method returns a list of all the keys in the dictionary, that also reflects any changes made to the dictionary.
 
-The `.keys()` method returns a list of all the keys in the dictionary, that also reflects any changes made to the dictionary.
-
-````python
+```{python}
 student_keys = student.keys()
-print(student_keys) # Output: dict_keys(['name', 'id', 'major'])
 
-# Example usage
 for key in student_keys:
     print(key)
-````
+```
 
 The `.values()` method returns a list of all the values in the dictionary. Like for `.keys()`, this view is dynamic and reflects changes.
 
-````python
+```{python}
 student_values = student.values()
-print(student_values) # Output: dict_values(['Alex', 101, 'Engineering'])
 
-# Example usage
 if 101 in student_values:
     print("ID 101 is present.")
-````
+```
 
 The `.items()` method returns a list of the dictionary's key-value pairs as tuples. This is often the most convenient way to iterate over both keys and values simultaneously.
 
-````python
+```{python}
 student_items = student.items()
-print(student_items) # Output: dict_items([('name', 'Alex'), ('id', 101), ('major', 'Engineering')])
 
-# Example of unpacking items during iteration
 for key, value in student_items:
     print(f"{key}: {value}")
-````
+```
 
 ## Sets
 
 A set is an unordered, mutable collection of unique items. They are typically used for checking membership and performing mathematical set operations (union, intersection). Like dictionaries, they are defined using curly braces `{}` (or `set()` for an empty set), but without keys. Sets are **unordered**, which means that items have no specific index. Duplicate elements in sets are automatically discarded.
 
-````python
+```{python}
 numbers = {4, 2, 3, 3, 1} # Duplicates (the second '3') are ignored
 print(numbers)            # Output: {1, 2, 3, 4}
 numbers.add(5)
 is_present = 3 in numbers # returns True since 3 is in numbers
-````
+```
