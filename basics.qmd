@@ -7,41 +7,95 @@ jupyter: python3
 
 # Basics
 
-This tutorial covers the basic building blocks of Python: **variables**, **data types**, and **flow control** structures.
+This tutorial covers the basic building blocks of Python: **variables**, **data types**, **operators** and **flow control** structures.
 
 ## Variables
 
-A **variable** is simply a name you give to a storage location in memory, allowing you to hold and manipulate data. Python is *dynamically typed*, meaning you don't have to declare the variable data type beforehand; it's determined automatically when you assign a value.
-
-Use the single equals sign `=` to assign a value. When naming variables, use descriptive names in "snake_case", e.g. vehicle_mass, applied_force, etc.
+A variable is simply a name you give to a storage location in memory, allowing you to hold and manipulate data. Python is *dynamically typed*, meaning you don't have to declare the variable data type beforehand; it's determined automatically when you assign a value. Use the single equals sign `=` to assign a value. When naming variables, use descriptive names in "snake_case", e.g. vehicle_mass, applied_force, etc.
 
 ```{python}
-# Input data
+# Input data (this is a comment)
 age = 40                # [years]
 length = 185.3          # [cm]
-first_name = "Johan"
-is_awesome = True
+first_name = "Johan"    # single quotes 'Johan' works as well
+is_awesome = True       # could be argued
+variable_one, variable_two = 1.0, 2.5 # multiple assignments
 ```
+
+Note that variables names in Python are *case sensitive*, meaning that $a$ does not refer to the same variable as $A$.
 
 ## Data types
 
-These are the fundamental ways Python represents information:
+These are some examples of fundamental *data types*:
 
-| Type        | Name           | Description                                         | Example               |
-| ----------- | -------------- | --------------------------------------------------- | --------------------- |
-| int         | Integer        | Whole numbers (positive, negative or zero).         | `10`, `-5`            |
-| float       | Floating       | Numbers with a decimal point.                       | `3.14`, `99.9`        |
-| str         | String         | A sequence of characters (text), enclosed in quotes | `"Hello"`, `'Python'` |
-| bool        | Boolean        | Represents truth values, either `True` or `False`   | `True`, `False`       |
+| Type        | Name           | Description                                         | Examples                                |
+| ----------- | -------------- | --------------------------------------------------- | --------------------------------------- |
+| int         | Integer        | Whole numbers (positive, negative or zero).         | `a = 10`, `b = -5`                      |
+| float       | Floating       | Numbers with a decimal point.                       | `c = 3.14`, `d = 99.9`                  |
+| complex     | Complex        | Complex numbers.                                    | `e = 1j`, `f = 10+2j`                   |
+| str         | String         | A sequence of characters (text), enclosed in quotes | `g = "Hello"`, `h = 'Python'`           |
+| bool        | Boolean        | Represents truth values, either `True` or `False`   | `i = True`, `j = False`                 |
+| NoneType    | NoneType       | Represents the abscence of a value                  | `k = None`                              |
 
 To check the data type of a specific variable, use the `type()` function.
 
 ```{python}
-print(type(first_name))
-print(type(age))
+type(first_name)
 ```
 
-The above commands return 'str' and 'int' respectively, indicating that the variable `first_name` is a String, and that the variable `age` is an Integer.
+The above command returns 'str', indicating that the variable `first_name` is a String. You can force the data type of a variable by *casting*, for example:
+
+```{python}
+variable_three = str("1")
+``` 
+
+The variable is now a String.
+
+## Operators
+
+### Arithmetic
+
+| Operator | Name           | Comment                      | Example |
+| -------- | -------------- | ---------------------------- | ------- |
+| +	       | Addition	    |                              | x + y   |
+| -	       | Subtraction	|                              | x - y   |
+| *	       | Multiplication	|                              | x * y   |
+| /	       | Division	    | Returns float                | x / y   |
+| //	   | Floor division	| Rounds down, returns integer | x // y  |
+| **	   | Exponentiation	|                              | x ** y  |
+| %	       | Modulus	    |                              | x % y   |
+
+### Comparison
+
+| Operator | Name                     | Example |
+| -------- | ------------------------ | ------- |
+| ==	   | Equal	                  | x == y	|
+| !=       | Not equal	              | x != y	|
+| >        | Greater than	          | x > y	|
+| <	       | Less than	              | x < y	|
+| >=	   | Greater than or equal to | x >= y	|
+| <=	   | Less than or equal to	  | x <= y  |
+
+You can also chain operators, for example like:
+
+```{python}
+type(1 < x < 20)
+```
+
+### Logical
+
+| Operator | Description                                             | Example               |
+| -------- | ------------------------------------------------------- | --------------------- |
+| and	   | Returns True if both statements are true	             | x < 5 and x < 10	     |
+| or       | Returns True if one of the statements is true	         | x < 5 or x < 4	     |
+| not      | Reverse the result, returns False if the result is true | not(x < 5 and x < 10) |
+
+### Membership
+
+| Operator | Description                                                                      | Example    |
+| -------- | -------------------------------------------------------------------------------- | ---------- |
+| in	   | Returns True if a sequence with the specified value is present in the object	  | x in y	   |
+| not in   | Returns True if a sequence with the specified value is not present in the object | x not in y |
 
 ## Flow control
 
@@ -62,14 +116,14 @@ Note that Python uses **indentation** (usually four spaces) to define code block
 ```{python}
 score = 85
 
-if score >= 90:
-    print("Grade: 5")
-elif score >= 75:
-    print("Grade: 4")
-elif score >= 60
-    print("Grade: 3")
-else:
-    print("Grade: U")
+if score >= 90: # check if score is greater than or equal to 90
+    print("Grade 5")
+elif score >= 75: # if not, then check if score is greater than or equal to 75
+    print("Grade 4")
+elif score >= 60: # if not, then check if score is greater than or equal to 60
+    print("Grade 3")
+else: # for all other cases, the grade will be U
+    print("Grade U")
 ```
 
 ### Loops
@@ -83,7 +137,7 @@ counter = 0
 
 while counter < 5:
     print(counter)
-    counter = counter + 1 # can also be written as counter += 1
+    counter = counter + 1 # can also be written more compactly as counter += 1
 ```
 
 The `for` loop is used for iterating over a sequence (like a list, string or range of numbers). In the following example, the `range()` function is used to create three numbers, starting with zero.
@@ -113,9 +167,7 @@ for i in range(10, 0, -2):
 *Nested* for-loops can be used to iterate over multiple variables at the same time.
 
 ```{python}
-x_values = 2
-y_values = 5
-for x in range(x_values):
-    for y in range(y_values): 
+for x in range(2): # x goes from 0 to 2
+    for y in range(5): # y goes from 0 to 5
         print(x, y)
 ```
