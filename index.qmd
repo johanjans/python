@@ -1,3 +1,6 @@
 # Preface {.unnumbered}
 
-Welcome to Scientific Programming!
+Welcome! This is the companion site for the preparatory course Scientific Programming, given at Jönköping University. By carefully studing the contents on this site, you have the opportunity to learn important fundamentals that will be used extensively throughout the following courses in your program: mechanics (Mekanik), strength of materials (Hållfasthetslära), machine elements (Maskinelement), finite elements (Simuleringsdriven produktutveckling med FEM), and more. The course introduces programming primarily as a tool to solve engineering problems of computational nature.
+
+To prepare yourself for what lies ahead, download and play the game "The Farmer Was Replaced", which is available through Steam [here](https://store.steampowered.com/app/2060160/The_Farmer_Was_Replaced/).
+
