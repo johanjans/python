@@ -65,7 +65,7 @@ filters:
 format:
   
   html:
-    cover-image: graphics/right-hand.png
+    cover-image: graphics/pyt.png
     #page-layout: full
     theme:
       dark: [darkly, dark.scss, custom.scss]
