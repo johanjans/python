@@ -5,7 +5,7 @@ format:
 jupyter: python3
 ---
 
-# Parsing a finite element mesh
+# Parsing a mesh
 
 Reading all the contents of a file is straightforward, but "parsing" a file can require some effort, i.e. when you want to extract specific parts based on the structure of the contents.
 The following is an example of how this can be done for a certain file format that uses *fixed width* formatting.
