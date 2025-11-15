@@ -67,4 +67,4 @@ for element in np_elements:
 print(area)
 ```
 
-By combining these two snippets of code, we can iterate over all the elements in the mesh, determine the edge vectors from the nodal coordinates, compute their area, and sum them all together for the total area $A = \sum_i^{nele}A_i$.
+By combining these two snippets of code, we can iterate over all the elements in the mesh (denoted `nele`), determine the edge vectors $\mathbb{u}$ and $\mathbb{v}$ from the nodal coordinates, compute their area $A_i$, and sum them all together for the total area $A = \sum_i^{nele}A_i$.
