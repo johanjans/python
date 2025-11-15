@@ -559,7 +559,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="variables" class="level2">
 <h2 class="anchored" data-anchor-id="variables">Variables</h2>
 <p>A variable is simply a name you give to a storage location in memory, allowing you to hold and manipulate data. Use the single equals sign <code>=</code> to assign a value. When naming variables, use descriptive names in “snake_case”, e.g.&nbsp;<code>vehicle_mass</code>, <code>applied_force</code>, etc. Names cannot start with a number, contain dashes or spaces. For example <code>2var = 3.5</code>, <code>variable-1 = 10</code> and <code>test variable = 20</code> will all produce error messages. Certain names are also reserved as keywords for other functions, and can therefore not be used. One such example that you might be tempted to use is <code>lambda</code>.</p>
-<div id="17ca6634" class="cell" data-execution_count="1">
+<div id="636a191b" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Input data (this is a "comment")</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>age <span class="op">=</span> <span class="dv">40</span>                              <span class="co"># [years] - always specify units</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>length <span class="op">=</span> <span class="fl">185.3</span>                        <span class="co"># [cm] - always specify units</span></span>
@@ -836,7 +836,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>Note that Python uses <strong>indentation</strong> (usually four spaces) to define code blocks. A code block is a group of statements, that is initialized with a colon (<code>:</code>).</p>
-<div id="eaeeea3c" class="cell" data-execution_count="2">
+<div id="36c99fc8" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> <span class="dv">85</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> score <span class="op">&gt;=</span> <span class="dv">90</span>: <span class="co"># check if score is greater than or equal to 90</span></span>
@@ -858,7 +858,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="loops">Loops</h3>
 <p>Loops are used to execute a block of code multiple times.</p>
 <p>The <code>while</code> loop executes a block of code <strong>as long as</strong> its specified condition remains <code>True</code>.</p>
-<div id="26535b7a" class="cell" data-execution_count="3">
+<div id="2c3b1d77" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>counter <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> counter <span class="op">&lt;</span> <span class="dv">5</span>:</span>
@@ -873,7 +873,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The <code>for</code> loop is used for iterating over a sequence (like a list, string or range of numbers). In the following example, the <code>range()</code> function is used to create three numbers, starting with zero.</p>
-<div id="5065a2a0" class="cell" data-execution_count="4">
+<div id="1ff60a1d" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>): </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(i)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -883,7 +883,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The <code>range()</code> function is commonly used to define for-loops. It can be used in three main ways: 1. <code>range(stop)</code>: A single stop parameter is specified, where the returned numbers will start with a zero (just like in the example above). 2. <code>range(start, stop)</code>: The start parameter can be set to something other than zero, followed by the stop parameter. 3. <code>range(start, stop, step)</code>: The start and stop parameters are specified, followed by the step-parameter which can be both positive or negative.</p>
-<div id="abd87025" class="cell" data-execution_count="5">
+<div id="fc46c36b" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">7</span>, <span class="dv">10</span>):</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(i)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -893,7 +893,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Note that the total amount of numbers returned from <code>range(start, stop)</code> is stop - start.</p>
-<div id="69f68a4a" class="cell" data-execution_count="6">
+<div id="177d990c" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">2</span>):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(i)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -905,7 +905,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Multiple “nested” for-loops can be used to iterate over multiple variables.</p>
-<div id="aac7b289" class="cell" data-execution_count="7">
+<div id="4c71083d" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>): <span class="co"># x goes from 0 to 2</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>): <span class="co"># y goes from 0 to 5</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(x, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>

@@ -57,7 +57,7 @@ Scope refers to the region of a program where a variable is accessible. In Pytho
 **Local scope**: Variables defined inside a function are local. They only exist while the function is executing and cannot be accessed from the outside.
 **Global scope**: Variables defined outside any function (at the top level of the script) are global. They can be accessed by any code, including functions.
 
-```{python}
+```python
 global_var = "I am a global string"
 
 def my_function():
@@ -66,7 +66,7 @@ def my_function():
     print(global_var) # Accessible
 
 my_function()
-print(local_var)
+print(local_var) # results in error message
 ```
 
 It's best practice to minimize the use of global variables inside functions to keep them self-contained and predictable.
