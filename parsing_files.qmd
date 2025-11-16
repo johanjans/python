@@ -12,9 +12,9 @@ The following is an example of how this can be done for a certain file format th
 
 ::: {#fig-parsing layout-ncol=2}
 
-![File to be parsed (placeholder)](graphics/pamcrash_file_structure.png){#fig-pamcrash}
+![File structure to be parsed](graphics/pamcrash_file_structure.png){#fig-pamcrash}
 
-![Finit element mesh (give me a coordinate sys, plz)](graphics/simple_mesh_parsing.png){#fig-simplemesh}
+![Visualization of finite element mesh](graphics/simple_mesh_parsing.png){#fig-simplemesh}
 
 Example file contents and the geometry it represents.
 :::
