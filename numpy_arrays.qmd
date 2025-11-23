@@ -5,8 +5,145 @@ format:
 jupyter: python3
 ---
 
-# Arrays
+# NumPy Arrays
 
-Creating, indexing, slicing, array attributes (shape, dtype).
-Element-wise operations, broadcasting.
-Reshaping, stacking, splitting.
+The core of NumPy is the `ndarray` object. It provides a fast and flexible container for large datasets in Python.
+
+## Creating Arrays
+
+You can create arrays from Python lists or using built-in functions.
+
+```{python}
+import numpy as np
+
+# 1D array (Vector)
+v = np.array([1.0, 2.0, 3.0])
+print(f"Vector v: {v}")
+
+# 2D array (Matrix)
+A = np.array([[1.0, 2.0], [3.0, 4.0]])
+print(f"Matrix A:\n{A}")
+
+# Array of zeros
+z = np.zeros((3, 3))
+
+# Array of ones
+o = np.ones((2, 2))
+
+# Range of values
+x = np.linspace(0, 10, 5) # 5 points from 0 to 10
+print(f"Linspace: {x}")
+```
+
+## Array Attributes
+
+Every array has attributes that describe its memory layout and data type.
+
+```{python}
+# Shape (dimensions)
+print(f"Shape of A: {A.shape}")
+
+# Data type
+print(f"Data type of A: {A.dtype}")
+
+# Number of dimensions
+print(f"Number of dimensions: {A.ndim}")
+
+# Size (total number of elements)
+print(f"Total elements: {A.size}")
+```
+
+
+## Indexing and Slicing
+
+Accessing elements in arrays is similar to Python lists but more powerful.
+
+```{python}
+# 2D array
+M = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+
+# Access element at row 1, column 2 (0-indexed)
+print(f"Element at (1, 2): {M[1, 2]}")
+
+# Slicing: Get the first two rows
+print(f"First two rows:\n{M[:2, :]}")
+
+# Slicing: Get the last column
+print(f"Last column: {M[:, -1]}")
+```
+
+## Element-wise Operations
+
+NumPy supports element-wise operations, which are much faster than looping through lists.
+
+```{python}
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+# Addition
+print(f"a + b = {a + b}")
+
+# Multiplication (element-wise)
+print(f"a * b = {a * b}")
+
+# Functions
+print(f"sin(a) = {np.sin(a)}")
+```
+
+## Broadcasting
+
+Broadcasting allows NumPy to work with arrays of different shapes when performing arithmetic operations.
+
+```{python}
+A = np.array([[1, 2, 3], [4, 5, 6]])
+v = np.array([1, 0, 1])
+
+# Add vector v to each row of A
+result = A + v
+print(f"Broadcasting result:\n{result}")
+```
+
+## Reshaping and Manipulation
+
+Changing the shape of arrays is a common operation.
+
+### Reshaping
+
+```{python}
+# Create a 1D array with 12 elements
+a = np.arange(12)
+print(f"Original: {a}")
+
+# Reshape into 3x4 matrix
+B = a.reshape(3, 4)
+print(f"Reshaped (3x4):\n{B}")
+```
+
+### Stacking
+
+Combining arrays together.
+
+```{python}
+x = np.array([1, 2, 3])
+y = np.array([4, 5, 6])
+
+# Vertical stack
+v_stack = np.vstack((x, y))
+print(f"Vertical stack:\n{v_stack}")
+
+# Horizontal stack
+h_stack = np.hstack((x, y))
+print(f"Horizontal stack: {h_stack}")
+```
+
+### Splitting
+
+Breaking arrays apart.
+
+```{python}
+# Split array into 3 equal parts
+z = np.array([1, 2, 3, 4, 5, 6])
+parts = np.split(z, 3)
+print(f"Split parts: {parts}")
+```
+

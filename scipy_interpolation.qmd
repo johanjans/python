@@ -7,4 +7,47 @@ jupyter: python3
 
 # Interpolation
 
-...
+Interpolation is the process of estimating values between known data points. This is frequently used in mechanics when resampling data or looking up values from tables.
+
+## Linear Interpolation with NumPy
+
+NumPy's `interp` function performs one-dimensional linear interpolation.
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Known data points
+x = np.array([0, 1, 2, 3, 4, 5])
+y = np.array([0, 0.8, 0.9, 0.1, -0.8, -1.0])
+
+# Points where we want to interpolate
+x_new = np.linspace(0, 5, 50)
+
+# Linear interpolation
+y_linear = np.interp(x_new, x, y)
+
+plt.plot(x, y, 'o', label='Data')
+plt.plot(x_new, y_linear, '-', label='Linear Interp')
+plt.legend()
+plt.show()
+```
+
+## Advanced Interpolation with SciPy
+
+For more advanced interpolation, such as cubic splines, use `scipy.interpolate`.
+
+```{python}
+from scipy.interpolate import interp1d
+
+# Create an interpolation function (Cubic spline)
+f_cubic = interp1d(x, y, kind='cubic')
+
+# Evaluate at new points
+y_cubic = f_cubic(x_new)
+
+plt.plot(x, y, 'o', label='Data')
+plt.plot(x_new, y_cubic, '--', label='Cubic Spline')
+plt.legend()
+plt.show()
+```

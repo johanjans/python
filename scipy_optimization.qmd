@@ -7,4 +7,100 @@ jupyter: python3
 
 # Optimization
 
-...
+Optimization involves finding the minimum or maximum of a function, or fitting a model to data. While NumPy provides basic tools for finding extrema in arrays, SciPy is the go-to library for more complex optimization tasks.
+
+## Finding Extrema with NumPy
+
+If you have discrete data in an array, you can find the minimum and maximum values and their indices.
+
+```{python}
+import numpy as np
+
+data = np.array([10, 5, 2, 8, 12, 3])
+
+# Minimum and Maximum values
+min_val = np.min(data)
+max_val = np.max(data)
+
+# Indices of Minimum and Maximum
+min_idx = np.argmin(data)
+max_idx = np.argmax(data)
+
+print(f"Min: {min_val} at index {min_idx}")
+print(f"Max: {max_val} at index {max_idx}")
+```
+
+## Curve Fitting with SciPy
+
+A common task in experimental mechanics is fitting a function to data points.
+
+```{python}
+from scipy.optimize import curve_fit
+
+# Define the model function (e.g., linear)
+def model(x, a, b):
+    return a * x + b
+
+# Generate some noisy data
+x_data = np.linspace(0, 10, 10)
+y_data = 2.5 * x_data + 1.0 + np.random.normal(0, 0.5, size=len(x_data))
+
+# Fit the model to the data
+popt, pcov = curve_fit(model, x_data, y_data)
+
+print(f"Fitted parameters: a={popt[0]:.2f}, b={popt[1]:.2f}")
+```
+
+## Minimization with SciPy
+
+To find the minimum of a mathematical function $f(x)$.
+
+```{python}
+from scipy.optimize import minimize
+
+# Define the function to minimize: f(x) = (x - 3)^2 + 5
+def f(x):
+    return (x - 3)**2 + 5
+
+# Initial guess
+x0 = 0
+
+# Minimize
+result = minimize(f, x0)
+
+print(f"Minimum found at x = {result.x[0]:.2f}")
+print(f"Minimum value = {result.fun:.2f}")
+```
+
+## Implementing a Bracketing Method
+
+Sometimes it is useful to implement a simple optimization algorithm yourself to understand how it works. Here is an implementation of the **Golden Section Search**, a bracketing method for finding the minimum of a unimodal function.
+
+```{python}
+def golden_section_search(f, a, b, tol=1e-5):
+    """
+    Finds the minimum of f in the interval [a, b] using Golden Section Search.
+    """
+    gr = (np.sqrt(5) + 1) / 2 # Golden ratio
+    
+    c = b - (b - a) / gr
+    d = a + (b - a) / gr
+    
+    while abs(b - a) > tol:
+        if f(c) < f(d):
+            b = d
+        else:
+            a = c
+        
+        # Recompute sample points
+        c = b - (b - a) / gr
+        d = a + (b - a) / gr
+        
+    return (b + a) / 2
+
+# Test the function
+# Minimize f(x) = (x - 3)^2 + 5
+min_x = golden_section_search(f, 0, 6)
+print(f"Golden Section Search found minimum at x = {min_x:.5f}")
+```
+
