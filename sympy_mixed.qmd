@@ -5,4 +5,116 @@ format:
 jupyter: python3
 ---
 
-# SymPy mixed
+# Introduction to SymPy
+
+SymPy is a Python library for symbolic mathematics. Unlike NumPy, which performs numerical calculations, SymPy handles mathematical objects symbolically. This is extremely useful in mechanics for deriving equations of motion, analytical solutions, and performing algebraic manipulations.
+
+## Defining Symbols and Expressions
+
+To work with SymPy, you first need to define symbols.
+
+```{python}
+import sympy as sp
+
+# Define symbols
+x, y, z = sp.symbols('x y z')
+
+# Define an expression
+expr = x**2 + 2*x*y + y**2
+print(f"Expression: {expr}")
+
+# Expand the expression
+expanded = sp.expand((x + y)**2)
+print(f"Expanded: {expanded}")
+
+# Factor the expression
+factored = sp.factor(x**2 + 2*x*y + y**2)
+print(f"Factored: {factored}")
+```
+
+## Substitution
+
+You can substitute values or other variables into expressions.
+
+```{python}
+# Substitute x = 2, y = 3
+value = expr.subs({x: 2, y: 3})
+print(f"Value at x=2, y=3: {value}")
+```
+
+## Solving Equations
+
+SymPy can solve algebraic equations symbolically.
+
+```{python}
+# Solve x^2 - 4 = 0
+solution = sp.solve(x**2 - 4, x)
+print(f"Solutions for x: {solution}")
+
+# Solve a system of equations
+# x + y = 5
+# x - y = 1
+sol_system = sp.solve([x + y - 5, x - y - 1], (x, y))
+print(f"System solution: {sol_system}")
+```
+
+## Calculus
+
+SymPy excels at differentiation and integration.
+
+### Differentiation
+
+```{python}
+# Derivative of sin(x) * e^x
+f = sp.sin(x) * sp.exp(x)
+df_dx = sp.diff(f, x)
+print(f"Derivative: {df_dx}")
+```
+
+### Integration
+
+```{python}
+# Indefinite integral of cos(x)
+integral = sp.integrate(sp.cos(x), x)
+print(f"Indefinite integral: {integral}")
+
+# Definite integral of x^2 from 0 to 1
+def_integral = sp.integrate(x**2, (x, 0, 1))
+print(f"Definite integral: {def_integral}")
+```
+
+## Matrices in SymPy
+
+SymPy has its own Matrix class for symbolic linear algebra.
+
+```{python}
+M = sp.Matrix([[1, x], [y, 1]])
+print(f"Matrix M:\n{M}")
+
+# Determinant
+det = M.det()
+print(f"Determinant: {det}")
+
+# Inverse
+inv = M.inv()
+print(f"Inverse:\n{inv}")
+```
+
+## Converting to NumPy (Lambdify)
+
+For numerical evaluation of symbolic expressions (e.g., for plotting or iterative solvers), use `lambdify`.
+
+```{python}
+import numpy as np
+
+# Create a symbolic expression
+expr = sp.sin(x) + x**2
+
+# Convert to a NumPy-compatible function
+f_np = sp.lambdify(x, expr, 'numpy')
+
+# Use with NumPy arrays
+x_vals = np.linspace(0, 5, 5)
+y_vals = f_np(x_vals)
+print(f"Numerical values: {y_vals}")
+```
