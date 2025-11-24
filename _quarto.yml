@@ -49,8 +49,7 @@ book:
         - sympy_mixed.qmd
     - part: "Matplotlib"
       chapters: 
-        - 2D-plots.qmd
-        - 3D-plots.qmd
+        - plotting_examples.qmd
     - part: "Applications"
       chapters:
         - kinematics.qmd

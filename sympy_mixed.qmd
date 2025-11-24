@@ -5,32 +5,141 @@ format:
 jupyter: python3
 ---
 
-# Introduction to SymPy
+# Introduction
 
-SymPy is a Python library for symbolic mathematics. Unlike NumPy, which performs numerical calculations, SymPy handles mathematical objects symbolically. This is extremely useful in mechanics for deriving equations of motion, analytical solutions, and performing algebraic manipulations.
+SymPy provides powerful tools for symbolic vector algebra and matrix manipulations. This section covers defining variables, vectors, computing norms, and working with rotation matrices, following the best practices for mechanics.
 
-## Defining Symbols and Expressions
+## Variables and Expressions
 
-To work with SymPy, you first need to define symbols.
+It is good practice to state everything that is known about symbolic variables using "assumptions". For example, in mechanics, mass and gravity are often real and positive.
 
 ```{python}
 import sympy as sp
 
-# Define symbols
-x, y, z = sp.symbols('x y z')
-
-# Define an expression
-expr = x**2 + 2*x*y + y**2
-print(f"Expression: {expr}")
-
-# Expand the expression
-expanded = sp.expand((x + y)**2)
-print(f"Expanded: {expanded}")
-
-# Factor the expression
-factored = sp.factor(x**2 + 2*x*y + y**2)
-print(f"Factored: {factored}")
+# Define symbols with assumptions
+m, g = sp.symbols('m, g', real=True, positive=True)
+theta = sp.symbols('theta', real=True)
 ```
+
+## Vectors
+
+Vectors are defined using `sp.Matrix`.
+
+```{python}
+# Define a symbolic vector with known magnitude and direction
+# Example: Weight vector pointing down in Y
+W = m * g * sp.Matrix([0, -1, 0])
+W
+```
+
+You can also define vectors with unknown components:
+
+```{python}
+F_Ax, F_Ay = sp.symbols('F_Ax, F_Ay', real=True)
+F_A = sp.Matrix([F_Ax, F_Ay, 0])
+F_A
+```
+
+## Vector Operations
+
+Standard operations like addition, subtraction, cross products, and dot products are straightforward.
+
+### Addition
+
+```{python}
+# Sum of forces
+R = W + F_A
+R
+```
+
+### Cross Product
+
+The cross product $\mathbb{A} \times \mathbb{B}$ is computed using `.cross()`:
+
+```{python}
+# Moment M = r x F
+r = sp.Matrix([1, 0, 0]) # Position vector
+M = r.cross(F_A)
+M
+```
+
+### Dot Product
+
+The dot product $\mathbb{A} \cdot \mathbb{B}$ is computed using `.dot()`:
+
+```{python}
+# Power P = F . v
+v = sp.Matrix([1, 1, 0])
+P = F_A.dot(v)
+P
+```
+
+### Norm and Normalization
+
+The norm (magnitude) $||\mathbb{A}||$ is computed using `.norm()`:
+
+```{python}
+# Magnitude of force F_A
+F_A_mag = F_A.norm()
+F_A_mag
+```
+
+To get the unit vector (direction), use `.normalized()`:
+
+```{python}
+# Direction of F_A
+n_A = F_A.normalized()
+n_A
+```
+
+## Matrices
+
+SymPy has its own Matrix class for symbolic linear algebra.
+
+```{python}
+M = sp.Matrix([[1, x], [y, 1]])
+print(f"Matrix M:\n{M}")
+
+# Determinant
+det = M.det()
+print(f"Determinant: {det}")
+
+# Inverse
+inv = M.inv()
+print(f"Inverse:\n{inv}")
+```
+
+## Rotation Matrices
+
+SymPy offers helper functions for rotation matrices: `sp.rot_ccw_axis1` (X-axis), `sp.rot_ccw_axis2` (Y-axis), and `sp.rot_ccw_axis3` (Z-axis).
+
+```{python}
+# Rotation matrix around Z-axis
+Rz = sp.rot_ccw_axis3(theta)
+Rz
+```
+
+We can rotate a vector by matrix multiplication using the `@` operator. Rotational matrices are applied on the left side.
+
+```{python}
+# Rotate F_A around Z-axis
+F_A_rotated = Rz @ F_A
+F_A_rotated
+```
+
+## Projection
+
+The vector projection of $\mathbb{A}$ along $\mathbb{B}$ can be computed using `.project()`.
+
+```{python}
+A_vec = 20 * sp.Matrix([sp.cos(sp.pi/2), sp.sin(sp.pi/2), 0])
+B_vec = sp.Matrix([sp.sqrt(2), sp.sqrt(3), 0])
+
+# Vector projection of A along B
+A_proj_B = A_vec.project(B_vec)
+A_proj_B
+```
+
 
 ## Substitution
 
@@ -50,19 +159,31 @@ SymPy can solve algebraic equations symbolically.
 # Solve x^2 - 4 = 0
 solution = sp.solve(x**2 - 4, x)
 print(f"Solutions for x: {solution}")
-
-# Solve a system of equations
-# x + y = 5
-# x - y = 1
-sol_system = sp.solve([x + y - 5, x - y - 1], (x, y))
-print(f"System solution: {sol_system}")
 ```
 
-## Calculus
+## Solving Systems of Equations
 
-SymPy excels at differentiation and integration.
+SymPy's `sp.solve` can handle systems of linear and non-linear equations. It is best practice to explicitly define equations using `sp.Eq(LHS, RHS)`. If you pass an expression without `sp.Eq`, SymPy assumes it equals zero.
 
-### Differentiation
+```{python}
+import sympy as sp
+
+# Define symbols
+x, y, F = sp.symbols('x y F', real=True)
+
+# Define equations
+# Eq 1: x + y + F = 0
+# Eq 2: x - 2*y = 5
+eq1 = sp.Eq(x + y + F, 0)
+eq2 = sp.Eq(x - 2*y, 5)
+
+# Solve for x and y
+sol = sp.solve([eq1, eq2], [x, y])
+sol
+```
+
+
+## Differentiation
 
 ```{python}
 # Derivative of sin(x) * e^x
@@ -71,7 +192,7 @@ df_dx = sp.diff(f, x)
 print(f"Derivative: {df_dx}")
 ```
 
-### Integration
+## Integration
 
 ```{python}
 # Indefinite integral of cos(x)
@@ -83,21 +204,25 @@ def_integral = sp.integrate(x**2, (x, 0, 1))
 print(f"Definite integral: {def_integral}")
 ```
 
-## Matrices in SymPy
+## Differential Equations
 
-SymPy has its own Matrix class for symbolic linear algebra.
+Use `sp.dsolve` to find analytical solutions to ordinary differential equations (ODEs).
 
 ```{python}
-M = sp.Matrix([[1, x], [y, 1]])
-print(f"Matrix M:\n{M}")
+# Define function and derivative
+x = sp.Function('x')(t)
+k = sp.symbols('k', positive=True)
+v0 = sp.symbols('v0', real=True)
 
-# Determinant
-det = M.det()
-print(f"Determinant: {det}")
+# Define ODE: x'' = -k^2 * x (Harmonic Oscillator)
+ode = sp.Eq(x.diff(t, 2), -k**2 * x)
 
-# Inverse
-inv = M.inv()
-print(f"Inverse:\n{inv}")
+# Initial conditions: x(0) = 0, x'(0) = v0
+ics = {x.subs(t, 0): 0, x.diff(t).subs(t, 0): v0}
+
+# Solve
+sol_ode = sp.dsolve(ode, ics=ics)
+sol_ode
 ```
 
 ## Converting to NumPy (Lambdify)
@@ -107,14 +232,26 @@ For numerical evaluation of symbolic expressions (e.g., for plotting or iterativ
 ```{python}
 import numpy as np
 
-# Create a symbolic expression
-expr = sp.sin(x) + x**2
+# Convert symbolic solution for x to a Python function
+# The first argument is a list of variables the function will accept
+x_func = sp.lambdify([F], x_sol, 'numpy')
 
-# Convert to a NumPy-compatible function
-f_np = sp.lambdify(x, expr, 'numpy')
+# Evaluate for a specific value
+x_val = x_func(10)
+x_val
+```
 
-# Use with NumPy arrays
-x_vals = np.linspace(0, 5, 5)
-y_vals = f_np(x_vals)
-print(f"Numerical values: {y_vals}")
+When lambdifying a vector (Matrix), the result is often a list of lists or a 2D array. To get a standard 1D NumPy array for vector operations, use `.flatten()`.
+
+```{python}
+# Define a symbolic vector
+m, g = sp.symbols('m g', real=True)
+W = m * g * sp.Matrix([0, -1, 0])
+
+# Lambdify
+W_func = sp.lambdify([m, g], W, 'numpy')
+
+# Evaluate and flatten
+W_np = W_func(20, 9.81).flatten()
+W_np
 ```
