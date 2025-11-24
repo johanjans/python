@@ -5,7 +5,7 @@ format:
 jupyter: python3
 ---
 
-## Introduction
+## Version control
 
 Git is a version control system that helps you track changes in your code locally on your machine. This guide covers the essential commands you need to manage your projects offline with Git on Windows.
 
