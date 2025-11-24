@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>3&nbsp; Basics – Scientific Programming</title>
+<title>16&nbsp; Introduction – Scientific Programming</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,8 +65,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./functions.html" rel="next">
-<link href="./acknowlegments.html" rel="prev">
+<link href="./plotting_examples.html" rel="next">
+<link href="./data_structures_pandas.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -110,6 +110,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="https://fonts.googleapis.com/css?family=Vollkorn" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -282,7 +311,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./basics.html">Programming fundamentals</a></li><li class="breadcrumb-item"><a href="./basics.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Basics</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sympy_mixed.html">SymPy</a></li><li class="breadcrumb-item"><a href="./sympy_mixed.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Introduction</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -341,7 +370,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./basics.html" class="sidebar-item-text sidebar-link active">
+  <a href="./basics.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Basics</span></span></a>
   </div>
 </li>
@@ -441,7 +470,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sympy_mixed.html" class="sidebar-item-text sidebar-link">
+  <a href="./sympy_mixed.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
@@ -515,20 +544,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#variables" id="toc-variables" class="nav-link active" data-scroll-target="#variables">Variables</a></li>
-  <li><a href="#data-types" id="toc-data-types" class="nav-link" data-scroll-target="#data-types">Data types</a></li>
-  <li><a href="#operators" id="toc-operators" class="nav-link" data-scroll-target="#operators">Operators</a>
+  <li><a href="#variables-and-expressions" id="toc-variables-and-expressions" class="nav-link active" data-scroll-target="#variables-and-expressions">Variables and Expressions</a></li>
+  <li><a href="#vectors" id="toc-vectors" class="nav-link" data-scroll-target="#vectors">Vectors</a></li>
+  <li><a href="#vector-operations" id="toc-vector-operations" class="nav-link" data-scroll-target="#vector-operations">Vector Operations</a>
   <ul class="collapse">
-  <li><a href="#arithmetic" id="toc-arithmetic" class="nav-link" data-scroll-target="#arithmetic">Arithmetic</a></li>
-  <li><a href="#comparison" id="toc-comparison" class="nav-link" data-scroll-target="#comparison">Comparison</a></li>
-  <li><a href="#logical" id="toc-logical" class="nav-link" data-scroll-target="#logical">Logical</a></li>
-  <li><a href="#membership" id="toc-membership" class="nav-link" data-scroll-target="#membership">Membership</a></li>
+  <li><a href="#addition" id="toc-addition" class="nav-link" data-scroll-target="#addition">Addition</a></li>
+  <li><a href="#cross-product" id="toc-cross-product" class="nav-link" data-scroll-target="#cross-product">Cross Product</a></li>
+  <li><a href="#dot-product" id="toc-dot-product" class="nav-link" data-scroll-target="#dot-product">Dot Product</a></li>
+  <li><a href="#norm-and-normalization" id="toc-norm-and-normalization" class="nav-link" data-scroll-target="#norm-and-normalization">Norm and Normalization</a></li>
   </ul></li>
-  <li><a href="#flow-control" id="toc-flow-control" class="nav-link" data-scroll-target="#flow-control">Flow control</a>
-  <ul class="collapse">
-  <li><a href="#conditional-statements" id="toc-conditional-statements" class="nav-link" data-scroll-target="#conditional-statements">Conditional statements</a></li>
-  <li><a href="#loops" id="toc-loops" class="nav-link" data-scroll-target="#loops">Loops</a></li>
-  </ul></li>
+  <li><a href="#matrices" id="toc-matrices" class="nav-link" data-scroll-target="#matrices">Matrices</a></li>
+  <li><a href="#rotation-matrices" id="toc-rotation-matrices" class="nav-link" data-scroll-target="#rotation-matrices">Rotation Matrices</a></li>
+  <li><a href="#projection" id="toc-projection" class="nav-link" data-scroll-target="#projection">Projection</a></li>
+  <li><a href="#substitution" id="toc-substitution" class="nav-link" data-scroll-target="#substitution">Substitution</a></li>
+  <li><a href="#solving-equations" id="toc-solving-equations" class="nav-link" data-scroll-target="#solving-equations">Solving Equations</a></li>
+  <li><a href="#solving-systems-of-equations" id="toc-solving-systems-of-equations" class="nav-link" data-scroll-target="#solving-systems-of-equations">Solving Systems of Equations</a></li>
+  <li><a href="#differentiation" id="toc-differentiation" class="nav-link" data-scroll-target="#differentiation">Differentiation</a></li>
+  <li><a href="#integration" id="toc-integration" class="nav-link" data-scroll-target="#integration">Integration</a></li>
+  <li><a href="#differential-equations" id="toc-differential-equations" class="nav-link" data-scroll-target="#differential-equations">Differential Equations</a></li>
+  <li><a href="#converting-to-numpy-lambdify" id="toc-converting-to-numpy-lambdify" class="nav-link" data-scroll-target="#converting-to-numpy-lambdify">Converting to NumPy (Lambdify)</a></li>
   </ul>
 </nav>
     </div>
@@ -536,9 +570,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./basics.html">Programming fundamentals</a></li><li class="breadcrumb-item"><a href="./basics.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Basics</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sympy_mixed.html">SymPy</a></li><li class="breadcrumb-item"><a href="./sympy_mixed.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Introduction</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Basics</span></h1>
+<h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Introduction</span></h1>
 </div>
 
 
@@ -555,383 +589,305 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This tutorial covers the basic building blocks of Python: <strong>variables</strong>, <strong>data types</strong>, <strong>operators</strong> and <strong>flow control</strong> structures.</p>
-<section id="variables" class="level2">
-<h2 class="anchored" data-anchor-id="variables">Variables</h2>
-<p>A variable is simply a name you give to a storage location in memory, allowing you to hold and manipulate data. Use the single equals sign <code>=</code> to assign a value. When naming variables, use descriptive names in “snake_case”, e.g.&nbsp;<code>vehicle_mass</code>, <code>applied_force</code>, etc. Names cannot start with a number, contain dashes or spaces. For example <code>2var = 3.5</code>, <code>variable-1 = 10</code> and <code>test variable = 20</code> will all produce error messages. Certain names are also reserved as keywords for other functions, and can therefore not be used. One such example that you might be tempted to use is <code>lambda</code>.</p>
-<div id="20a45904" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Input data (this is a "comment")</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>age <span class="op">=</span> <span class="dv">40</span>                              <span class="co"># [years] - always specify units</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>length <span class="op">=</span> <span class="fl">185.3</span>                        <span class="co"># [cm] - always specify units</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>first_name <span class="op">=</span> <span class="st">"Johan"</span>                  <span class="co"># single quotes 'Johan' works as well</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>is_awesome <span class="op">=</span> <span class="va">True</span>                     <span class="co"># could be argued</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>var_one, var_two <span class="op">=</span> <span class="fl">1.0</span>, <span class="fl">2.5</span>           <span class="co"># several variable assignments</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>var_three <span class="op">=</span> var_four <span class="op">=</span> <span class="fl">3.5</span>            <span class="co"># several varables assigned same value</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>SymPy provides powerful tools for symbolic vector algebra and matrix manipulations. This section covers defining variables, vectors, computing norms, and working with rotation matrices, following the best practices for mechanics.</p>
+<section id="variables-and-expressions" class="level2">
+<h2 class="anchored" data-anchor-id="variables-and-expressions">Variables and Expressions</h2>
+<p>It is good practice to state everything that is known about symbolic variables using “assumptions”. For example, in mechanics, mass and gravity are often real and positive.</p>
+<div id="155ebbd9" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sympy <span class="im">as</span> sp</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define symbols with assumptions</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>m, g, x, y <span class="op">=</span> sp.symbols(<span class="st">'m, g, x, y'</span>, real<span class="op">=</span><span class="va">True</span>, positive<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> sp.symbols(<span class="st">'theta'</span>, real<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Note that variables names in Python are <em>case sensitive</em>, meaning that <code>a</code> does not refer to the same variable as <code>A</code>, and <code>vehicle_Mass</code> does not refer to the same variable as <code>vehicle_mass</code> etc.</p>
 </section>
-<section id="data-types" class="level2">
-<h2 class="anchored" data-anchor-id="data-types">Data types</h2>
-<p>These are some examples of fundamental <em>data types</em>, i.e.&nbsp;categories for values:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 9%">
-<col style="width: 12%">
-<col style="width: 44%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Type</th>
-<th>Name</th>
-<th>Description</th>
-<th>Examples</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>int</td>
-<td>Integer</td>
-<td>Whole numbers (positive, negative or zero).</td>
-<td><code>a = 10</code>, <code>b = -5</code></td>
-</tr>
-<tr class="even">
-<td>float</td>
-<td>Floating</td>
-<td>Numbers with a decimal point.</td>
-<td><code>c = 3.14</code>, <code>d = 99.9</code>, <code>10e-20</code> (a “numerical” zero)</td>
-</tr>
-<tr class="odd">
-<td>complex</td>
-<td>Complex</td>
-<td>Complex numbers.</td>
-<td><code>f = 1j</code>, <code>g = 10+2j</code></td>
-</tr>
-<tr class="even">
-<td>str</td>
-<td>String</td>
-<td>A sequence of characters (text), enclosed in quotes</td>
-<td><code>h = "Hello"</code>, <code>i = 'Python'</code></td>
-</tr>
-<tr class="odd">
-<td>bool</td>
-<td>Boolean</td>
-<td>Represents truth values, either <code>True</code> or <code>False</code></td>
-<td><code>j = True</code>, <code>k = False</code></td>
-</tr>
-<tr class="even">
-<td>NoneType</td>
-<td>NoneType</td>
-<td>Represents the abscence of a value</td>
-<td><code>l = None</code></td>
-</tr>
-</tbody>
-</table>
-<p>To find the data type of a specific variable, use the <code>type()</code> function. For example, <code>type(first_name)</code> will return ‘str’, indicating that the variable <code>first_name</code> is a String. A value’s data type dictates what you can do with it, for example you can perform math on an <code>int</code> (like 10 / 2), but you can’t on a <code>str</code>. The data type also determines how a value is stored in memory and its internal structure. You can force the data type of a variable using <em>casting</em>, for example <code>variable_three = str("1")</code> would lead to <code>type(variable_three)</code> returning <code>str</code>, indicating that the variable is now a String.</p>
+<section id="vectors" class="level2">
+<h2 class="anchored" data-anchor-id="vectors">Vectors</h2>
+<p>Vectors are defined using <code>sp.Matrix</code>.</p>
+<div id="007d7204" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a symbolic vector with known magnitude and direction</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: Weight vector pointing down in Y</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>WW <span class="op">=</span> m <span class="op">*</span> g <span class="op">*</span> sp.Matrix([<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>])</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>WW</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="2">
+<p><span class="math inline">\(\displaystyle \left[\begin{matrix}0\\- g m\\0\end{matrix}\right]\)</span></p>
+</div>
+</div>
+<p>You can also define vectors with unknown components:</p>
+<div id="f68f5613" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>F_Ax, F_Ay <span class="op">=</span> sp.symbols(<span class="st">'F_Ax, F_Ay'</span>, real<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>FFA <span class="op">=</span> sp.Matrix([F_Ax, F_Ay, <span class="dv">0</span>])</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>FFA</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
+<p><span class="math inline">\(\displaystyle \left[\begin{matrix}F_{Ax}\\F_{Ay}\\0\end{matrix}\right]\)</span></p>
+</div>
+</div>
 </section>
-<section id="operators" class="level2">
-<h2 class="anchored" data-anchor-id="operators">Operators</h2>
-<p>Python provides a wide range of operators (special symbols and keywords) that allow you to perform various operations, such as arithmetic calculations, comparison between values, combining boolean expressions with logical operators, and checking for inclusion using membership operators.</p>
-<section id="arithmetic" class="level3">
-<h3 class="anchored" data-anchor-id="arithmetic">Arithmetic</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 12%">
-<col style="width: 22%">
-<col style="width: 50%">
-<col style="width: 14%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Operator</th>
-<th>Name</th>
-<th>Comment</th>
-<th>Example</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>+</td>
-<td>Addition</td>
-<td>Adds numbers</td>
-<td><code>x + y</code></td>
-</tr>
-<tr class="even">
-<td>-</td>
-<td>Subtraction</td>
-<td>Subtracts numbers</td>
-<td><code>x - y</code></td>
-</tr>
-<tr class="odd">
-<td>*</td>
-<td>Multiplication</td>
-<td>Multiplies numbers</td>
-<td><code>x * y</code></td>
-</tr>
-<tr class="even">
-<td>/</td>
-<td>Division</td>
-<td>Returns a float</td>
-<td><code>x / y</code></td>
-</tr>
-<tr class="odd">
-<td>//</td>
-<td>Floor division</td>
-<td>Rounds down, returns an integer</td>
-<td><code>x // y</code></td>
-</tr>
-<tr class="even">
-<td>**</td>
-<td>Exponentiation</td>
-<td>Takes some getting used to…</td>
-<td><code>x ** y</code></td>
-</tr>
-<tr class="odd">
-<td>%</td>
-<td>Modulus</td>
-<td>Returns the remainder of <code>x / y</code></td>
-<td><code>x % y</code></td>
-</tr>
-</tbody>
-</table>
+<section id="vector-operations" class="level2">
+<h2 class="anchored" data-anchor-id="vector-operations">Vector Operations</h2>
+<p>Standard operations like addition, subtraction, cross products, and dot products are straightforward.</p>
+<section id="addition" class="level3">
+<h3 class="anchored" data-anchor-id="addition">Addition</h3>
+<div id="29287337" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sum of forces</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>RR <span class="op">=</span> WW <span class="op">+</span> FFA</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>RR</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
+<p><span class="math inline">\(\displaystyle \left[\begin{matrix}F_{Ax}\\F_{Ay} - g m\\0\end{matrix}\right]\)</span></p>
+</div>
+</div>
 </section>
-<section id="comparison" class="level3">
-<h3 class="anchored" data-anchor-id="comparison">Comparison</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Operator</th>
-<th>Name</th>
-<th>Example</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>==</td>
-<td>Equal</td>
-<td><code>x == y</code></td>
-</tr>
-<tr class="even">
-<td>!=</td>
-<td>Not equal</td>
-<td><code>x != y</code></td>
-</tr>
-<tr class="odd">
-<td>&gt;</td>
-<td>Greater than</td>
-<td><code>x &gt; y</code></td>
-</tr>
-<tr class="even">
-<td>&lt;</td>
-<td>Less than</td>
-<td><code>x &lt; y</code></td>
-</tr>
-<tr class="odd">
-<td>&gt;=</td>
-<td>Greater than or equal to</td>
-<td><code>x &gt;= y</code></td>
-</tr>
-<tr class="even">
-<td>&lt;=</td>
-<td>Less than or equal to</td>
-<td><code>x &lt;= y</code></td>
-</tr>
-</tbody>
-</table>
+<section id="cross-product" class="level3">
+<h3 class="anchored" data-anchor-id="cross-product">Cross Product</h3>
+<p>The cross product <span class="math inline">\(\mathbb{A} \times \mathbb{B}\)</span> is computed using <code>.cross()</code>:</p>
+<div id="73be7f68" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Moment MM = rr x FFA</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>rr <span class="op">=</span> sp.Matrix([<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>]) <span class="co"># Position vector</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>MM <span class="op">=</span> rr.cross(FFA)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>MM</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="5">
+<p><span class="math inline">\(\displaystyle \left[\begin{matrix}0\\0\\F_{Ay}\end{matrix}\right]\)</span></p>
+</div>
+</div>
 </section>
-<section id="logical" class="level3">
-<h3 class="anchored" data-anchor-id="logical">Logical</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 8%">
-<col style="width: 61%">
-<col style="width: 30%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Operator</th>
-<th>Description</th>
-<th>Example</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>and</td>
-<td>Returns True if both statements are true</td>
-<td><code>(2 &lt; x &lt; 5) and (x &lt; 10)</code></td>
-</tr>
-<tr class="even">
-<td>or</td>
-<td>Returns True if one of the statements is true</td>
-<td><code>(x &lt; 5) or (x &lt; 4)</code></td>
-</tr>
-<tr class="odd">
-<td>not</td>
-<td>Reverse the result, returns False if the result is true</td>
-<td><code>not((x &lt; 5) and (x &lt; 10))</code></td>
-</tr>
-</tbody>
-</table>
+<section id="dot-product" class="level3">
+<h3 class="anchored" data-anchor-id="dot-product">Dot Product</h3>
+<p>The dot product <span class="math inline">\(\mathbb{A} \cdot \mathbb{B}\)</span> is computed using <code>.dot()</code>:</p>
+<div id="da635581" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Power P = F . v</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>vv <span class="op">=</span> sp.Matrix([<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>])</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> FFA.dot(vv)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>P</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="6">
+<p><span class="math inline">\(\displaystyle F_{Ax} + F_{Ay}\)</span></p>
+</div>
+</div>
 </section>
-<section id="membership" class="level3">
-<h3 class="anchored" data-anchor-id="membership">Membership</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 11%">
-<col style="width: 60%">
-<col style="width: 27%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Operator</th>
-<th>Description</th>
-<th>Example</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>in</td>
-<td>Returns True if <code>x</code> is present in <code>y</code></td>
-<td><code>3 in [1, 2, 3]</code></td>
-</tr>
-<tr class="even">
-<td>not in</td>
-<td>Returns True if <code>x</code> is not present in <code>y</code></td>
-<td><code>9 not in [1, 2, 3]</code></td>
-</tr>
-</tbody>
-</table>
+<section id="norm-and-normalization" class="level3">
+<h3 class="anchored" data-anchor-id="norm-and-normalization">Norm and Normalization</h3>
+<p>The norm (magnitude) <span class="math inline">\(||\mathbb{A}||\)</span> is computed using <code>.norm()</code>:</p>
+<div id="3695d90f" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Magnitude of force FFA</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>FFA_mag <span class="op">=</span> FFA.norm()</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>FFA_mag</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="7">
+<p><span class="math inline">\(\displaystyle \sqrt{F_{Ax}^{2} + F_{Ay}^{2}}\)</span></p>
+</div>
+</div>
+<p>To get the unit vector (direction), use <code>.normalized()</code>:</p>
+<div id="ecd524ba" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Direction of FFA</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>ee_A <span class="op">=</span> FFA.normalized()</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>ee_A</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="8">
+<p><span class="math inline">\(\displaystyle \left[\begin{matrix}\frac{F_{Ax}}{\sqrt{F_{Ax}^{2} + F_{Ay}^{2}}}\\\frac{F_{Ay}}{\sqrt{F_{Ax}^{2} + F_{Ay}^{2}}}\\0\end{matrix}\right]\)</span></p>
+</div>
+</div>
 </section>
 </section>
-<section id="flow-control" class="level2">
-<h2 class="anchored" data-anchor-id="flow-control">Flow control</h2>
-<p>Flow control structures determine the order in which your code executes. They allow your program to make decisions and repeat actions.</p>
-<section id="conditional-statements" class="level3">
-<h3 class="anchored" data-anchor-id="conditional-statements">Conditional statements</h3>
-<p>Conditional statements execute different blocks of code based on whether a condition is True or False.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 10%">
-<col style="width: 89%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Keyword</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>if</td>
-<td>Executes code if the condition is <code>True</code>.</td>
-</tr>
-<tr class="even">
-<td>elif</td>
-<td>(Else if) Checks a new condition if the previous <code>if</code>/ <code>elif</code> conditions were <code>False</code>.</td>
-</tr>
-<tr class="odd">
-<td>else</td>
-<td>Executes code if <em>all</em> preceding conditions were <code>False</code></td>
-</tr>
-</tbody>
-</table>
-<p>Note that Python uses <strong>indentation</strong> (usually four spaces) to define code blocks. A code block is a group of statements, that is initialized with a colon (<code>:</code>).</p>
-<div id="98fdb6d1" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> <span class="dv">85</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> score <span class="op">&gt;=</span> <span class="dv">90</span>: <span class="co"># check if score is greater than or equal to 90</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Grade 5"</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> score <span class="op">&gt;=</span> <span class="dv">75</span>: <span class="co"># if not, then check if score is greater than or equal to 75</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Grade 4"</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> score <span class="op">&gt;=</span> <span class="dv">60</span>: <span class="co"># if not, then check if score is greater than or equal to 60</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Grade 3"</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>: <span class="co"># for all other cases, the grade will be U</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Grade U"</span>)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"See you on the re-exam!"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="matrices" class="level2">
+<h2 class="anchored" data-anchor-id="matrices">Matrices</h2>
+<p>SymPy has its own Matrix class for symbolic linear algebra.</p>
+<div id="87226261" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> sp.Matrix([[<span class="dv">1</span>, x], [y, <span class="dv">1</span>]])</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Matrix M:</span><span class="ch">\n</span><span class="sc">{</span>M<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Determinant</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>det <span class="op">=</span> M.det()</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Determinant: </span><span class="sc">{</span>det<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Inverse</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>inv <span class="op">=</span> M.inv()</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Inverse:</span><span class="ch">\n</span><span class="sc">{</span>inv<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Grade 4</code></pre>
+<pre><code>Matrix M:
+Matrix([[1, x], [y, 1]])
+Determinant: -x*y + 1
+Inverse:
+Matrix([[-1/(x*y - 1), x/(x*y - 1)], [y/(x*y - 1), -1/(x*y - 1)]])</code></pre>
 </div>
 </div>
-<p>In the above example, there are four code blocks. The first three code blocks contain one statement, while the last code block contains two statements.</p>
 </section>
-<section id="loops" class="level3">
-<h3 class="anchored" data-anchor-id="loops">Loops</h3>
-<p>Loops are used to execute a block of code multiple times.</p>
-<p>The <code>while</code> loop executes a block of code <strong>as long as</strong> its specified condition remains <code>True</code>.</p>
-<div id="f3515b2d" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>counter <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> counter <span class="op">&lt;</span> <span class="dv">5</span>:</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(counter)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    counter <span class="op">=</span> counter <span class="op">+</span> <span class="dv">1</span> <span class="co"># can also be written more compactly as counter += 1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="rotation-matrices" class="level2">
+<h2 class="anchored" data-anchor-id="rotation-matrices">Rotation Matrices</h2>
+<p>SymPy offers helper functions for rotation matrices: <code>sp.rot_ccw_axis1</code> (X-axis), <code>sp.rot_ccw_axis2</code> (Y-axis), and <code>sp.rot_ccw_axis3</code> (Z-axis).</p>
+<div id="bff9cc5d" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rotation matrix around Z-axis</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>Rz <span class="op">=</span> sp.rot_ccw_axis3(theta)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>Rz</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="10">
+<p><span class="math inline">\(\displaystyle \left[\begin{matrix}\cos{\left(\theta \right)} &amp; - \sin{\left(\theta \right)} &amp; 0\\\sin{\left(\theta \right)} &amp; \cos{\left(\theta \right)} &amp; 0\\0 &amp; 0 &amp; 1\end{matrix}\right]\)</span></p>
+</div>
+</div>
+<p>We can rotate a vector by matrix multiplication using the <code>@</code> operator. Rotational matrices are applied on the left side.</p>
+<div id="b9142965" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rotate FFA around Z-axis</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>FFA_rotated <span class="op">=</span> Rz <span class="op">@</span> FFA</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>FFA_rotated</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="11">
+<p><span class="math inline">\(\displaystyle \left[\begin{matrix}F_{Ax} \cos{\left(\theta \right)} - F_{Ay} \sin{\left(\theta \right)}\\F_{Ax} \sin{\left(\theta \right)} + F_{Ay} \cos{\left(\theta \right)}\\0\end{matrix}\right]\)</span></p>
+</div>
+</div>
+</section>
+<section id="projection" class="level2">
+<h2 class="anchored" data-anchor-id="projection">Projection</h2>
+<p>The vector projection of <span class="math inline">\(\mathbb{A}\)</span> along <span class="math inline">\(\mathbb{B}\)</span> can be computed using <code>.project()</code>.</p>
+<div id="53bae022" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>AA <span class="op">=</span> <span class="dv">20</span> <span class="op">*</span> sp.Matrix([sp.cos(sp.pi<span class="op">/</span><span class="dv">2</span>), sp.sin(sp.pi<span class="op">/</span><span class="dv">2</span>), <span class="dv">0</span>])</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>BB <span class="op">=</span> sp.Matrix([sp.sqrt(<span class="dv">2</span>), sp.sqrt(<span class="dv">3</span>), <span class="dv">0</span>])</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Vector projection of A along B</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>AA_proj_BB <span class="op">=</span> AA.project(BB)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>AA_proj_BB</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="12">
+<p><span class="math inline">\(\displaystyle \left[\begin{matrix}4 \sqrt{6}\\12\\0\end{matrix}\right]\)</span></p>
+</div>
+</div>
+</section>
+<section id="substitution" class="level2">
+<h2 class="anchored" data-anchor-id="substitution">Substitution</h2>
+<p>You can substitute values or other variables into expressions.</p>
+<div id="e1c6ede7" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an expression</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>expr <span class="op">=</span> x<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> y<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Substitute x = 2, y = 3</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>value <span class="op">=</span> expr.subs({x: <span class="dv">2</span>, y: <span class="dv">3</span>})</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Value at x=2, y=3: </span><span class="sc">{</span>value<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0
-1
-2
-3
-4</code></pre>
+<pre><code>Value at x=2, y=3: 13</code></pre>
 </div>
 </div>
-<p>The <code>for</code> loop is used for iterating over a sequence (like a list, string or range of numbers). In the following example, the <code>range()</code> function is used to create three numbers, starting with zero.</p>
-<div id="fcda18bc" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>): </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(i)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="solving-equations" class="level2">
+<h2 class="anchored" data-anchor-id="solving-equations">Solving Equations</h2>
+<p>SymPy can solve algebraic equations symbolically.</p>
+<div id="5774fa6c" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve x^2 - 4 = 0</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>solution <span class="op">=</span> sp.solve(x<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">4</span>, x)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Solutions for x: </span><span class="sc">{</span>solution<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0
-1
-2</code></pre>
+<pre><code>Solutions for x: [2]</code></pre>
 </div>
 </div>
-<p>The <code>range()</code> function is commonly used to define for-loops. It can be used in three main ways: 1. <code>range(stop)</code>: A single stop parameter is specified, where the returned numbers will start with a zero (just like in the example above). 2. <code>range(start, stop)</code>: The start parameter can be set to something other than zero, followed by the stop parameter. 3. <code>range(start, stop, step)</code>: The start and stop parameters are specified, followed by the step-parameter which can be both positive or negative.</p>
-<div id="3ac30390" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">7</span>, <span class="dv">10</span>):</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(i)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="solving-systems-of-equations" class="level2">
+<h2 class="anchored" data-anchor-id="solving-systems-of-equations">Solving Systems of Equations</h2>
+<p>SymPy’s <code>sp.solve</code> can handle systems of linear and non-linear equations. It is best practice to explicitly define equations using <code>sp.Eq(LHS, RHS)</code>. If you pass an expression without <code>sp.Eq</code>, SymPy assumes it equals zero.</p>
+<div id="c57579c1" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sympy <span class="im">as</span> sp</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define symbols</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>x, y, F <span class="op">=</span> sp.symbols(<span class="st">'x y F'</span>, real<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Define equations</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Eq 1: x + y + F = 0</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Eq 2: x - 2*y = 5</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>eq1 <span class="op">=</span> sp.Eq(x <span class="op">+</span> y <span class="op">+</span> F, <span class="dv">0</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>eq2 <span class="op">=</span> sp.Eq(x <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>y, <span class="dv">5</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve for x and y</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>sol <span class="op">=</span> sp.solve([eq1, eq2], [x, y])</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>x_sol <span class="op">=</span> sol[x]</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>x_sol</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="15">
+<p><span class="math inline">\(\displaystyle \frac{5}{3} - \frac{2 F}{3}\)</span></p>
+</div>
+</div>
+</section>
+<section id="differentiation" class="level2">
+<h2 class="anchored" data-anchor-id="differentiation">Differentiation</h2>
+<div id="8a9cc3bf" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Derivative of sin(x) * e^x</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> sp.sin(x) <span class="op">*</span> sp.exp(x)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>df_dx <span class="op">=</span> sp.diff(f, x)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Derivative: </span><span class="sc">{</span>df_dx<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>7
-8
-9</code></pre>
+<pre><code>Derivative: exp(x)*sin(x) + exp(x)*cos(x)</code></pre>
 </div>
 </div>
-<p>Note that the total amount of numbers returned from <code>range(start, stop)</code> is stop - start.</p>
-<div id="4d0df69d" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">2</span>):</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(i)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="integration" class="level2">
+<h2 class="anchored" data-anchor-id="integration">Integration</h2>
+<div id="d3395d32" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Indefinite integral of cos(x)</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>integral <span class="op">=</span> sp.integrate(sp.cos(x), x)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Indefinite integral: </span><span class="sc">{</span>integral<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Definite integral of x^2 from 0 to 1</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>def_integral <span class="op">=</span> sp.integrate(x<span class="op">**</span><span class="dv">2</span>, (x, <span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Definite integral: </span><span class="sc">{</span>def_integral<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>10
-8
-6
-4
-2</code></pre>
+<pre><code>Indefinite integral: sin(x)
+Definite integral: 1/3</code></pre>
 </div>
 </div>
-<p>Multiple “nested” for-loops can be used to iterate over multiple variables.</p>
-<div id="e6b29163" class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>): <span class="co"># x goes from 0 to 2</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>): <span class="co"># y goes from 0 to 5</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(x, y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0 0
-0 1
-0 2
-0 3
-0 4
-1 0
-1 1
-1 2
-1 3
-1 4</code></pre>
+</section>
+<section id="differential-equations" class="level2">
+<h2 class="anchored" data-anchor-id="differential-equations">Differential Equations</h2>
+<p>Use <code>sp.dsolve</code> to find analytical solutions to ordinary differential equations (ODEs).</p>
+<div id="d1ca8944" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define function and derivative</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> sp.symbols(<span class="st">'t'</span>, real<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> sp.Function(<span class="st">'x'</span>)(t)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> sp.symbols(<span class="st">'k'</span>, positive<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>v0 <span class="op">=</span> sp.symbols(<span class="st">'v0'</span>, real<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Define ODE: x'' = -k^2 * x (Harmonic Oscillator)</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>ode <span class="op">=</span> sp.Eq(x.diff(t, <span class="dv">2</span>), <span class="op">-</span>k<span class="op">**</span><span class="dv">2</span> <span class="op">*</span> x)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial conditions: x(0) = 0, x'(0) = v0</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>ics <span class="op">=</span> {x.subs(t, <span class="dv">0</span>): <span class="dv">0</span>, x.diff(t).subs(t, <span class="dv">0</span>): v0}</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Solve</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>sol_ode <span class="op">=</span> sp.dsolve(ode, ics<span class="op">=</span>ics)</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>sol_ode</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="18">
+<p><span class="math inline">\(\displaystyle x{\left(t \right)} = \frac{v_{0} \sin{\left(k t \right)}}{k}\)</span></p>
 </div>
 </div>
-<p>Note the order. The “inner loop” over <code>y</code> runs from start to finish for each separate <code>x</code> of the “outer loop”.</p>
+</section>
+<section id="converting-to-numpy-lambdify" class="level2">
+<h2 class="anchored" data-anchor-id="converting-to-numpy-lambdify">Converting to NumPy (Lambdify)</h2>
+<p>For numerical evaluation of symbolic expressions (e.g., for plotting or iterative solvers), use <code>lambdify</code>.</p>
+<div id="9435eb31" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert symbolic solution for x to a Python function</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The first argument is a list of variables the function will accept</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>x_func <span class="op">=</span> sp.lambdify([F], x_sol, <span class="st">'numpy'</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate for a specific value</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>x_val <span class="op">=</span> x_func(<span class="dv">10</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>x_val</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<pre><code>-4.999999999999999</code></pre>
+</div>
+</div>
+<p>When lambdifying a vector (Matrix), the result is often a list of lists or a 2D array. To get a standard 1D NumPy array for vector operations, use <code>.flatten()</code>.</p>
+<div id="7efe441c" class="cell" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a symbolic vector</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>m, g <span class="op">=</span> sp.symbols(<span class="st">'m g'</span>, real<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>WW <span class="op">=</span> m <span class="op">*</span> g <span class="op">*</span> sp.Matrix([<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>])</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Lambdify</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>WW_func <span class="op">=</span> sp.lambdify([m, g], WW, <span class="st">'numpy'</span>)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate and flatten</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>WW_np <span class="op">=</span> WW_func(<span class="dv">20</span>, <span class="fl">9.81</span>).flatten()</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>WW_np</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<pre><code>array([   0. , -196.2,    0. ])</code></pre>
+</div>
+</div>
 
 
           <script>
             document.addEventListener("DOMContentLoaded", function() {
-              document.getElementById("last-modified").textContent = "2025-11-15";
+              document.getElementById("last-modified").textContent = "2025-11-24";
             });
           </script>
         
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1353,13 +1309,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./acknowlegments.html" class="pagination-link" aria-label="Acknowledgements">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span>
+      <a href="./data_structures_pandas.html" class="pagination-link" aria-label="Pandas">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Pandas</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./functions.html" class="pagination-link" aria-label="Functions">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Functions</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./plotting_examples.html" class="pagination-link" aria-label="Plotting examples">
+        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Plotting examples</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -13,6 +13,8 @@ Import the Matplotlib module `pyplot` only once at the beginning of your code. I
 
 ```{python}
 import matplotlib.pyplot as plt
+import numpy as np
+import sympy as sp
 ``` 
 
 ## 2D data plots
