@@ -549,7 +549,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="lists" class="level2">
 <h2 class="anchored" data-anchor-id="lists">Lists</h2>
 <p>A list is an ordered, mutable (changeable) collection of items. They are the most flexible sequence type and are defined using square brackets <code>[]</code>. Lists are <strong>ordered</strong>, which means that items maintain the order in which they were inserted. Lists are <strong>mutable</strong>, which means that you can add, remove and change items after creation. Duplicates are allowed, meaning that the same value can appear multiple times in a list.</p>
-<div id="e63f205b" class="cell" data-execution_count="1">
+<div id="572cc3f2" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>grades <span class="op">=</span> [<span class="dv">30</span>, <span class="dv">75</span>, <span class="dv">90</span>, <span class="dv">88</span>] <span class="co"># Create a list</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>grades.append(<span class="dv">95</span>)         <span class="co"># Add an item (Mutate) to the end of the list</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(grades[<span class="dv">0</span>])          <span class="co"># Access item at index 0 (30)</span></span>
@@ -574,7 +574,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="tuples" class="level2">
 <h2 class="anchored" data-anchor-id="tuples">Tuples</h2>
 <p>A tuple is an ordered, immutable (unchangeable) collection of items - where the same item can appear multiple times. They are often used for fixed collections of related data and are defined using parentheses <code>()</code>. Tuples are <strong>immutable</strong>, which means that you cannot change, add or remove items after creation.</p>
-<div id="9a4b33c2" class="cell" data-execution_count="2">
+<div id="4aaae089" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>coordinates <span class="op">=</span> (<span class="fl">10.5</span>, <span class="fl">20.1</span>) <span class="co"># "Packing" (creating) a tuple</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># coordinates[0] = 5       # This would cause an error since tuples are immutable!</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(coordinates[<span class="dv">0</span>])      <span class="co"># Access item at index 0 (10.5)</span></span>
@@ -588,7 +588,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="dictionaries" class="level2">
 <h2 class="anchored" data-anchor-id="dictionaries">Dictionaries</h2>
 <p>A dictionary is an ordered, mutable collection of unique key-value pairs. They are optimized for retrieving values based on a key and are defined using curly braces <code>{}</code>. The dictionary keys must be unique, which allows for fast lookups.</p>
-<div id="e8a5266e" class="cell" data-execution_count="3">
+<div id="cfd36452" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>student <span class="op">=</span> {</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"name"</span>: <span class="st">"Alex"</span>,</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"id"</span>: <span class="dv">101</span>,</span>
@@ -601,7 +601,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Dictionaries provide methods to easily access their keys, values, or key-value pairs. The <code>.keys()</code> method returns a list of all the keys in the dictionary, that also reflects any changes made to the dictionary.</p>
-<div id="950a9ef5" class="cell" data-execution_count="4">
+<div id="6e7f1988" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>student_keys <span class="op">=</span> student.keys()</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> key <span class="kw">in</span> student_keys:</span>
@@ -613,7 +613,7 @@ major</code></pre>
 </div>
 </div>
 <p>The <code>.values()</code> method returns a list of all the values in the dictionary. Like for <code>.keys()</code>, this view is dynamic and reflects changes.</p>
-<div id="7a3b0c18" class="cell" data-execution_count="5">
+<div id="3af6d4c3" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>student_values <span class="op">=</span> student.values()</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="dv">101</span> <span class="kw">in</span> student_values:</span>
@@ -623,7 +623,7 @@ major</code></pre>
 </div>
 </div>
 <p>The <code>.items()</code> method returns a list of the dictionary’s key-value pairs as tuples. This is often the most convenient way to iterate over both keys and values simultaneously.</p>
-<div id="e66e85a8" class="cell" data-execution_count="6">
+<div id="b5873974" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>student_items <span class="op">=</span> student.items()</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> key, value <span class="kw">in</span> student_items:</span>
@@ -638,7 +638,7 @@ major: Engineering</code></pre>
 <section id="sets" class="level2">
 <h2 class="anchored" data-anchor-id="sets">Sets</h2>
 <p>A set is an unordered, mutable collection of unique items. They are typically used for checking membership and performing mathematical set operations (union, intersection). Like dictionaries, they are defined using curly braces <code>{}</code> (or <code>set()</code> for an empty set), but without keys. Sets are <strong>unordered</strong>, which means that items have no specific index. Duplicate elements in sets are automatically discarded.</p>
-<div id="7b31483b" class="cell" data-execution_count="7">
+<div id="5dcae80c" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>numbers <span class="op">=</span> {<span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">1</span>} <span class="co"># Duplicates (the second '3') are ignored</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(numbers)            <span class="co"># Output: {1, 2, 3, 4}</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>numbers.add(<span class="dv">5</span>)</span>

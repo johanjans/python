@@ -17,7 +17,7 @@ It is good practice to state everything that is known about symbolic variables u
 import sympy as sp
 
 # Define symbols with assumptions
-m, g = sp.symbols('m, g', real=True, positive=True)
+m, g, x, y = sp.symbols('m, g, x, y', real=True, positive=True)
 theta = sp.symbols('theta', real=True)
 ```
 

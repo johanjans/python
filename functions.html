@@ -549,7 +549,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="definitions" class="level2">
 <h2 class="anchored" data-anchor-id="definitions">Definitions</h2>
 <p>A function is defined using the <code>def</code> keyword, followed by the function name, parentheses <code>()</code>, and a colon <code>:</code>. The code block that makes up the function must be indented. To execute the code within a function, you call it by its name followed by parentheses.</p>
-<div id="28c8540e" class="cell" data-execution_count="1">
+<div id="00912986" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Defining the function</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> greet(name):</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""This function takes a name and returns a greeting string."""</span></span>
@@ -567,7 +567,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="arguments" class="level2">
 <h2 class="anchored" data-anchor-id="arguments">Arguments</h2>
 <p>Arguments are the values you pass into the function when you call it, and they are defined as <strong>parameters</strong> in the function definition. <strong>Positional arguments</strong> are matched to parameters based on their position. <strong>Keyword arguments</strong> are explicitly named when calling the function. This makes the call clearer and allows you to skip positions.</p>
-<div id="8b131b66" class="cell" data-execution_count="2">
+<div id="e2fc5f28" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> describe_pet(animal, name):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"I have a </span><span class="sc">{</span>animal<span class="sc">}</span><span class="ss"> named </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">."</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -582,7 +582,7 @@ I have a cat named Luna.</code></pre>
 </div>
 </div>
 <p>You can assign a default value to a parameter. If the caller doesn’t provide an argument for that parameter, the default value is used.</p>
-<div id="5c11bba1" class="cell" data-execution_count="3">
+<div id="c6fa0eb1" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> power(base, exponent<span class="op">=</span><span class="dv">2</span>): <span class="co"># exponent has a default value of 2</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> base <span class="op">**</span> exponent</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -611,7 +611,7 @@ I have a cat named Luna.</code></pre>
 <section id="lambda-functions" class="level2">
 <h2 class="anchored" data-anchor-id="lambda-functions">Lambda functions</h2>
 <p>A <strong>lambda function</strong> (or “anonymous” function) is a small, <em>single-expression</em> function that you don’t formally define with <code>def</code>. They are primarily used when you need a function for a short period of time. The syntax is: <code>lambda arguments: expression</code>. They are especially useful when used to define purely mathematical functions.</p>
-<div id="e6cc2c95" class="cell" data-execution_count="4">
+<div id="90ba9546" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Regular function equivalent:</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># def multiply_by_two(x):</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     return x * 2</span></span>
@@ -626,7 +626,7 @@ I have a cat named Luna.</code></pre>
 </div>
 </div>
 <p>Scalar-valued mathematical functions that take vectors as input should be defined in the following way:</p>
-<div id="06aed24c" class="cell" data-execution_count="5">
+<div id="81922357" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Avoid defining mathematical functions with multiple variables like this:</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># rosenbrock_banna_function = lambda x, y: (1 - x)**2 + 100 * (y - x**2)**2</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>

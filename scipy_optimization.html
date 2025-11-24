@@ -578,7 +578,7 @@ window.Quarto = {
 <section id="finding-extrema-with-numpy" class="level2">
 <h2 class="anchored" data-anchor-id="finding-extrema-with-numpy">Finding Extrema with NumPy</h2>
 <p>If you have discrete data in an array, you can find the minimum and maximum values and their indices.</p>
-<div id="62d57ff7" class="cell" data-execution_count="1">
+<div id="b89d47cc" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.array([<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">3</span>])</span>
@@ -602,7 +602,7 @@ Max: 12 at index 4</code></pre>
 <section id="curve-fitting-with-scipy" class="level2">
 <h2 class="anchored" data-anchor-id="curve-fitting-with-scipy">Curve Fitting with SciPy</h2>
 <p>A common task in experimental mechanics is fitting a function to data points.</p>
-<div id="28fd2fef" class="cell" data-execution_count="2">
+<div id="a24b231e" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> curve_fit</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the model function (e.g., linear)</span></span>
@@ -618,14 +618,14 @@ Max: 12 at index 4</code></pre>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Fitted parameters: a=</span><span class="sc">{</span>popt[<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss">, b=</span><span class="sc">{</span>popt[<span class="dv">1</span>]<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Fitted parameters: a=2.50, b=1.00</code></pre>
+<pre><code>Fitted parameters: a=2.59, b=0.50</code></pre>
 </div>
 </div>
 </section>
 <section id="minimization-with-scipy" class="level2">
 <h2 class="anchored" data-anchor-id="minimization-with-scipy">Minimization with SciPy</h2>
 <p>To find the minimum of a mathematical function <span class="math inline">\(f(x)\)</span>.</p>
-<div id="42cd0639" class="cell" data-execution_count="3">
+<div id="d97f307d" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the function to minimize: f(x) = (x - 3)^2 + 5</span></span>
@@ -649,7 +649,7 @@ Minimum value = 5.00</code></pre>
 <section id="implementing-a-bracketing-method" class="level2">
 <h2 class="anchored" data-anchor-id="implementing-a-bracketing-method">Implementing a Bracketing Method</h2>
 <p>Sometimes it is useful to implement a simple optimization algorithm yourself to understand how it works. Here is an implementation of the <strong>Golden Section Search</strong>, a bracketing method for finding the minimum of a unimodal function.</p>
-<div id="ddf910c3" class="cell" data-execution_count="4">
+<div id="b08ee527" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> golden_section_search(f, a, b, tol<span class="op">=</span><span class="fl">1e-5</span>):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Finds the minimum of f in the interval [a, b] using Golden Section Search.</span></span>
