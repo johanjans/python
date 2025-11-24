@@ -57,10 +57,10 @@ RR
 The cross product $\mathbb{A} \times \mathbb{B}$ is computed using `.cross()`:
 
 ```{python}
-# Moment M = r x F
+# Moment MM = rr x FFA
 rr = sp.Matrix([1, 0, 0]) # Position vector
-M = rr.cross(FFA)
-M
+MM = rr.cross(FFA)
+MM
 ```
 
 ### Dot Product
@@ -146,6 +146,9 @@ AA_proj_BB
 You can substitute values or other variables into expressions.
 
 ```{python}
+# Define an expression
+expr = x**2 + y**2
+
 # Substitute x = 2, y = 3
 value = expr.subs({x: 2, y: 3})
 print(f"Value at x=2, y=3: {value}")
@@ -179,7 +182,8 @@ eq2 = sp.Eq(x - 2*y, 5)
 
 # Solve for x and y
 sol = sp.solve([eq1, eq2], [x, y])
-sol
+x_sol = sol[x]
+x_sol
 ```
 
 
@@ -210,6 +214,7 @@ Use `sp.dsolve` to find analytical solutions to ordinary differential equations 
 
 ```{python}
 # Define function and derivative
+t = sp.symbols('t', real=True)
 x = sp.Function('x')(t)
 k = sp.symbols('k', positive=True)
 v0 = sp.symbols('v0', real=True)

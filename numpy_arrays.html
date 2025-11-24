@@ -556,7 +556,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="creating-arrays" class="level2">
 <h2 class="anchored" data-anchor-id="creating-arrays">Creating Arrays</h2>
 <p>You can create arrays from Python lists or using built-in functions.</p>
-<div id="76e9a1d4" class="cell" data-execution_count="1">
+<div id="644603d3" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1D array (Vector)</span></span>
@@ -588,7 +588,7 @@ Linspace: [ 0.   2.5  5.   7.5 10. ]</code></pre>
 <section id="array-attributes" class="level2">
 <h2 class="anchored" data-anchor-id="array-attributes">Array Attributes</h2>
 <p>Every array has attributes that describe its memory layout and data type.</p>
-<div id="938958d8" class="cell" data-execution_count="2">
+<div id="db0b51b7" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Shape (dimensions)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Shape of A: </span><span class="sc">{</span>A<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -611,7 +611,7 @@ Total elements: 4</code></pre>
 <section id="indexing-and-slicing" class="level2">
 <h2 class="anchored" data-anchor-id="indexing-and-slicing">Indexing and Slicing</h2>
 <p>Accessing elements in arrays is similar to Python lists but more powerful.</p>
-<div id="16e129f9" class="cell" data-execution_count="3">
+<div id="3c661101" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2D array</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>M <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>], [<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>], [<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>]])</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -635,7 +635,7 @@ Last column: [3 6 9]</code></pre>
 <section id="element-wise-operations" class="level2">
 <h2 class="anchored" data-anchor-id="element-wise-operations">Element-wise Operations</h2>
 <p>NumPy supports element-wise operations, which are much faster than looping through lists.</p>
-<div id="7fee0d3c" class="cell" data-execution_count="4">
+<div id="aa52c870" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>])</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.array([<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>])</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -657,7 +657,7 @@ sin(a) = [0.84147098 0.90929743 0.14112001]</code></pre>
 <section id="broadcasting" class="level2">
 <h2 class="anchored" data-anchor-id="broadcasting">Broadcasting</h2>
 <p>Broadcasting allows NumPy to work with arrays of different shapes when performing arithmetic operations.</p>
-<div id="924ca993" class="cell" data-execution_count="5">
+<div id="171e86d0" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>], [<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>]])</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>])</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -676,7 +676,7 @@ sin(a) = [0.84147098 0.90929743 0.14112001]</code></pre>
 <p>Changing the shape of arrays is a common operation.</p>
 <section id="reshaping" class="level3">
 <h3 class="anchored" data-anchor-id="reshaping">Reshaping</h3>
-<div id="ed932f70" class="cell" data-execution_count="6">
+<div id="6980fb51" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a 1D array with 12 elements</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.arange(<span class="dv">12</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Original: </span><span class="sc">{</span>a<span class="sc">}</span><span class="ss">"</span>)</span>
@@ -696,7 +696,7 @@ Reshaped (3x4):
 <section id="stacking" class="level3">
 <h3 class="anchored" data-anchor-id="stacking">Stacking</h3>
 <p>Combining arrays together.</p>
-<div id="48d0b88b" class="cell" data-execution_count="7">
+<div id="ed37fa8d" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>])</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array([<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>])</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -718,7 +718,7 @@ Horizontal stack: [1 2 3 4 5 6]</code></pre>
 <section id="splitting" class="level3">
 <h3 class="anchored" data-anchor-id="splitting">Splitting</h3>
 <p>Breaking arrays apart.</p>
-<div id="7961cd38" class="cell" data-execution_count="8">
+<div id="d67d1af1" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Split array into 3 equal parts</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>])</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>parts <span class="op">=</span> np.split(z, <span class="dv">3</span>)</span>

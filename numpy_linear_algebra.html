@@ -590,7 +590,7 @@ window.Quarto = {
 <section id="dot-product" class="level3">
 <h3 class="anchored" data-anchor-id="dot-product">Dot Product</h3>
 <p>The dot product is a fundamental operation for projections and calculating work.</p>
-<div id="a9bb1d54" class="cell" data-execution_count="1">
+<div id="8d4b8cc1" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>])</span>
@@ -610,7 +610,7 @@ window.Quarto = {
 <section id="cross-product" class="level3">
 <h3 class="anchored" data-anchor-id="cross-product">Cross Product</h3>
 <p>The cross product is used for calculating moments and normal vectors.</p>
-<div id="52dcb70b" class="cell" data-execution_count="2">
+<div id="f0eb2635" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cross product</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cross_prod <span class="op">=</span> np.cross(a, b)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Cross product: </span><span class="sc">{</span>cross_prod<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -622,7 +622,7 @@ window.Quarto = {
 <section id="norms" class="level3">
 <h3 class="anchored" data-anchor-id="norms">Norms</h3>
 <p>Calculating the magnitude (length) of a vector.</p>
-<div id="a1939ae1" class="cell" data-execution_count="3">
+<div id="171d4677" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># L2 Norm (Euclidean length)</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>magnitude <span class="op">=</span> np.linalg.norm(a)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Magnitude of a: </span><span class="sc">{</span>magnitude<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -637,7 +637,7 @@ window.Quarto = {
 <section id="matrix-multiplication" class="level3">
 <h3 class="anchored" data-anchor-id="matrix-multiplication">Matrix Multiplication</h3>
 <p>It is crucial to distinguish between element-wise multiplication (<code>*</code>) and matrix multiplication (<code>@</code> or <code>np.matmul</code>).</p>
-<div id="1d0358ac" class="cell" data-execution_count="4">
+<div id="5b7ffe91" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="dv">2</span>], [<span class="dv">3</span>, <span class="dv">4</span>]])</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>B <span class="op">=</span> np.array([[<span class="dv">5</span>, <span class="dv">6</span>], [<span class="dv">7</span>, <span class="dv">8</span>]])</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -659,7 +659,7 @@ Matrix multiplication (A @ B):
 <section id="determinants" class="level3">
 <h3 class="anchored" data-anchor-id="determinants">Determinants</h3>
 <p>The determinant is a scalar value that can be computed from the elements of a square matrix. It provides important information about the matrix, such as whether it is invertible.</p>
-<div id="4cb350da" class="cell" data-execution_count="5">
+<div id="9d0f844a" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate determinant</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>det_A <span class="op">=</span> np.linalg.det(A)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Determinant of A: </span><span class="sc">{</span>det_A<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -671,7 +671,7 @@ Matrix multiplication (A @ B):
 <section id="solving-linear-systems" class="level3">
 <h3 class="anchored" data-anchor-id="solving-linear-systems">Solving Linear Systems</h3>
 <p>Solving systems of equations <span class="math inline">\(Ax = b\)</span>.</p>
-<div id="c863f213" class="cell" data-execution_count="6">
+<div id="a9747646" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="dv">3</span>, <span class="dv">1</span>], [<span class="dv">1</span>, <span class="dv">2</span>]])</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.array([<span class="dv">9</span>, <span class="dv">8</span>])</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -690,7 +690,7 @@ Check A@x: [9. 8.]</code></pre>
 <section id="eigenvalues-and-eigenvectors" class="level3">
 <h3 class="anchored" data-anchor-id="eigenvalues-and-eigenvectors">Eigenvalues and Eigenvectors</h3>
 <p>Crucial for principal stress analysis, stability analysis, and vibrations.</p>
-<div id="0811d891" class="cell" data-execution_count="7">
+<div id="056e1455" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a symmetric matrix (e.g., stress tensor)</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>S <span class="op">=</span> np.array([[<span class="fl">10.0</span>, <span class="fl">2.0</span>], [<span class="fl">2.0</span>, <span class="fl">5.0</span>]])</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -711,7 +711,7 @@ Eigenvectors:
 <section id="rotations" class="level2">
 <h2 class="anchored" data-anchor-id="rotations">Rotations</h2>
 <p>Rotations in 3D space can be represented using rotation matrices.</p>
-<div id="278e1c49" class="cell" data-execution_count="8">
+<div id="60d0086d" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> np.radians(<span class="dv">45</span>) <span class="co"># Convert degrees to radians</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>c, s <span class="op">=</span> np.cos(theta), np.sin(theta)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
