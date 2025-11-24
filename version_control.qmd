@@ -5,6 +5,285 @@ format:
 jupyter: python3
 ---
 
-# Version control
+## Introduction
 
-Basic Git commands (commit, push, pull), using GitHub/GitLab.
+Git is a version control system that helps you track changes in your code locally on your machine. This guide covers the essential commands you need to manage your projects offline with Git on Windows.
+
+## Prerequisites
+
+Before starting, make sure you have Git installed on your Windows machine. Download it from [git-scm.com](https://git-scm.com/download/win) if needed.
+
+You can use Git through:
+
+- **Git Bash** (recommended, comes with Git installation)
+- **Command Prompt**
+- **PowerShell**
+
+## Initial Setup
+
+Before using Git, configure your identity. This only needs to be done once:
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+```
+
+## Essential Git Commands
+
+### 1. Initialize a Repository
+
+Create a new Git repository in your current folder:
+
+```bash
+git init
+```
+
+This creates a hidden `.git` folder that tracks all changes to your project.
+
+### 2. Check Status
+
+See what's changed in your repository:
+
+```bash
+git status
+```
+
+This shows:
+
+- Modified files
+- Staged files (ready to commit)
+- Untracked files (not yet tracked by Git)
+
+### 3. Add Files
+
+Stage files for commit (prepare them to be saved):
+
+```bash
+# Add a specific file
+git add filename.txt
+
+# Add all files in current directory
+git add .
+```
+
+### 4. Commit Changes
+
+Save your staged changes with a descriptive message:
+
+```bash
+git commit -m "Your descriptive message here"
+```
+
+**Best practice:** Write clear commit messages that explain *what* changed and *why*.
+
+### 5. View History
+
+See all commits you've made:
+
+```bash
+git log
+```
+
+For a more compact view:
+
+```bash
+git log --oneline
+```
+
+## Basic Workflow
+
+Here's the typical workflow when working with Git locally:
+
+```bash
+# 1. Check what's changed
+git status
+
+# 2. Stage your changes
+git add .
+
+# 3. Commit with a message
+git commit -m "Add new feature"
+
+# 4. View your commit history
+git log --oneline
+```
+
+## Common Scenario: Starting a New Project
+
+```bash
+# Navigate to your project folder
+cd C:\Users\YourName\Projects\MyProject
+
+# Initialize Git
+git init
+
+# Add all files
+git add .
+
+# Make first commit
+git commit -m "Initial commit"
+
+# Make some changes to your files...
+
+# Check what changed
+git status
+
+# Stage the changes
+git add .
+
+# Commit the changes
+git commit -m "Update documentation"
+
+# View commit history
+git log --oneline
+```
+
+## Why Use Git Offline?
+
+Even without an online repository, Git provides valuable benefits:
+
+- **Track changes**: See exactly what you modified and when
+- **Undo mistakes**: Revert to previous versions if needed
+- **Experiment safely**: Try new ideas without losing working code
+- **Document progress**: Each commit is a snapshot of your work
+- **Local backups**: Multiple versions of your project stored safely
+
+## Using Git with GitHub
+
+If you want to backup your code online or collaborate with others, you can connect your local Git repository to GitHub.
+
+### Additional Commands for GitHub
+
+#### 1. Connect to Remote Repository
+
+Link your local repository to GitHub:
+
+```bash
+git remote add origin https://github.com/username/repository.git
+```
+
+#### 2. Push to GitHub
+
+Upload your commits to GitHub:
+
+```bash
+# First time push (sets up tracking)
+git push -u origin main
+
+# Subsequent pushes
+git push
+```
+
+**Note:** The default branch might be called `main` or `master` depending on your setup.
+
+#### 3. Pull from GitHub
+
+Download and merge changes from GitHub:
+
+```bash
+git pull
+```
+
+Use this when others have made changes to the repository, or when you've made changes from another computer.
+
+#### 4. Clone a Repository
+
+Download an existing repository from GitHub:
+
+```bash
+git clone https://github.com/username/repository.git
+```
+
+This creates a local copy and automatically sets up the remote connection.
+
+### Workflow with GitHub
+
+#### Starting a New Project and Pushing to GitHub
+
+```bash
+# 1. Create repository on GitHub first (via web interface)
+
+# 2. Navigate to your project folder
+cd C:\Users\YourName\Projects\MyProject
+
+# 3. Initialize Git (if not already done)
+git init
+
+# 4. Add and commit files
+git add .
+git commit -m "Initial commit"
+
+# 5. Connect to GitHub
+git remote add origin https://github.com/username/repository.git
+
+# 6. Push to GitHub
+git push -u origin main
+```
+
+#### Working on an Existing GitHub Repository
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/username/repository.git
+
+# 2. Navigate into the project
+cd repository
+
+# 3. Make your changes...
+
+# 4. Check status
+git status
+
+# 5. Stage and commit
+git add .
+git commit -m "Describe your changes"
+
+# 6. Push to GitHub
+git push
+```
+
+#### Regular Workflow with GitHub
+
+```bash
+# 1. Pull latest changes (if working with others)
+git pull
+
+# 2. Make your changes...
+
+# 3. Stage and commit locally
+git add .
+git commit -m "Your changes"
+
+# 4. Push to GitHub
+git push
+```
+
+### GitHub vs Local Git
+
+| Aspect | Local Only | With GitHub |
+|--------|------------|-------------|
+| Commands | `init`, `add`, `commit`, `status`, `log` | Add: `push`, `pull`, `clone`, `remote` |
+| Backup | Only on your machine | Stored online |
+| Collaboration | Solo work only | Work with others |
+| Access | One computer | Any computer with internet |
+
+## Windows-Specific Tips
+
+1. **Use Git Bash** for the most consistent experience across platforms
+2. **File paths** use forward slashes (`/`) in Git commands, even on Windows
+3. **Line endings**: Git handles Windows line endings (CRLF) automatically
+4. **.gitignore**: Use `.gitignore` to exclude files you don't want to track (e.g., `*.tmp`, `*.log`)
+
+## Summary
+
+The core Git workflow involves just these commands:
+
+| Command | Purpose |
+|---------|---------|
+| `git init` | Create new repository |
+| `git status` | Check current state |
+| `git add <files>` | Stage changes |
+| `git commit -m "message"` | Save changes |
+| `git log` | View commit history |
+
+With these commands, you can track your code changes and maintain a complete history of your project—all stored locally on your machine!
