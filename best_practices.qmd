@@ -70,7 +70,7 @@ This explains the physics behind the math. Comments are also a great place to do
 g = 9.81 # [m/s^2]
 ```
 
-# Your Lab Notebook: Marimo
+## Your Lab Notebook: Marimo
 
 In this course, we use Marimo notebooks. Why not just scripts? Notebooks let you mix code, graphs, and text explanations all in one place. It's like a digital lab report. Marimo is special because it guarantees that your code runs in order. In other notebooks, it's possible to run things out of order and get confused. Marimo keeps things consistent.
 
@@ -78,7 +78,7 @@ The recommended workflow is to start with setup (define your starting numbers, c
 
 While notebooks are great for exploring and writing reports, they aren't for everything. If you have a function that you use in many different notebooks, save it in a separate Python file (`.py`) and import it. And if your code gets to be several hundreds of lines long, it's probably better to organize it into multiple python-files rather than keeping everything in a notebook.
 
-# Verification: Is My Answer Correct?
+## Verification: Is My Answer Correct?
 
 In science, a wrong number can lead to the wrong conclusion. You need to check your work!
 
@@ -93,8 +93,6 @@ Use your common sense. Try extreme values: if the radius of a circle is zero, th
 ## Visualization
 
 A picture is worth more than 1000 numbers. Don't just look at the final number—plot the graph. Does it look like a parabola? A sine wave? When working with things that have direction (like velocity), draw them as arrows. If the arrow points the wrong way, you might have a minus sign error. Plot the path of your object. Does the projectile follow a nice arc?
-
-# Engineering Tools
 
 ## Saving Your Work (Git)
 
