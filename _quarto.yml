@@ -29,6 +29,7 @@ book:
     - acknowlegments.qmd
     - part: "Programming fundamentals"
       chapters:
+        - best_practices.qmd
         - basics.qmd
         - functions.qmd
         - data_structures_builtin.qmd
@@ -36,7 +37,6 @@ book:
         - file_io.qmd
         - debugging.qmd
         - version_control.qmd
-        - best_practices.qmd
     - part: "NumPy/SciPy"
       chapters:
         - numpy_arrays.qmd

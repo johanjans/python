@@ -7,4 +7,99 @@ jupyter: python3
 
 # Best practices
 
-Documentation (docstrings), comments, basic debugging. Verification. DRY, KISS.
+Welcome! In this course, you'll learn to use programming not just to calculate numbers, but to solve interesting problems in math and science. Think of Python as a powerful calculator that you can program to do the heavy lifting for you.
+
+Your goal is to write code that is correct (it gives you the right answer), readable (you and your teachers can understand what it does just by reading it), and reproducible (you can run it again tomorrow or next year and get the exact same result).
+
+## Readability: Code is for Humans
+
+You'll spend much more time reading code to find mistakes than you will writing it. Make it easy on yourself by using variable names that clearly describe what the number represents.
+
+Here's an example that's hard to read:
+
+```python
+# What do these letters mean?
+r = 10
+h = 5
+v = 3.14 * r**2 * h
+```
+
+Compare that to this version:
+
+```python
+radius = 10.0
+height = 5.0
+cylinder_volume = 3.14159 * radius**2 * height
+```
+
+The second version is much clearer because you can immediately understand what each variable represents.
+
+## DRY: Don't Repeat Yourself
+
+If you find yourself copying and pasting the same code multiple times, stop! There's a better way: write a function. A function is like a mini-program that you can use over and over again. The advantage is clear: if you copy-paste code 5 times and then realize you made a mistake, you have to fix it in 5 places. If you use a function, you only fix it once.
+
+## KISS: Keep It Simple
+
+Don't try to be too clever. A simple solution that works is much better than a complicated one that is hard to understand. If your code is easy to read, it will be easier to fix when things go wrong.
+
+## Style Matters (PEP 8)
+
+Just like English has grammar rules, Python has a style guide called PEP 8. Following these rules (arr!) makes your code look professional and easy for others to read.
+
+For variable and function names, use snake case: `lower_case_with_underscores`. So write `particle_velocity` or `calculate_area` instead of `ParticleVelocity`, `calculateArea`, or single letters like `x`. Also put spaces around math operators to make your code breathe. Write `y = m * x + b` instead of `y=m*x+b`.
+
+## Comments: The "Why", not the "What"
+
+Code tells you what is happening. Comments should tell you why. Consider this bad example:
+
+```python
+# Multiply mass by acceleration
+force = mass * acceleration
+```
+
+We can see that from the math! A better comment would be:
+
+```python
+# Newton's Second Law: F = ma
+force = mass * acceleration
+```
+
+This explains the physics behind the math. Comments are also a great place to document units if they aren't in the variable name:
+
+```python
+g = 9.81 # [m/s^2]
+```
+
+# Your Lab Notebook: Marimo
+
+In this course, we use Marimo notebooks. Why not just scripts? Notebooks let you mix code, graphs, and text explanations all in one place. It's like a digital lab report. Marimo is special because it guarantees that your code runs in order. In other notebooks, it's possible to run things out of order and get confused. Marimo keeps things consistent.
+
+The recommended workflow is to start with setup (define your starting numbers, constants, and initial values at the top), then state your model/s (functions), perform your calculations, and finally visualize the results by plotting them to see what's happening.
+
+While notebooks are great for exploring and writing reports, they aren't for everything. If you have a function that you use in many different notebooks, save it in a separate Python file (`.py`) and import it. And if your code gets to be several hundreds of lines long, it's probably better to organize it into multiple python-files rather than keeping everything in a notebook.
+
+# Verification: Is My Answer Correct?
+
+In science, a wrong number can lead to the wrong conclusion. You need to check your work!
+
+## Unit Analysis
+
+Always keep track of your units: meters, seconds, kilograms. You can't add meters to seconds - that doesn't make sense! Include units in your comments, or even in your variable names (like `time_s` or `distance_m`). Then check whether your final answer has the right units. For example, velocity should be in meters per second ($m/s$).
+
+## Reasonability Checking
+
+Use your common sense. Try extreme values: if the radius of a circle is zero, the area should be zero. Does your code say that? Check the magnitude: if you calculate a probability of 1.5, something is wrong because probabilities can never be greater than 1. For geometry problems, remember that in a right triangle, the hypotenuse must be the longest side. If your code says a leg is longer, check your math!
+
+## Visualization
+
+A picture is worth more than 1000 numbers. Don't just look at the final number—plot the graph. Does it look like a parabola? A sine wave? When working with things that have direction (like velocity), draw them as arrows. If the arrow points the wrong way, you might have a minus sign error. Plot the path of your object. Does the projectile follow a nice arc?
+
+# Engineering Tools
+
+## Saving Your Work (Git)
+
+We use a tool called Git to save versions of our work. Think of it like a "Save Point" in a video game. If you mess up your code, you can always go back to the last save point. Commit often: every time you finish a problem or fix a bug, save your work by making a commit.
+
+## Testing
+
+How do you know your code works? Test it with a problem you can solve by hand. For a sanity check, we know that $\sin^2(x) + \cos^2(x) = 1$. Calculate this in your code and make sure it equals exactly 1.0.
