@@ -5,19 +5,19 @@ format:
 jupyter: python3
 ---
 
-## Version control
+# Version control
 
-Git is a version control system that helps you track changes in your code locally on your machine. This guide covers the essential commands you need to manage your projects offline with Git on Windows.
+Git is a version control system that helps you track changes in your code locally on your machine. This guide covers the essential commands you need to manage your projects offline with Git.
 
 ## Prerequisites
 
-Before starting, make sure you have Git installed on your Windows machine. Download it from [git-scm.com](https://git-scm.com/download/win) if needed.
+Before starting, make sure you have Git installed on your machine. Download it from [git-scm.com](https://git-scm.com/download/win) if needed.
 
 You can use Git through:
 
 - **Git Bash** (recommended, comes with Git installation)
-- **Command Prompt**
-- **PowerShell**
+- **Command Prompt** (windows only)
+- **PowerShell** (windows only)
 
 ## Initial Setup
 
@@ -148,13 +148,11 @@ Even without an online repository, Git provides valuable benefits:
 - **Document progress**: Each commit is a snapshot of your work
 - **Local backups**: Multiple versions of your project stored safely
 
-## Using Git with GitHub
+## Using Git Online with GitHub
 
 If you want to backup your code online or collaborate with others, you can connect your local Git repository to GitHub.
 
-### Additional Commands for GitHub
-
-#### 1. Connect to Remote Repository
+### 1. Connect to Remote Repository
 
 Link your local repository to GitHub:
 
@@ -162,7 +160,7 @@ Link your local repository to GitHub:
 git remote add origin https://github.com/username/repository.git
 ```
 
-#### 2. Push to GitHub
+### 2. Push to GitHub
 
 Upload your commits to GitHub:
 
@@ -176,7 +174,7 @@ git push
 
 **Note:** The default branch might be called `main` or `master` depending on your setup.
 
-#### 3. Pull from GitHub
+### 3. Pull from GitHub
 
 Download and merge changes from GitHub:
 
@@ -186,7 +184,7 @@ git pull
 
 Use this when others have made changes to the repository, or when you've made changes from another computer.
 
-#### 4. Clone a Repository
+### 4. Clone a Repository
 
 Download an existing repository from GitHub:
 
@@ -196,9 +194,9 @@ git clone https://github.com/username/repository.git
 
 This creates a local copy and automatically sets up the remote connection.
 
-### Workflow with GitHub
+## Workflow with GitHub
 
-#### Starting a New Project and Pushing to GitHub
+### Starting a New Project and Pushing to GitHub
 
 ```bash
 # 1. Create repository on GitHub first (via web interface)
@@ -220,7 +218,7 @@ git remote add origin https://github.com/username/repository.git
 git push -u origin main
 ```
 
-#### Working on an Existing GitHub Repository
+### Working on an Existing GitHub Repository
 
 ```bash
 # 1. Clone the repository
@@ -242,7 +240,7 @@ git commit -m "Describe your changes"
 git push
 ```
 
-#### Regular Workflow with GitHub
+### Regular Workflow with GitHub
 
 ```bash
 # 1. Pull latest changes (if working with others)
@@ -258,7 +256,7 @@ git commit -m "Your changes"
 git push
 ```
 
-### GitHub vs Local Git
+## GitHub vs Local Git
 
 | Aspect | Local Only | With GitHub |
 |--------|------------|-------------|
@@ -266,13 +264,6 @@ git push
 | Backup | Only on your machine | Stored online |
 | Collaboration | Solo work only | Work with others |
 | Access | One computer | Any computer with internet |
-
-## Windows-Specific Tips
-
-1. **Use Git Bash** for the most consistent experience across platforms
-2. **File paths** use forward slashes (`/`) in Git commands, even on Windows
-3. **Line endings**: Git handles Windows line endings (CRLF) automatically
-4. **.gitignore**: Use `.gitignore` to exclude files you don't want to track (e.g., `*.tmp`, `*.log`)
 
 ## Summary
 
