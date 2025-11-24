@@ -28,16 +28,16 @@ Vectors are defined using `sp.Matrix`.
 ```{python}
 # Define a symbolic vector with known magnitude and direction
 # Example: Weight vector pointing down in Y
-W = m * g * sp.Matrix([0, -1, 0])
-W
+WW = m * g * sp.Matrix([0, -1, 0])
+WW
 ```
 
 You can also define vectors with unknown components:
 
 ```{python}
 F_Ax, F_Ay = sp.symbols('F_Ax, F_Ay', real=True)
-F_A = sp.Matrix([F_Ax, F_Ay, 0])
-F_A
+FFA = sp.Matrix([F_Ax, F_Ay, 0])
+FFA
 ```
 
 ## Vector Operations
@@ -48,8 +48,8 @@ Standard operations like addition, subtraction, cross products, and dot products
 
 ```{python}
 # Sum of forces
-R = W + F_A
-R
+RR = WW + FFA
+RR
 ```
 
 ### Cross Product
@@ -58,8 +58,8 @@ The cross product $\mathbb{A} \times \mathbb{B}$ is computed using `.cross()`:
 
 ```{python}
 # Moment M = r x F
-r = sp.Matrix([1, 0, 0]) # Position vector
-M = r.cross(F_A)
+rr = sp.Matrix([1, 0, 0]) # Position vector
+M = rr.cross(FFA)
 M
 ```
 
@@ -69,8 +69,8 @@ The dot product $\mathbb{A} \cdot \mathbb{B}$ is computed using `.dot()`:
 
 ```{python}
 # Power P = F . v
-v = sp.Matrix([1, 1, 0])
-P = F_A.dot(v)
+vv = sp.Matrix([1, 1, 0])
+P = FFA.dot(vv)
 P
 ```
 
@@ -79,17 +79,17 @@ P
 The norm (magnitude) $||\mathbb{A}||$ is computed using `.norm()`:
 
 ```{python}
-# Magnitude of force F_A
-F_A_mag = F_A.norm()
-F_A_mag
+# Magnitude of force FFA
+FFA_mag = FFA.norm()
+FFA_mag
 ```
 
 To get the unit vector (direction), use `.normalized()`:
 
 ```{python}
-# Direction of F_A
-n_A = F_A.normalized()
-n_A
+# Direction of FFA
+ee_A = FFA.normalized()
+ee_A
 ```
 
 ## Matrices
@@ -122,9 +122,9 @@ Rz
 We can rotate a vector by matrix multiplication using the `@` operator. Rotational matrices are applied on the left side.
 
 ```{python}
-# Rotate F_A around Z-axis
-F_A_rotated = Rz @ F_A
-F_A_rotated
+# Rotate FFA around Z-axis
+FFA_rotated = Rz @ FFA
+FFA_rotated
 ```
 
 ## Projection
@@ -132,12 +132,12 @@ F_A_rotated
 The vector projection of $\mathbb{A}$ along $\mathbb{B}$ can be computed using `.project()`.
 
 ```{python}
-A_vec = 20 * sp.Matrix([sp.cos(sp.pi/2), sp.sin(sp.pi/2), 0])
-B_vec = sp.Matrix([sp.sqrt(2), sp.sqrt(3), 0])
+AA = 20 * sp.Matrix([sp.cos(sp.pi/2), sp.sin(sp.pi/2), 0])
+BB = sp.Matrix([sp.sqrt(2), sp.sqrt(3), 0])
 
 # Vector projection of A along B
-A_proj_B = A_vec.project(B_vec)
-A_proj_B
+AA_proj_BB = AA.project(BB)
+AA_proj_BB
 ```
 
 
@@ -246,12 +246,12 @@ When lambdifying a vector (Matrix), the result is often a list of lists or a 2D 
 ```{python}
 # Define a symbolic vector
 m, g = sp.symbols('m g', real=True)
-W = m * g * sp.Matrix([0, -1, 0])
+WW = m * g * sp.Matrix([0, -1, 0])
 
 # Lambdify
-W_func = sp.lambdify([m, g], W, 'numpy')
+WW_func = sp.lambdify([m, g], WW, 'numpy')
 
 # Evaluate and flatten
-W_np = W_func(20, 9.81).flatten()
-W_np
+WW_np = WW_func(20, 9.81).flatten()
+WW_np
 ```
