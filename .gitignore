@@ -16,3 +16,6 @@ sync.log
 EquilibriumExamples_files/*
 
 **/*.quarto_ipynb
+
+# Nested git repository (MatKit has its own .git)
+MatKit/

@@ -52,6 +52,8 @@ book:
         - plotting_examples.qmd
     - part: "Applications"
       chapters:
+        - SystematicTrussAnalysis.ipynb
+        - TrussViz.ipynb
         - kinematics.qmd
         - differential_equations.qmd
         - numerical_integration.qmd
