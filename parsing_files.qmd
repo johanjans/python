@@ -25,13 +25,13 @@ To do this, we first need to parse all lines starting with `NODE` and `SHELL` fr
 The code below initializes two empty lists: `nodes` and `elements`, then loops over each line of the file. Data is only appended to each list if a line begins with `NODE` or `SHELL`.
 Slicing is applied to collect only the relevant part of each line. Convince yourself about the slicing index by running for example `print(str(line[6]))`, to see what it returns. Casting is used to specify the data type of each collected variable, and the function `.strip()` is used to clean up leading empty spaces (at the start) or trailing new-line characters (at the end). Note especially the order of each operation. Finally, after looping through all the lines in the file, the two lists are converted into numpy-arrays according to best practice, which enables much more efficient calculations using the stored data.
 
-```python
+```{python}
 import numpy as np
 
 nodes = []
 elements = []
 
-with open('100x100mm_8_linear_trias.pc', 'r') as file:
+with open('assets/100x100mm_8_linear_trias.pc', 'r') as file:
     for line in file:
         if line.startswith('NODE'): # Collect nodes coordinates
             NID = int(line[7:16].strip())
@@ -41,9 +41,9 @@ with open('100x100mm_8_linear_trias.pc', 'r') as file:
             nodes.append([NID, NX, NY, NZ])
         elif line.startswith('SHELL'): # Collect element connectivity
             EID = int(line[7:16].strip())
-            N1 = int(line[24:32].strip())
-            N2 = int(line[32:40].strip())
-            N3 = int(line[40:48].strip())
+            N1 = int(line[23:32].strip())
+            N2 = int(line[32:41].strip())
+            N3 = int(line[41:50].strip())
             elements.append([EID, N1, N2, N3])
 
 np_nodes = np.array(nodes) # store gathered nodes in numpy-array
@@ -54,7 +54,7 @@ Since we know the x-, y- and z-coordinates of each node in every element, we can
 
 Before we can define any vectors, we need the coordinates of each node for the current element (and these are separated in two different arrays) - so we must loop over the elements. Consider `n1` in the code below, which will contain the x-, y- and z- coordinates of the first node in the current element. To actually get there requires a convoluted expression consisting of multiple nested "lookup" and slicing-operations. It works by searching the np_nodes array for the row where the Node ID (column 0) matches the ID specified in element[1], and then it extracts only the coordinate columns (1, 2, and 3) from that matching row. With the exception of determining `n1`, `n2` and `n3`, the following area calculations are trivial thanks to the power of linear algebra!
 
-```python
+```{python}
 area = 0
 for element in np_elements:
     n1 = np_nodes[np_nodes[:, 0] == element[1]][0][1:4]
@@ -202,9 +202,9 @@ with open('assets/unit_circle_mesh.pc', 'r') as file:
             nodes_circle.append([NID, NX, NY, NZ])
         elif line.startswith('SHELL'):
             EID = int(line[7:16].strip())
-            N1 = int(line[24:32].strip())
-            N2 = int(line[32:40].strip())
-            N3 = int(line[40:48].strip())
+            N1 = int(line[23:32].strip())
+            N2 = int(line[32:41].strip())
+            N3 = int(line[41:50].strip())
             elements_circle.append([EID, N1, N2, N3])
 
 np_nodes_circle = np.array(nodes_circle)
