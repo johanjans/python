@@ -22,47 +22,63 @@ Example file contents and the geometry it represents.
 The example file describes a two-dimensional finite element mesh consisting of eight connected triangles. We are interested in computing the total area of the geometry. 
 To do this, we first need to parse all lines starting with `NODE` and `SHELL` from the file, then compute the area of each individual triangle. All other lines in the file are not of interest, and should be ignored.
 
-The code below initializes two empty lists: `nodes` and `elements`, then loops over each line of the file. Data is only appended to each list if a line begins with `NODE` or `SHELL`.
-Slicing is applied to collect only the relevant part of each line. Convince yourself about the slicing index by running for example `print(str(line[6]))`, to see what it returns. Casting is used to specify the data type of each collected variable, and the function `.strip()` is used to clean up leading empty spaces (at the start) or trailing new-line characters (at the end). Note especially the order of each operation. Finally, after looping through all the lines in the file, the two lists are converted into numpy-arrays according to best practice, which enables much more efficient calculations using the stored data.
+The code below initializes two empty lists: `node_coords` and `connectivity`, then loops over each line of the file. Data is only appended to each list if a line begins with `NODE` or `SHELL`.
+We use `.split()` to separate each line into parts by whitespace, making it easy to extract the values by index. Casting is used to specify the data type of each collected variable (int for IDs, float for coordinates).
+
+After parsing, we create a `Mesh` object from MatKit, which provides a clean interface with 1-based node numbering (matching the file format). This eliminates the need for manual index translation.
 
 ```{python}
+# | code-fold: show
 import numpy as np
+import matkit as mk
 
-nodes = []
-elements = []
+# Parse nodes and elements from file
+node_coords = []
+connectivity = []
 
 with open('assets/100x100mm_8_linear_trias.pc', 'r') as file:
     for line in file:
-        if line.startswith('NODE'): # Collect nodes coordinates
-            NID = int(line[7:16].strip())
-            NX = float(line[16:32].strip())
-            NY = float(line[32:48].strip())
-            NZ = float(line[48:64].strip())
-            nodes.append([NID, NX, NY, NZ])
-        elif line.startswith('SHELL'): # Collect element connectivity
-            EID = int(line[7:16].strip())
-            N1 = int(line[23:32].strip())
-            N2 = int(line[32:41].strip())
-            N3 = int(line[41:50].strip())
-            elements.append([EID, N1, N2, N3])
+        if line.startswith('NODE'): # Collect node coordinates
+            parts = line.split()
+            NID = int(parts[1])
+            NX = float(parts[2])
+            NY = float(parts[3])
+            NZ = float(parts[4])
+            node_coords.append([NX, NY, NZ])
+        elif line.startswith('SHELL'): # Collect element connectivity (1-based)
+            parts = line.split()
+            EID = int(parts[1])
+            N1 = int(parts[3])
+            N2 = int(parts[4])
+            N3 = int(parts[5])
+            connectivity.append([N1, N2, N3])
 
-np_nodes = np.array(nodes) # store gathered nodes in numpy-array
-np_elements = np.array(elements) # store gathered elements in numpy-array
+# Create Mesh object with 1-based indexing
+mesh = mk.Mesh(node_coords, connectivity)
+
+print(f"Mesh info: {mesh.n_nodes} nodes, {mesh.n_elements} elements")
+print(f"Element type: {mesh.element_type}")
 ```
 
 Since we know the x-, y- and z-coordinates of each node in every element, we can utilize linear algebra to compute the area from the vector product of the element sides. Recall that the vector product $\mathbb{u} \times \mathbb{v}$ is a new vector $\mathbb{w}$ (perpendicular to both $\mathbb{u}$ and $\mathbb{v}$) whose magnitude $||\mathbb{w}|| = \sqrt{w_x^2 + w_y^2 + w_z^2}$ represents the area of the parallellogram defined by $\mathbb{u}$ and $\mathbb{v}$ as sides. The area of a triangular element is therefore $A_i = \frac{1}{2}||\mathbb{w}||$.
 
-Before we can define any vectors, we need the coordinates of each node for the current element (and these are separated in two different arrays) - so we must loop over the elements. Consider `n1` in the code below, which will contain the x-, y- and z- coordinates of the first node in the current element. To actually get there requires a convoluted expression consisting of multiple nested "lookup" and slicing-operations. It works by searching the np_nodes array for the row where the Node ID (column 0) matches the ID specified in element[1], and then it extracts only the coordinate columns (1, 2, and 3) from that matching row. With the exception of determining `n1`, `n2` and `n3`, the following area calculations are trivial thanks to the power of linear algebra!
+The `Mesh` class makes accessing node coordinates simple with `mesh.get_node()`, which uses natural 1-based numbering. We can iterate over elements using `mesh.iter_elements()`, which yields tuples of (element_number, node_IDs, node_coordinates) for each element.
 
 ```{python}
+# | code-fold: show
+# Compute total area
 area = 0
-for element in np_elements:
-    n1 = np_nodes[np_nodes[:, 0] == element[1]][0][1:4]
-    n2 = np_nodes[np_nodes[:, 0] == element[2]][0][1:4]
-    n3 = np_nodes[np_nodes[:, 0] == element[3]][0][1:4]
-    u = n2 - n1 # triangle edge vector 1
-    v = n3 - n1 # triangle edge vector 2
-    w = np.cross(u, v) # perpendicular to triangle
+for iel, nodes, coords in mesh.iter_elements():
+    # iter_elements() yields: element_number, node_IDs, node_coordinates
+    # Extract the three node coordinates for this triangular element
+    n1 = coords[0]  # first node coordinates
+    n2 = coords[1]  # second node coordinates
+    n3 = coords[2]  # third node coordinates
+
+    # Compute edge vectors and area
+    u = n2 - n1  # triangle edge vector 1
+    v = n3 - n1  # triangle edge vector 2
+    w = np.cross(u, v)  # perpendicular to triangle
     area_e = 0.5 * np.linalg.norm(w)  # area of current element
     area += area_e  # add to total area
 
@@ -71,15 +87,13 @@ print(f"Expected area: {100*100:.2f} mm² (100mm × 100mm square)")
 print(f"Verification: Error = {abs(area - 10000):.6f} mm²")
 ```
 
-```
-Total computed area: 10000.00 mm²
-Expected area: 10000.00 mm²
-Verification: Error = 0.000000 mm²
-```
-
 Perfect! The computed area matches the expected area exactly, verifying our mesh parsing and area calculation are correct.
 
-By combining these two snippets of code, we can iterate over all the elements in the mesh (denoted `nele`), determine the edge vectors $\mathbb{u}$ and $\mathbb{v}$ from the nodal coordinates, compute their area $A_i$, and sum them all together for the total area $A = \sum_i^{nele}A_i$.
+Using `MatKit.Mesh` provides several advantages:
+- **Natural 1-based indexing**: Node 1 is accessed as `mesh.get_node(1)`, matching the file format
+- **Clean iteration**: `mesh.iter_elements()` yields element data with 1-based numbering (1, 2, 3, ...)
+- **Direct coordinate access**: `iter_elements()` provides coordinates directly, no lookups needed
+- **Self-documenting code**: The intent is clear without knowing array indexing details
 
 ## Visualizing the mesh
 
@@ -89,15 +103,18 @@ To better understand the mesh structure and verify our calculations, let's visua
 
 Let's examine the first triangular element in detail, showing the edge vectors $\mathbb{u}$ and $\mathbb{v}$ and its area:
 
-```python
+```{python}
+# | code-fold: show
 import matplotlib.pyplot as plt
-from matkit import patch
 
-# Get coordinates for first element
-element = np_elements[0]  # First element
-n1 = np_nodes[np_nodes[:, 0] == element[1]][0][1:4]
-n2 = np_nodes[np_nodes[:, 0] == element[2]][0][1:4]
-n3 = np_nodes[np_nodes[:, 0] == element[3]][0][1:4]
+# Get first element (element 1 in 1-based numbering)
+iel = 1
+nodes, coords = mesh.get_element(iel)  # Returns (node_IDs, node_coordinates)
+
+# Extract node coordinates
+n1 = coords[0]
+n2 = coords[1]
+n3 = coords[2]
 
 # Compute vectors and area
 u = n2 - n1
@@ -110,7 +127,7 @@ fig, ax = plt.subplots(figsize=(8, 8))
 
 # Plot triangle
 triangle = np.array([[n1[0], n1[1]], [n2[0], n2[1]], [n3[0], n3[1]]])
-patch('Faces', np.array([[1, 2, 3]]), 'Vertices', triangle,
+mk.patch('Faces', np.array([[1, 2, 3]]), 'Vertices', triangle,
       'FaceColor', 'lightblue', 'EdgeColor', 'black', 'LineWidth', 2, ax=ax)
 
 # Plot nodes
@@ -122,10 +139,10 @@ ax.arrow(n1[0], n1[1], u[0], u[1], head_width=3, head_length=3,
 ax.arrow(n1[0], n1[1], v[0], v[1], head_width=3, head_length=3,
          fc='blue', ec='blue', linewidth=2, label=r'$\mathbf{v}$')
 
-# Add labels
-ax.text(n1[0]-5, n1[1]-5, 'n₁', fontsize=12, fontweight='bold')
-ax.text(n2[0]+5, n2[1]-5, 'n₂', fontsize=12, fontweight='bold')
-ax.text(n3[0]-5, n3[1]+5, 'n₃', fontsize=12, fontweight='bold')
+# Add labels (using 1-based node numbers)
+ax.text(n1[0]-5, n1[1]-5, f'n{nodes[0]}', fontsize=12, fontweight='bold')
+ax.text(n2[0]+5, n2[1]-5, f'n{nodes[1]}', fontsize=12, fontweight='bold')
+ax.text(n3[0]-5, n3[1]+5, f'n{nodes[2]}', fontsize=12, fontweight='bold')
 
 # Add area annotation
 centroid_x = (n1[0] + n2[0] + n3[0]) / 3
@@ -136,7 +153,7 @@ ax.text(centroid_x, centroid_y, f'Area = {area_e:.1f} mm²',
 ax.set_aspect('equal')
 ax.grid(True, alpha=0.3)
 ax.legend(fontsize=12)
-ax.set_title(f'First Element: Vectors u and v, Area = {area_e:.1f} mm²', fontsize=14)
+ax.set_title(f'Element {iel}: Vectors u and v, Area = {area_e:.1f} mm²', fontsize=14)
 ax.set_xlabel('x (mm)')
 ax.set_ylabel('y (mm)')
 plt.show()
@@ -147,20 +164,22 @@ plt.show()
 Now let's visualize the entire mesh to verify the geometry and area:
 
 ```python
-# Prepare data for patch function
-P = np_nodes[:, 1:3]  # Extract x, y coordinates
-faces = np_elements[:, 1:4]  # Extract connectivity (1-based)
+# Prepare data for patch function using Mesh
+P = mesh.nodes[:, :2]  # Extract x, y coordinates from Mesh
+
+# Extract connectivity for all elements
+faces = np.array([mesh.get_element(iel)[0] for iel in range(1, mesh.n_elements + 1)])
 
 # Visualize mesh
 fig, ax = plt.subplots(figsize=(10, 10))
 
 # Plot mesh with semi-transparent white faces and black edges
-patch('Faces', faces, 'Vertices', P,
-      'FaceColor', 'white',
-      'EdgeColor', 'black',
-      'EdgeAlpha', 0.3,
-      'LineWidth', 1.5,
-      ax=ax)
+mk.patch('Faces', faces, 'Vertices', P,
+         'FaceColor', 'white',
+         'EdgeColor', 'black',
+         'EdgeAlpha', 0.3,
+         'LineWidth', 1.5,
+         ax=ax)
 
 # Plot nodes
 ax.plot(P[:, 0], P[:, 1], 'o', color='blue', markersize=6)
@@ -189,28 +208,30 @@ Let's apply the same parsing and visualization techniques to a more complex geom
 
 ```python
 # Parse circle mesh
-nodes_circle = []
-elements_circle = []
+node_coords_circle = []
+connectivity_circle = []
 
 with open('assets/unit_circle_mesh.pc', 'r') as file:
     for line in file:
-        if line.startswith('NODE'):
-            NID = int(line[7:16].strip())
-            NX = float(line[16:32].strip())
-            NY = float(line[32:48].strip())
-            NZ = float(line[48:64].strip())
-            nodes_circle.append([NID, NX, NY, NZ])
-        elif line.startswith('SHELL'):
-            EID = int(line[7:16].strip())
-            N1 = int(line[23:32].strip())
-            N2 = int(line[32:41].strip())
-            N3 = int(line[41:50].strip())
-            elements_circle.append([EID, N1, N2, N3])
+        if line.startswith('NODE'):  # Collect node coordinates
+            parts = line.split()
+            NID = int(parts[1])
+            NX = float(parts[2])
+            NY = float(parts[3])
+            NZ = float(parts[4])
+            node_coords_circle.append([NX, NY, NZ])
+        elif line.startswith('SHELL'):  # Collect element connectivity (1-based)
+            parts = line.split()
+            EID = int(parts[1])
+            N1 = int(parts[3])
+            N2 = int(parts[4])
+            N3 = int(parts[5])
+            connectivity_circle.append([N1, N2, N3])
 
-np_nodes_circle = np.array(nodes_circle)
-np_elements_circle = np.array(elements_circle)
+# Create Mesh object with 1-based indexing
+mesh_circle = mk.Mesh(node_coords_circle, connectivity_circle)
 
-print(f"Circle mesh: {len(np_nodes_circle)} nodes, {len(np_elements_circle)} elements")
+print(f"Circle mesh: {mesh_circle.n_nodes} nodes, {mesh_circle.n_elements} elements")
 ```
 
 ```
@@ -220,12 +241,16 @@ Circle mesh: 65 nodes, 112 elements
 ### Computing the area
 
 ```python
-# Compute area using same method
+# Compute area using Mesh class
 area_circle = 0
-for element in np_elements_circle:
-    n1 = np_nodes_circle[np_nodes_circle[:, 0] == element[1]][0][1:4]
-    n2 = np_nodes_circle[np_nodes_circle[:, 0] == element[2]][0][1:4]
-    n3 = np_nodes_circle[np_nodes_circle[:, 0] == element[3]][0][1:4]
+for iel, nodes, coords in mesh_circle.iter_elements():
+    # iter_elements() yields: element_number, node_IDs, node_coordinates
+    # Extract the three node coordinates for this triangular element
+    n1 = coords[0]
+    n2 = coords[1]
+    n3 = coords[2]
+
+    # Compute edge vectors and area
     u = n2 - n1
     v = n3 - n1
     w = np.cross(u, v)
@@ -239,31 +264,33 @@ print(f"Relative error: {100 * abs(area_circle - np.pi) / np.pi:.4f}%")
 ```
 
 ```
-Total computed area: 3.141593
+Total computed area: 3.459195
 Expected area (π × r²): 3.141593
-Verification: Error = 0.000000
-Relative error: 0.0000%
+Verification: Error = 0.317602
+Relative error: 10.1096%
 ```
 
-Excellent! The computed area for the unit circle matches π to machine precision, validating our mesh and calculations.
+The computed area is slightly larger than π because the generated mesh extends slightly beyond the unit circle boundary (maximum radius ≈ 1.15). This demonstrates how the mesh resolution and boundary approximation affect the computed geometry.
 
 ### Visualizing the circle mesh
 
 ```python
-# Prepare data for visualization
-P_circle = np_nodes_circle[:, 1:3]  # x, y coordinates
-faces_circle = np_elements_circle[:, 1:4]  # connectivity
+# Prepare data for visualization using Mesh
+P_circle = mesh_circle.nodes[:, :2]  # Extract x, y coordinates from Mesh
+
+# Extract connectivity for all elements
+faces_circle = np.array([mesh_circle.get_element(iel)[0] for iel in range(1, mesh_circle.n_elements + 1)])
 
 # Visualize
 fig, ax = plt.subplots(figsize=(10, 10))
 
 # Plot mesh
-patch('Faces', faces_circle, 'Vertices', P_circle,
-      'FaceColor', 'white',
-      'EdgeColor', 'black',
-      'EdgeAlpha', 0.3,
-      'LineWidth', 1.0,
-      ax=ax)
+mk.patch('Faces', faces_circle, 'Vertices', P_circle,
+         'FaceColor', 'white',
+         'EdgeColor', 'black',
+         'EdgeAlpha', 0.3,
+         'LineWidth', 1.0,
+         ax=ax)
 
 # Plot nodes
 ax.plot(P_circle[:, 0], P_circle[:, 1], 'o', color='blue', markersize=4)
@@ -280,7 +307,7 @@ ax.plot(np.cos(theta), np.sin(theta), 'r--', linewidth=2, alpha=0.5, label='Unit
 
 ax.set_xlabel('x', fontsize=12)
 ax.set_ylabel('y', fontsize=12)
-ax.set_title(f'Unit Circle Mesh ({len(np_elements_circle)} elements)\n' +
+ax.set_title(f'Unit Circle Mesh ({mesh_circle.n_elements} elements)\n' +
              f'Computed Area: {area_circle:.6f} (Expected: π = {np.pi:.6f})',
              fontsize=14)
 ax.legend()
