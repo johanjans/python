@@ -1,0 +1,29 @@
+$#--1----|----2----|----3----|----4----|----5----|----6----|----7----|----8----|----9----|---10----|
+$#
+$# PAM-CRASH input deck - 100x100mm square mesh with 8 linear triangular elements
+$# Simple demonstration mesh for parsing example
+$#
+$# NODES
+$#      NODE                   X                   Y                   Z
+NODE         1               0.0               0.0               0.0
+NODE         2             100.0               0.0               0.0
+NODE         3               0.0             100.0               0.0
+NODE         4             100.0             100.0               0.0
+NODE         5              50.0               0.0               0.0
+NODE         6              50.0              50.0               0.0
+NODE         7               0.0              50.0               0.0
+NODE         8             100.0              50.0               0.0
+NODE         9              50.0             100.0               0.0
+$#
+$# SHELL ELEMENTS (Triangular)
+$#    SHELL     PART       N1       N2       N3
+SHELL        1        1        1        5        7
+SHELL        2        1        5        6        7
+SHELL        3        1        5        2        6
+SHELL        4        1        2        8        6
+SHELL        5        1        7        6        3
+SHELL        6        1        6        9        3
+SHELL        7        1        6        8        9
+SHELL        8        1        8        4        9
+$#
+$# End of file
