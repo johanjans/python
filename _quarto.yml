@@ -52,6 +52,7 @@ book:
         - plotting_examples.qmd
     - part: "Applications"
       chapters:
+        - FEM_in_python.ipynb
         - SystematicTrussAnalysis.ipynb
         - TrussViz.ipynb
         - kinematics.qmd

@@ -123,7 +123,7 @@ w = np.cross(u, v)
 area_e = 0.5 * np.linalg.norm(w)
 
 # Visualization
-fig, ax = plt.subplots(figsize=(8, 8))
+fig, ax = plt.subplots(figsize=(6, 6))
 
 # Plot triangle
 triangle = np.array([[n1[0], n1[1]], [n2[0], n2[1]], [n3[0], n3[1]]])
@@ -163,7 +163,8 @@ plt.show()
 
 Now let's visualize the entire mesh to verify the geometry and area:
 
-```python
+```{python}
+# | code-fold: show
 # Prepare data for patch function using Mesh
 P = mesh.nodes[:, :2]  # Extract x, y coordinates from Mesh
 
@@ -171,7 +172,7 @@ P = mesh.nodes[:, :2]  # Extract x, y coordinates from Mesh
 faces = np.array([mesh.get_element(iel)[0] for iel in range(1, mesh.n_elements + 1)])
 
 # Visualize mesh
-fig, ax = plt.subplots(figsize=(10, 10))
+fig, ax = plt.subplots(figsize=(6, 6))
 
 # Plot mesh with semi-transparent white faces and black edges
 mk.patch('Faces', faces, 'Vertices', P,
@@ -206,7 +207,8 @@ The visualization clearly shows the 100mm × 100mm square mesh. The grid helps v
 
 Let's apply the same parsing and visualization techniques to a more complex geometry: a unit circle. This mesh was generated with approximately 100 triangular elements.
 
-```python
+```{python}
+# | code-fold: show
 # Parse circle mesh
 node_coords_circle = []
 connectivity_circle = []
@@ -234,13 +236,11 @@ mesh_circle = mk.Mesh(node_coords_circle, connectivity_circle)
 print(f"Circle mesh: {mesh_circle.n_nodes} nodes, {mesh_circle.n_elements} elements")
 ```
 
-```
-Circle mesh: 65 nodes, 112 elements
-```
 
 ### Computing the area
 
-```python
+```{python}
+# | code-fold: show
 # Compute area using Mesh class
 area_circle = 0
 for iel, nodes, coords in mesh_circle.iter_elements():
@@ -263,18 +263,13 @@ print(f"Verification: Error = {abs(area_circle - np.pi):.6f}")
 print(f"Relative error: {100 * abs(area_circle - np.pi) / np.pi:.4f}%")
 ```
 
-```
-Total computed area: 3.459195
-Expected area (π × r²): 3.141593
-Verification: Error = 0.317602
-Relative error: 10.1096%
-```
 
 The computed area is slightly larger than π because the generated mesh extends slightly beyond the unit circle boundary (maximum radius ≈ 1.15). This demonstrates how the mesh resolution and boundary approximation affect the computed geometry.
 
 ### Visualizing the circle mesh
 
-```python
+```{python}
+# | code-fold: show
 # Prepare data for visualization using Mesh
 P_circle = mesh_circle.nodes[:, :2]  # Extract x, y coordinates from Mesh
 
@@ -282,7 +277,7 @@ P_circle = mesh_circle.nodes[:, :2]  # Extract x, y coordinates from Mesh
 faces_circle = np.array([mesh_circle.get_element(iel)[0] for iel in range(1, mesh_circle.n_elements + 1)])
 
 # Visualize
-fig, ax = plt.subplots(figsize=(10, 10))
+fig, ax = plt.subplots(figsize=(8, 8))
 
 # Plot mesh
 mk.patch('Faces', faces_circle, 'Vertices', P_circle,
