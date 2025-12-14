@@ -8,7 +8,6 @@
 /_site
 /media
 /.quarto/
-publishSite.sh
 rsync.log
 sync.log
 /marimo/__pycache__
@@ -17,5 +16,6 @@ EquilibriumExamples_files/*
 
 **/*.quarto_ipynb
 
-# Nested git repository (MatKit has its own .git)
-MechanicsKit/
+1-Indexing/*
+_freeze/*
+litterature/*

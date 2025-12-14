@@ -4,6 +4,9 @@ project:
   preview:
     port: 4200
 
+execute:
+  freeze: auto  # Only re-execute when source files change
+
 book:
   title: "Scientific Programming"
   subtitle: "A computer supported approach to engineering mathematics"
@@ -50,6 +53,7 @@ book:
     - part: "Matplotlib"
       chapters: 
         - plotting_examples.ipynb
+        - ReplicatingInterp.qmd
     - part: "Applications"
       chapters:
         - FEM_in_python.ipynb
