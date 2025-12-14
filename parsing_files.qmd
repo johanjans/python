@@ -19,6 +19,40 @@ The following is an example of how this can be done for a certain file format th
 Example file contents and the geometry it represents.
 :::
 
+## A simple mesh file (.pc file)
+
+```default
+$#--1----|----2----|----3----|----4----|----5----|----6----|----7----|----8----|----9----|---10----|
+$#
+$# PAM-CRASH input deck - 100x100mm square mesh with 8 linear triangular elements
+$# Simple demonstration mesh for parsing example
+$#
+$# NODES
+$#      NODE                   X                   Y                   Z
+NODE         1               0.0               0.0               0.0
+NODE         2             100.0               0.0               0.0
+NODE         3               0.0             100.0               0.0
+NODE         4             100.0             100.0               0.0
+NODE         5              50.0               0.0               0.0
+NODE         6              50.0              50.0               0.0
+NODE         7               0.0              50.0               0.0
+NODE         8             100.0              50.0               0.0
+NODE         9              50.0             100.0               0.0
+$#
+$# SHELL ELEMENTS (Triangular)
+$#    SHELL     PART       N1       N2       N3
+SHELL        1        1        1        5        7
+SHELL        2        1        5        6        7
+SHELL        3        1        5        2        6
+SHELL        4        1        2        8        6
+SHELL        5        1        7        6        3
+SHELL        6        1        6        9        3
+SHELL        7        1        6        8        9
+SHELL        8        1        8        4        9
+$#
+$# End of file
+```
+
 The example file describes a two-dimensional finite element mesh consisting of eight connected triangles. We are interested in computing the total area of the geometry. 
 To do this, we first need to parse all lines starting with `NODE` and `SHELL` from the file, then compute the area of each individual triangle. All other lines in the file are not of interest, and should be ignored.
 
@@ -30,6 +64,9 @@ After parsing, we create a `Mesh` object from [MechanicsKit](https://github.com/
 ### Download the mesh file
 
 [Download 100x100mm_8_linear_trias.pc](assets/100x100mm_8_linear_trias.pc)
+
+
+## Parsing a simple mesh
 
 ```{python}
 # | code-fold: show
@@ -64,7 +101,7 @@ print(f"Mesh info: {mesh.n_nodes} nodes, {mesh.n_elements} elements")
 print(f"Element type: {mesh.element_type}")
 ```
 
-## Parsing explained
+### Parsing explained
 
 Let's break down how the parsing code works step by step:
 
@@ -259,7 +296,7 @@ plt.show()
 The visualization clearly shows the 100mm × 100mm square mesh. The grid helps verify the dimensions, and the computed area of 10000 mm² matches the expected area perfectly.
 
 
-# Example 2: Unit circle mesh
+## Example 2: Unit circle mesh (.k file)
 
 ### Download the mesh file
 
