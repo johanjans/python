@@ -25,12 +25,16 @@ To do this, we first need to parse all lines starting with `NODE` and `SHELL` fr
 The code below initializes two empty lists: `node_coords` and `connectivity`, then loops over each line of the file. Data is only appended to each list if a line begins with `NODE` or `SHELL`.
 We use `.split()` to separate each line into parts by whitespace, making it easy to extract the values by index. Casting is used to specify the data type of each collected variable (int for IDs, float for coordinates).
 
-After parsing, we create a `Mesh` object from MatKit, which provides a clean interface with 1-based node numbering (matching the file format). This eliminates the need for manual index translation.
+After parsing, we create a `Mesh` object from [MechanicsKit](https://github.com/cenmir/MechanicsKit), which provides a clean interface with 1-based node numbering (matching the file format). This eliminates the need for manual index translation.
+
+### Download the mesh file
+
+[Download 100x100mm_8_linear_trias.pc](assets/100x100mm_8_linear_trias.pc)
 
 ```{python}
 # | code-fold: show
 import numpy as np
-import matkit as mk
+import mechanicskit as mk
 
 # Parse nodes and elements from file
 node_coords = []
@@ -60,7 +64,64 @@ print(f"Mesh info: {mesh.n_nodes} nodes, {mesh.n_elements} elements")
 print(f"Element type: {mesh.element_type}")
 ```
 
-Since we know the x-, y- and z-coordinates of each node in every element, we can utilize linear algebra to compute the area from the vector product of the element sides. Recall that the vector product $\mathbb{u} \times \mathbb{v}$ is a new vector $\mathbb{w}$ (perpendicular to both $\mathbb{u}$ and $\mathbb{v}$) whose magnitude $||\mathbb{w}|| = \sqrt{w_x^2 + w_y^2 + w_z^2}$ represents the area of the parallellogram defined by $\mathbb{u}$ and $\mathbb{v}$ as sides. The area of a triangular element is therefore $A_i = \frac{1}{2}||\mathbb{w}||$.
+## Parsing explained
+
+Let's break down how the parsing code works step by step:
+
+**Opening and looping through the file:**
+```python
+with open('assets/100x100mm_8_linear_trias.pc', 'r') as file:
+    for line in file:
+```
+The `with` statement ensures the file is properly closed after reading. We iterate over each line in the file.
+
+**Identifying relevant lines:**
+```python
+if line.startswith('NODE'):
+    # Process node data
+elif line.startswith('SHELL'):
+    # Process element data
+```
+We only process lines that start with `NODE` or `SHELL`, ignoring all other lines in the file.
+
+**Splitting and extracting data:**
+```python
+parts = line.split()
+NID = int(parts[1])
+NX = float(parts[2])
+NY = float(parts[3])
+NZ = float(parts[4])
+```
+The `.split()` method breaks the line into a list of strings separated by whitespace. For example, the line:
+```default
+NODE         1       0.000       0.000       0.000
+```
+becomes: `['NODE', '1', '0.000', '0.000', '0.000']`
+
+We then extract values by index position:
+- `parts[0]` = `'NODE'` (the keyword)
+- `parts[1]` = `'1'` (node ID)
+- `parts[2]` = `'0.000'` (x-coordinate)
+- `parts[3]` = `'0.000'` (y-coordinate)
+- `parts[4]` = `'0.000'` (z-coordinate)
+
+Type casting with `int()` and `float()` converts the string values to numbers.
+
+**Element connectivity:**
+```python
+N1 = int(parts[3])
+N2 = int(parts[4])
+N3 = int(parts[5])
+connectivity.append([N1, N2, N3])
+```
+
+::: {.callout-note}
+For `SHELL` lines, we extract the node IDs that define each triangular element. Note that these are 1-based indices (node numbering starts at 1, not 0), which the file format uses. The `Mesh` class handles this 1-based indexing naturally.
+:::
+
+## Computing the area
+
+Since we know the x-, y- and z-coordinates of each node in every element, we can utilize linear algebra to compute the area from the vector product of the element sides. Recall that the vector product $\mathbf{u} \times \mathbf{v}$ is a new vector $\mathbf{w}$ (perpendicular to both $\mathbf{u}$ and $\mathbf{v}$) whose magnitude $||\mathbf{w}|| = \sqrt{w_x^2 + w_y^2 + w_z^2}$ represents the area of the parallellogram defined by $\mathbf{u}$ and $\mathbf{v}$ as sides. The area of a triangular element is therefore $A_i = \frac{1}{2}||\mathbf{w}||$.
 
 The `Mesh` class makes accessing node coordinates simple with `mesh.get_node()`, which uses natural 1-based numbering. We can iterate over elements using `mesh.iter_elements()`, which yields tuples of (element_number, node_IDs, node_coordinates) for each element.
 
@@ -90,6 +151,7 @@ print(f"Verification: Error = {abs(area - 10000):.6f} mm²")
 Perfect! The computed area matches the expected area exactly, verifying our mesh parsing and area calculation are correct.
 
 Using `MatKit.Mesh` provides several advantages:
+
 - **Natural 1-based indexing**: Node 1 is accessed as `mesh.get_node(1)`, matching the file format
 - **Clean iteration**: `mesh.iter_elements()` yields element data with 1-based numbering (1, 2, 3, ...)
 - **Direct coordinate access**: `iter_elements()` provides coordinates directly, no lookups needed
@@ -101,7 +163,7 @@ To better understand the mesh structure and verify our calculations, let's visua
 
 ### Visualizing the first element
 
-Let's examine the first triangular element in detail, showing the edge vectors $\mathbb{u}$ and $\mathbb{v}$ and its area:
+Let's examine the first triangular element in detail, showing the edge vectors $\mathbf{u}$ and $\mathbf{v}$ and its area:
 
 ```{python}
 # | code-fold: show
@@ -168,14 +230,11 @@ Now let's visualize the entire mesh to verify the geometry and area:
 # Prepare data for patch function using Mesh
 P = mesh.nodes[:, :2]  # Extract x, y coordinates from Mesh
 
-# Extract connectivity for all elements
-faces = np.array([mesh.get_element(iel)[0] for iel in range(1, mesh.n_elements + 1)])
-
 # Visualize mesh
 fig, ax = plt.subplots(figsize=(6, 6))
 
 # Plot mesh with semi-transparent white faces and black edges
-mk.patch('Faces', faces, 'Vertices', P,
+mk.patch('Faces', mesh.elements, 'Vertices', P,
          'FaceColor', 'white',
          'EdgeColor', 'black',
          'EdgeAlpha', 0.3,
@@ -199,43 +258,269 @@ plt.show()
 
 The visualization clearly shows the 100mm × 100mm square mesh. The grid helps verify the dimensions, and the computed area of 10000 mm² matches the expected area perfectly.
 
+
+# Example 2: Unit circle mesh
+
 ### Download the mesh file
 
-[Download 100x100mm_8_linear_trias.pc](assets/100x100mm_8_linear_trias.pc)
+[Download unit_circle_cirk_pattern.k](assets/unit_circle_cirk_pattern.k)
 
-## Example 2: Unit circle mesh
 
-Let's apply the same parsing and visualization techniques to a more complex geometry: a unit circle. This mesh was generated with approximately 100 triangular elements.
+### Mesh format
+
+This mesh is formatted in a different way:
+
+````default
+*KEYWORD
+*NODE
+       1-.80556840782042-.59143545453769              0.       0       0
+       2-.65996973560682-.75129182445863              0.       0       0
+       4-.48304611410286-.87559413541297              0.       0       0
+       5.184796119863413.138900474647448              0.       0       0
+       6-.28353863987379-.95895959637495              0.       0       0
+       7.0651492941105280.16282953159376              0.       0       0
+       8-.07077527988738-.99749250441418              0.       0       0
+       9-.05375280582755.179996309828432              0.       0       0
+      100.14530303267562-.98954296388714              0.       0       0
+      ...
+     1880.20115606559753-.53058460158407              0.       0       0
+      ...
+*ELEMENT_SHELL
+       1       1     210     180     181     181
+       2       1     180      80      81      81
+       3       1     211     181     182     182
+       4       1     284     210     211     211
+       5       1     209     179     180     180
+       6       1     178      79      80      80
+       7       1     181      81      82      82
+       8       1      80      79      49      49
+       9       1     212     182     183     183
+      10       1     285     211     212     212
+      ...
+      88       1     188     158     159     159
+      90       1     261     187     188     188
+      ...
+````
+
+::: {.callout-note}
+The `*ELEMENT_SHELL` section supports both triangular and quadrilateral elements. Triangular elements are represented by **repeating the last node**. For example:
+
+- Element 1: `210  180  181  181` - This is a triangle with nodes 210, 180, and 181 (node 181 repeated)
+- Element 2: `180   80   81   81` - This is a triangle with nodes 180, 80, and 81 (node 81 repeated)
+:::
+
+This convention allows the file format to use a fixed 4-node format for both element types.
+
+Thus we need a different way of parsing this.
+
+## Parsing the .k file
+
+The .k file format uses fixed-width columns for node data and space-separated values for element data. Unlike the previous format, node coordinates can run together without spaces (especially when negative), requiring careful column-based parsing.
 
 ```{python}
 # | code-fold: show
-# Parse circle mesh
-node_coords_circle = []
+# Parse circle mesh from .k file
+node_dict = {}  # Map node ID to coordinates
 connectivity_circle = []
 
-with open('assets/unit_circle_mesh.pc', 'r') as file:
+# Track which section we're in
+in_node_section = False
+in_element_section = False
+
+with open('assets/unit_circle_cirk_pattern.k', 'r') as file:
     for line in file:
-        if line.startswith('NODE'):  # Collect node coordinates
+        # Check for section headers
+        if line.startswith('*NODE'):
+            in_node_section = True
+            in_element_section = False
+            continue
+        elif line.startswith('*ELEMENT_SHELL'):
+            in_node_section = False
+            in_element_section = True
+            continue
+        elif line.startswith('*'):
+            # New section started, stop parsing
+            in_node_section = False
+            in_element_section = False
+            continue
+
+        # Parse node data (fixed-width format)
+        if in_node_section and line.strip():
+            # Fixed-width columns: 8 chars for ID, 16 chars each for X, Y, Z
+            NID = int(line[0:8])
+            NX = float(line[8:24])
+            NY = float(line[24:40])
+            NZ = float(line[40:56])
+            node_dict[NID] = [NX, NY, NZ]
+
+        # Parse element data (space-separated)
+        elif in_element_section and line.strip():
             parts = line.split()
-            NID = int(parts[1])
-            NX = float(parts[2])
-            NY = float(parts[3])
-            NZ = float(parts[4])
-            node_coords_circle.append([NX, NY, NZ])
-        elif line.startswith('SHELL'):  # Collect element connectivity (1-based)
-            parts = line.split()
-            EID = int(parts[1])
-            N1 = int(parts[3])
-            N2 = int(parts[4])
-            N3 = int(parts[5])
+            EID = int(parts[0])
+            # Column 1 is material/property ID, columns 2-4 are the three unique node IDs
+            # (Column 5 repeats the last node for triangular elements)
+            N1 = int(parts[2])
+            N2 = int(parts[3])
+            N3 = int(parts[4])
             connectivity_circle.append([N1, N2, N3])
 
+# Build sequential node coordinate list and update connectivity to match
+# Map original node IDs to sequential indices (1-based for Mesh class)
+node_id_to_index = {nid: idx+1 for idx, nid in enumerate(sorted(node_dict.keys()))}
+node_coords_circle = [node_dict[nid] for nid in sorted(node_dict.keys())]
+
+# Remap connectivity from original node IDs to sequential indices
+connectivity_remapped = [[node_id_to_index[n1], node_id_to_index[n2], node_id_to_index[n3]]
+                         for n1, n2, n3 in connectivity_circle]
+
 # Create Mesh object with 1-based indexing
-mesh_circle = mk.Mesh(node_coords_circle, connectivity_circle)
+mesh_circle = mk.Mesh(node_coords_circle, connectivity_remapped)
 
 print(f"Circle mesh: {mesh_circle.n_nodes} nodes, {mesh_circle.n_elements} elements")
+print(f"Node ID range: {min(node_dict.keys())} to {max(node_dict.keys())}")
 ```
 
+### Parsing explained
+
+The .k file format presents two main challenges that require different parsing strategies than the previous example:
+
+#### Challenge 1: Fixed-width columns with no separators
+
+Unlike the `.pc` format where values are separated by spaces, the .k format uses fixed-width columns:
+```default
+       1-.80556840782042-.59143545453769              0.       0       0
+```
+Notice how the node ID (1) runs directly into the x-coordinate (-0.805...), which runs into the y-coordinate (-0.591...). Using `.split()` wouldn't work here.
+
+**Solution: Column-based extraction**
+```python
+NID = int(line[0:8])     # Characters 0-8: node ID
+NX = float(line[8:24])   # Characters 8-24: x-coordinate
+NY = float(line[24:40])  # Characters 24-40: y-coordinate
+NZ = float(line[40:56])  # Characters 40-56: z-coordinate
+```
+This extracts data from specific column positions regardless of spacing.
+
+#### Challenge 2: Non-sequential node IDs
+
+The file contains node IDs like 1, 2, 4, 5, 6, 7, 8, 9, 10, ... 188, ..., 360 (with gaps). Elements reference these actual IDs:
+```
+       1       1     210     180     181     181
+```
+This element uses nodes 210, 180, and 181.
+
+If we simply append coordinates to a list, we lose the node ID mapping and can't resolve these references.
+
+**Solution: Dictionary mapping and remapping**
+
+The Mesh class requires sequential node numbering (1, 2, 3, ..., n_nodes). We need to convert the file's non-sequential IDs into sequential indices.
+
+The parsing code above uses **list comprehensions** and **dictionary comprehensions** for conciseness. Below, we explain the same logic using **for loops**, which are more explicit and easier to follow when learning Python:
+
+```python
+# Step 1: Store coordinates by node ID during parsing
+node_dict[NID] = [NX, NY, NZ]
+# e.g., node_dict[1] = [x1, y1, z1], node_dict[210] = [x210, y210, z210]
+
+# Step 2: Create sequential coordinate list and ID-to-index mapping
+sorted_ids = sorted(node_dict.keys())  # [1, 2, 4, 5, ..., 210, ..., 360]
+
+# Build mapping: original node ID → new sequential index
+node_id_to_index = {}
+for idx, nid in enumerate(sorted_ids):
+    node_id_to_index[nid] = idx + 1
+# Now: node 1 → index 1, node 2 → index 2, node 4 → index 3, node 210 → index 50, etc.
+
+# Build sequential coordinate list in same order
+node_coords_circle = []
+for nid in sorted_ids:
+    node_coords_circle.append(node_dict[nid])
+
+# Step 3: Remap connectivity from file IDs to sequential indices
+connectivity_remapped = []
+for n1, n2, n3 in connectivity_circle:
+    new_n1 = node_id_to_index[n1]
+    new_n2 = node_id_to_index[n2]
+    new_n3 = node_id_to_index[n3]
+    connectivity_remapped.append([new_n1, new_n2, new_n3])
+# Example: element with nodes [210, 180, 181] → [50, 45, 46]
+```
+
+::: {.callout-note}
+The actual parsing code uses these equivalent one-line expressions:
+```python
+# Dictionary comprehension (equivalent to the for loop building node_id_to_index)
+node_id_to_index = {nid: idx+1 for idx, nid in enumerate(sorted(node_dict.keys()))}
+
+# List comprehension (equivalent to the for loop building node_coords_circle)
+node_coords_circle = [node_dict[nid] for nid in sorted(node_dict.keys())]
+
+# Nested list comprehension (equivalent to the for loop building connectivity_remapped)
+connectivity_remapped = [[node_id_to_index[n1], node_id_to_index[n2], node_id_to_index[n3]]
+                         for n1, n2, n3 in connectivity_circle]
+```
+Both approaches produce identical results; comprehensions are more compact while for loops make each step explicit.
+:::
+
+This remapping is required because the Mesh class uses sequential indexing internally (accessing node N means getting `nodes[N-1]` from the array).
+
+#### Section tracking
+
+The file uses section headers (`*NODE`, `*ELEMENT_SHELL`) to organize data. We use boolean flags to track which section we're currently parsing:
+```python
+if line.startswith('*NODE'):
+    in_node_section = True
+    in_element_section = False
+elif line.startswith('*ELEMENT_SHELL'):
+    in_node_section = False
+    in_element_section = True
+```
+
+This ensures we apply the correct parsing logic to each line based on its section.
+
+## Visualizing the mesh
+
+Let's visualize the circle mesh to verify the geometry:
+
+```{python}
+# | code-fold: show
+# Prepare data for visualization using Mesh
+P_circle = mesh_circle.nodes[:, :2]  # Extract x, y coordinates from Mesh
+
+# Visualize
+fig, ax = plt.subplots(figsize=(7, 7))
+
+# Plot mesh using mesh.elements (1-based connectivity) directly
+mk.patch('Faces', mesh_circle.elements, 'Vertices', P_circle,
+         'FaceColor', 'white',
+         'EdgeColor', 'black',
+         'EdgeAlpha', 0.3,
+         'LineWidth', 1.0,
+         ax=ax)
+
+# Plot nodes
+ax.plot(P_circle[:, 0], P_circle[:, 1], 'o', color='blue', markersize=4)
+
+# Add grid for verification
+ax.grid(True, alpha=0.5)
+ax.set_aspect('equal')
+ax.set_xlim(-1.2, 1.2)
+ax.set_ylim(-1.2, 1.2)
+
+# Draw unit circle outline for reference
+theta = np.linspace(0, 2*np.pi, 100)
+ax.plot(np.cos(theta), np.sin(theta), 'r--', linewidth=2, alpha=0.5, label='Unit circle')
+
+ax.set_xlabel('x', fontsize=12)
+ax.set_ylabel('y', fontsize=12)
+ax.set_title(f'Unit Circle Mesh ({mesh_circle.n_elements} elements)\n' +
+             f'{mesh_circle.n_nodes} nodes',
+             fontsize=14)
+ax.legend()
+plt.show()
+```
+
+The circle mesh visualization shows a well-structured triangular mesh that approximates the unit circle.
 
 ### Computing the area
 
@@ -264,53 +549,5 @@ print(f"Relative error: {100 * abs(area_circle - np.pi) / np.pi:.4f}%")
 ```
 
 
-The computed area is slightly larger than π because the generated mesh extends slightly beyond the unit circle boundary (maximum radius ≈ 1.15). This demonstrates how the mesh resolution and boundary approximation affect the computed geometry.
+The computed area is slightly smaller than π. This is expected because the triangular mesh approximates the circle's curved boundary with straight edges. When mesh nodes lie on the circle's circumference, the straight edges connecting them form chords that cut across the circle, excluding the small curved segments between each chord and the arc. The finer the mesh (more elements along the boundary), the closer the computed area would be to the true value of π. This demonstrates how linear elements directly affect geometric accuracy in finite element analysis. Another approach would be to utilize higher-order elements, essentially curved elements, to better capture the geometry. In that case, the geometric error could be zero even with far fewer elements!  
 
-### Visualizing the circle mesh
-
-```{python}
-# | code-fold: show
-# Prepare data for visualization using Mesh
-P_circle = mesh_circle.nodes[:, :2]  # Extract x, y coordinates from Mesh
-
-# Extract connectivity for all elements
-faces_circle = np.array([mesh_circle.get_element(iel)[0] for iel in range(1, mesh_circle.n_elements + 1)])
-
-# Visualize
-fig, ax = plt.subplots(figsize=(8, 8))
-
-# Plot mesh
-mk.patch('Faces', faces_circle, 'Vertices', P_circle,
-         'FaceColor', 'white',
-         'EdgeColor', 'black',
-         'EdgeAlpha', 0.3,
-         'LineWidth', 1.0,
-         ax=ax)
-
-# Plot nodes
-ax.plot(P_circle[:, 0], P_circle[:, 1], 'o', color='blue', markersize=4)
-
-# Add grid for verification
-ax.grid(True, alpha=0.5)
-ax.set_aspect('equal')
-ax.set_xlim(-1.2, 1.2)
-ax.set_ylim(-1.2, 1.2)
-
-# Draw unit circle outline for reference
-theta = np.linspace(0, 2*np.pi, 100)
-ax.plot(np.cos(theta), np.sin(theta), 'r--', linewidth=2, alpha=0.5, label='Unit circle')
-
-ax.set_xlabel('x', fontsize=12)
-ax.set_ylabel('y', fontsize=12)
-ax.set_title(f'Unit Circle Mesh ({mesh_circle.n_elements} elements)\n' +
-             f'Computed Area: {area_circle:.6f} (Expected: π = {np.pi:.6f})',
-             fontsize=14)
-ax.legend()
-plt.show()
-```
-
-The circle mesh visualization shows a well-structured triangular mesh that closely approximates the unit circle. The grid provides a reference for verifying the radius, and the computed area confirms the mesh quality.
-
-### Download the circle mesh file
-
-[Download unit_circle_mesh.pc](assets/unit_circle_mesh.pc)
