@@ -49,7 +49,7 @@ book:
         - sympy_mixed.qmd
     - part: "Matplotlib"
       chapters: 
-        - plotting_examples.qmd
+        - plotting_examples.ipynb
     - part: "Applications"
       chapters:
         - FEM_in_python.ipynb
