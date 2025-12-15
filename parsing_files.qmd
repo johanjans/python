@@ -187,7 +187,7 @@ print(f"Verification: Error = {abs(area - 10000):.6f} mm²")
 
 Perfect! The computed area matches the expected area exactly, verifying our mesh parsing and area calculation are correct.
 
-Using `MatKit.Mesh` provides several advantages:
+Using `MechanicsKit.Mesh` provides several advantages:
 
 - **Natural 1-based indexing**: Node 1 is accessed as `mesh.get_node(1)`, matching the file format
 - **Clean iteration**: `mesh.iter_elements()` yields element data with 1-based numbering (1, 2, 3, ...)
