@@ -558,8 +558,6 @@ Let us replicate the MATLAB example from the introduction using the MechanicsKit
 # | code-fold: true
 import numpy as np
 import matplotlib.pyplot as plt
-import sys
-sys.path.insert(0, '/home/mirza/python/MechanicsKit')
 from mechanicskit.patch import patch
 
 # Define quadrilateral vertices and data
