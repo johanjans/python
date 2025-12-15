@@ -538,5 +538,138 @@ plt.show()
 
 ```
 
+## MechanicsKit.Patch Examples
+
+The MechanicsKit library provides a MATLAB-like `patch` function that automatically handles the trade-offs discussed in this document. The function automatically selects between `tricontourf` and `tripcolor` based on mesh size and colormap characteristics, providing optimal visual quality and performance without requiring manual intervention.
+
+### Automatic Method Selection
+
+The `patch` function implements the following automatic selection strategy when `FaceColor='interp'`:
+
+- For **small meshes** (< 100 elements) with **non-linear colormaps** (e.g., 'jet', 'hsv', 'hot'): uses `tricontourf` with 256 levels for high visual fidelity
+- For **large meshes** or **linear colormaps** (e.g., 'viridis', 'plasma'): uses `tripcolor` with Gouraud shading for performance
+- Users can override this behavior with the `interpolation_method` parameter
+
+### Example: Single Quadrilateral with Different Colormaps
+
+Let us replicate the MATLAB example from the introduction using the MechanicsKit `patch` function:
+
+```{python}
+# | code-fold: true
+import numpy as np
+import matplotlib.pyplot as plt
+import sys
+sys.path.insert(0, '/home/mirza/python/MechanicsKit')
+from mechanicskit.patch import patch
+
+# Define quadrilateral vertices and data
+P = np.array([
+    [0, 0],
+    [1.0, 0],
+    [0.9, 1.0],
+    [-0.1, 1.2]
+])
+U = np.array([20, 30, 40, 25])
+
+fig, axes = plt.subplots(2, 1, figsize=(7, 10))
+
+# Jet colormap (non-linear - auto selects tricontourf)
+ax = axes[0]
+patch('Faces', [[1, 2, 3, 4]], 'Vertices', P, 'FaceVertexCData', U,
+      'FaceColor', 'interp', 'cmap', 'jet', ax=ax)
+ax.set_aspect('equal')
+ax.axis('tight')
+ax.set_title('Jet colormap (auto: tricontourf)')
+import mechanicskit as mk
+mk.colorbar(ax=ax)
+
+# Viridis colormap (linear - auto selects tripcolor)
+ax = axes[1]
+patch('Faces', [[1, 2, 3, 4]], 'Vertices', P, 'FaceVertexCData', U,
+      'FaceColor', 'interp', 'cmap', 'viridis', ax=ax)
+ax.set_aspect('equal')
+ax.axis('tight')
+ax.set_title('Viridis colormap (auto: tripcolor)')
+mk.colorbar(ax=ax)
+
+plt.tight_layout()
+plt.show()
+```
+
+Notice how the automatic selection provides optimal results for both cases: smooth, accurate colors for the jet colormap using `tricontourf`, and efficient rendering for the perceptually uniform viridis colormap using `tripcolor`.
+
+### Example: Comparing Interpolation Methods
+
+The `interpolation_method` parameter allows explicit control over the rendering method:
+
+```{python}
+# | code-fold: true
+fig, axes = plt.subplots(3, 1, figsize=(6, 15))
+
+# Auto mode (intelligent selection)
+ax = axes[0]
+patch('Faces', [[1, 2, 3, 4]], 'Vertices', P, 'FaceVertexCData', U,
+      'FaceColor', 'interp', 'cmap', 'jet', ax=ax)
+ax.set_aspect('equal')
+ax.axis('tight')
+ax.set_title('Auto mode (uses tricontourf)')
+
+# Force tricontourf (high quality)
+ax = axes[1]
+patch('Faces', [[1, 2, 3, 4]], 'Vertices', P, 'FaceVertexCData', U,
+      'FaceColor', 'interp', 'cmap', 'jet',
+      'interpolation_method', 'tricontourf', ax=ax)
+ax.set_aspect('equal')
+ax.axis('tight')
+ax.set_title('Forced tricontourf')
+
+# Force tripcolor (performance)
+ax = axes[2]
+patch('Faces', [[1, 2, 3, 4]], 'Vertices', P, 'FaceVertexCData', U,
+      'FaceColor', 'interp', 'cmap', 'jet',
+      'interpolation_method', 'tripcolor', ax=ax)
+ax.set_aspect('equal')
+ax.axis('tight')
+ax.set_title('Forced tripcolor')
+
+plt.tight_layout()
+plt.show()
+```
+
+The visual difference is clear: `tricontourf` (upper and middle) produces vibrant, accurate color gradients that match the colorbar, while `tripcolor` (lower) shows the RGB interpolation artifacts discussed earlier in this document, resulting in muddier, less accurate colors.
+
+### Example: Complex Triangular Mesh
+
+For the complex triangular mesh example, the automatic selection provides excellent results:
+
+```{python}
+# | code-fold: true
+# 8 vertices, 7 triangles
+P_complex = np.array([
+    [0, 0], [1, 0], [1, 1], [0, 1],
+    [0.7, 0], [1, 0.7], [0.8, 1], [0.4, 0.5]
+])
+connectivity = np.array([
+    [1, 5, 8], [5, 2, 6], [6, 3, 7], [5, 6, 8],
+    [8, 6, 7], [8, 7, 4], [1, 8, 4]
+])
+T = np.array([20, 30, 40, 26, 25, 34, 32, 25])
+
+fig, ax = plt.subplots(figsize=(6, 5))
+patch('Faces', connectivity, 'Vertices', P_complex, 'FaceVertexCData', T,
+      'FaceColor', 'interp', 'cmap', 'jet', 'EdgeColor', 'black',
+      'LineWidth', 0.5, ax=ax)
+ax.set_aspect('equal')
+ax.axis('tight')
+ax.set_title('Complex Mesh (7 elements, auto: tricontourf)')
+mk.colorbar(ticks=np.arange(20, 41, 2))
+
+plt.show()
+```
+
+With only 7 elements and a non-linear colormap, the automatic mode correctly selects `tricontourf`, producing a smooth, high-quality visualization suitable for publication or instructional materials.
+
+
+
 
 
