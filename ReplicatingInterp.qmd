@@ -610,6 +610,7 @@ fig, axes = plt.subplots(3, 1, figsize=(6, 15))
 ax = axes[0]
 patch('Faces', [[1, 2, 3, 4]], 'Vertices', P, 'FaceVertexCData', U,
       'FaceColor', 'interp', 'cmap', 'jet', ax=ax)
+mk.colorbar(ax=ax)      
 ax.set_aspect('equal')
 ax.axis('tight')
 ax.set_title('Auto mode (uses tricontourf)')
@@ -619,6 +620,7 @@ ax = axes[1]
 patch('Faces', [[1, 2, 3, 4]], 'Vertices', P, 'FaceVertexCData', U,
       'FaceColor', 'interp', 'cmap', 'jet',
       'interpolation_method', 'tricontourf', ax=ax)
+mk.colorbar(ax=ax)
 ax.set_aspect('equal')
 ax.axis('tight')
 ax.set_title('Forced tricontourf')
@@ -628,6 +630,7 @@ ax = axes[2]
 patch('Faces', [[1, 2, 3, 4]], 'Vertices', P, 'FaceVertexCData', U,
       'FaceColor', 'interp', 'cmap', 'jet',
       'interpolation_method', 'tripcolor', ax=ax)
+mk.colorbar(ax=ax)
 ax.set_aspect('equal')
 ax.axis('tight')
 ax.set_title('Forced tripcolor')
@@ -659,10 +662,11 @@ fig, ax = plt.subplots(figsize=(6, 5))
 patch('Faces', connectivity, 'Vertices', P_complex, 'FaceVertexCData', T,
       'FaceColor', 'interp', 'cmap', 'jet', 'EdgeColor', 'black',
       'LineWidth', 0.5, ax=ax)
+mk.colorbar(ticks=np.arange(20, 41, 2), ax=ax)
 ax.set_aspect('equal')
 ax.axis('tight')
 ax.set_title('Complex Mesh (7 elements, auto: tricontourf)')
-mk.colorbar(ticks=np.arange(20, 41, 2))
+
 
 plt.show()
 ```
