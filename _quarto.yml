@@ -59,6 +59,7 @@ book:
         - FEM_in_python.ipynb
         - SystematicTrussAnalysis.ipynb
         - TrussViz.ipynb
+        - Interpolation2D.ipynb
         - kinematics.qmd
         - differential_equations.qmd
         - numerical_integration.qmd
