@@ -26,7 +26,7 @@ hold on; axis equal tight; colormap jet; colorbar
 
 The interpolated shading is achieved through the `'FaceColor', 'interp'` argument, which instructs the program to interpolate the `CData` values across the face of the polygon. This process results in a smooth gradient that accurately represents the data variation, as shown in the figure below.
 
-![The target MATLAB plot with smooth color interpolation across a quadrilateral.](graphics/matlab_patch_interp.png)
+![The target MATLAB plot with smooth color interpolation across a quadrilateral.](../graphics/matlab_patch_interp.png)
 
 Our objective is to replicate this behavior in Python using the Matplotlib library. This exploration, while appearing straightforward, will reveal a fundamental trade-off between computational performance and visual fidelity, highlighting important details about how different rendering methods operate.
 

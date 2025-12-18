@@ -32,44 +32,60 @@ book:
     - acknowlegments.qmd
     - part: "Programming fundamentals"
       chapters:
-        - best_practices.qmd
-        - basics.qmd
-        - functions.qmd
-        - data_structures_builtin.qmd
-        - objects.qmd
-        - file_io.qmd
-        - debugging.qmd
-        - version_control.qmd
+        - ProgrammingFundamentals/best_practices.qmd
+        - ProgrammingFundamentals/basics.qmd
+        - ProgrammingFundamentals/functions.qmd
+        - ProgrammingFundamentals/data_structures_builtin.qmd
+        - ProgrammingFundamentals/objects.qmd
+        - ProgrammingFundamentals/file_io.qmd
+        - ProgrammingFundamentals/debugging.qmd
+        - ProgrammingFundamentals/version_control.qmd
     - part: "NumPy/SciPy"
       chapters:
-        - numpy_arrays.qmd
-        - numpy_linear_algebra.qmd
-        - scipy_optimization.qmd
-        - scipy_interpolation.qmd
-        - data_structures_pandas.qmd
+        - NumpyScipy/numpy_arrays.qmd
+        - NumpyScipy/numpy_linear_algebra.qmd
+        - NumpyScipy/scipy_optimization.qmd
+        - NumpyScipy/scipy_interpolation.qmd
+        - NumpyScipy/data_structures_pandas.qmd
     - part: "SymPy"
       chapters:
-        - sympy_mixed.qmd
+        - Sympy/sympy_mixed.qmd
+
     - part: "Matplotlib"
-      chapters: 
-        - plotting_examples.ipynb
-        - ReplicatingInterp.qmd
+      chapters:
+        - MatplotLib/plotting_examples.ipynb
+        - MatplotLib/ReplicatingInterp.qmd
+        
+    - part: "Applied Mathematics"
+      chapters:
+        - AppliedMaths/Intro_to_applied_maths.ipynb
+        - AppliedMaths/Numeric_Differentiation.ipynb
+        - AppliedMaths/Numeric_Integration.ipynb
+        - AppliedMaths/Time_Integration_Methods.ipynb
+        - AppliedMaths/Differential_Equations.ipynb
+        - AppliedMaths/Root_Finding_Methods.ipynb
+        - AppliedMaths/Interpolation_Methods.ipynb
+        - AppliedMaths/Interpolation2D.ipynb
+        - AppliedMaths/Optimization_Methods.ipynb
+    
     - part: "Applications"
       chapters:
-        - FEM_in_python.ipynb
-        - SystematicTrussAnalysis.ipynb
-        - TrussViz.ipynb
-        - Interpolation2D.ipynb
-        - kinematics.qmd
-        - differential_equations.qmd
-        - numerical_integration.qmd
-        - parsing_files.qmd
-        - fusion360api.qmd
+        - Applications/FEM_in_python.ipynb
+        - Applications/SystematicTrussAnalysis.ipynb
+        - Applications/TrussViz.ipynb
+        - Applications/parsing_files.qmd
+        - Applications/fusion360api.qmd
+        - Applications/Kinematics.ipynb
+        - Applications/ComputationalThinking.ipynb
+        - Applications/PendulumSimulation.ipynb
 #comments:
 #  hypothesis: true  
 filters:
   - lastModified.lua
-
+  - section-bibliographies
+bibliography: references.bib
+csl: elsevier-vancouver.csl
+reference-section-title: "References"
 format:
   
   html:
@@ -81,9 +97,9 @@ format:
     filters:
       - hint.lua
       - color-emphasis.lua
+      - lastModified.lua
+      - section-bibliographies
     toc: true
-    bibliography: references.bib
-    csl: elsevier-vancouver.csl
     code-fold: True
     html-math-method:
       #method: katex

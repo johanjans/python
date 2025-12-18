@@ -12,9 +12,9 @@ The following is an example of how this can be done for a certain file format th
 
 ::: {#fig-parsing layout-ncol=2}
 
-![File structure to be parsed](graphics/pamcrash_file_structure.png){#fig-pamcrash}
+![File structure to be parsed](../graphics/pamcrash_file_structure.png){#fig-pamcrash}
 
-![Visualization of finite element mesh](graphics/simple_mesh_parsing.png){#fig-simplemesh}
+![Visualization of finite element mesh](../graphics/simple_mesh_parsing.png){#fig-simplemesh}
 
 Example file contents and the geometry it represents.
 :::
@@ -63,7 +63,7 @@ After parsing, we create a `Mesh` object from [MechanicsKit](https://github.com/
 
 ### Download the mesh file
 
-[Download 100x100mm_8_linear_trias.pc](assets/100x100mm_8_linear_trias.pc)
+[Download 100x100mm_8_linear_trias.pc](../assets/100x100mm_8_linear_trias.pc)
 
 
 ## Parsing a simple mesh
@@ -77,7 +77,7 @@ import mechanicskit as mk
 node_coords = []
 connectivity = []
 
-with open('assets/100x100mm_8_linear_trias.pc', 'r') as file:
+with open('../assets/100x100mm_8_linear_trias.pc', 'r') as file:
     for line in file:
         if line.startswith('NODE'): # Collect node coordinates
             parts = line.split()
@@ -107,7 +107,7 @@ Let's break down how the parsing code works step by step:
 
 **Opening and looping through the file:**
 ```python
-with open('assets/100x100mm_8_linear_trias.pc', 'r') as file:
+with open('../assets/100x100mm_8_linear_trias.pc', 'r') as file:
     for line in file:
 ```
 The `with` statement ensures the file is properly closed after reading. We iterate over each line in the file.
@@ -300,7 +300,7 @@ The visualization clearly shows the 100mm × 100mm square mesh. The grid helps v
 
 ### Download the mesh file
 
-[Download unit_circle_cirk_pattern.k](assets/unit_circle_cirk_pattern.k)
+[Download unit_circle_cirk_pattern.k](../assets/unit_circle_cirk_pattern.k)
 
 
 ### Mesh format
@@ -364,7 +364,7 @@ connectivity_circle = []
 in_node_section = False
 in_element_section = False
 
-with open('assets/unit_circle_cirk_pattern.k', 'r') as file:
+with open('../assets/unit_circle_cirk_pattern.k', 'r') as file:
     for line in file:
         # Check for section headers
         if line.startswith('*NODE'):
