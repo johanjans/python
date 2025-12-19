@@ -24,7 +24,7 @@ def generate_numbering_map():
         if isinstance(item, str):
             if Path(item).stem.lower() not in ['index', 'preface', 'about']:
                 chapter_counter += 1
-                html_file = Path(item).with_suffix('.html').name
+                html_file = Path(item).with_suffix('.html').as_posix()
                 mapping[html_file] = f"{chapter_counter}"
         
         elif isinstance(item, dict) and 'part' in item:
@@ -32,7 +32,7 @@ def generate_numbering_map():
             part_chapters = item.get('chapters', [])
             sub_chapter_counter = 1
             for sub_chapter in part_chapters:
-                html_file = Path(sub_chapter).with_suffix('.html').name
+                html_file = Path(sub_chapter).with_suffix('.html').as_posix()
                 mapping[html_file] = f"{chapter_counter}.{sub_chapter_counter}"
                 sub_chapter_counter += 1
     
@@ -47,41 +47,44 @@ def post_process_html(numbering_map):
     and figure numbering based on the provided numbering_map.
     """
     book_dir = Path('_book')
+    book_dir_abs = book_dir.resolve()
     print("Starting post-processing of HTML files...")
 
-    for file_path in book_dir.glob('*.html'):
-        print(f"Processing {file_path.name}...")
+    for file_path in book_dir.rglob('*.html'):
+        relative_path_posix = file_path.relative_to(book_dir).as_posix()
+        print(f"Processing {relative_path_posix}...")
+        
         with open(file_path, 'r', encoding='utf-8') as f:
             soup = BeautifulSoup(f, 'lxml')
 
-        # Universal Sidebar Renumbering (applied to every page)
-        for link in soup.select('#quarto-sidebar .sidebar-item-container > a.sidebar-link'):
+        # Universal Sidebar and Nav Renumbering (applied to every page)
+        for link in soup.select('#quarto-sidebar .sidebar-item-container > a.sidebar-link, .nav-page-previous a.pagination-link, .nav-page-next a.pagination-link'):
             href = link.get('href')
-            if href:
-                filename = href.split('/').pop().split('#')[0]
-                if filename in numbering_map:
-                    number_span = link.select_one('.chapter-number')
-                    title_span = link.select_one('.chapter-title')
-                    if number_span:
-                        number_span.string = numbering_map[filename]
-                    # For items without a number (like Preface), ensure they don't get one
-                    elif title_span and filename not in numbering_map:
-                        if link.select_one('.chapter-number'):
-                            link.select_one('.chapter-number').decompose()
+            if href and not href.startswith(('http://', 'https://', '#')):
+                # Resolve the path relative to the current file's directory
+                try:
+                    target_abs = (file_path.parent / href).resolve(strict=False)
+                    target_rel_posix = target_abs.relative_to(book_dir_abs).as_posix()
+                    # Remove fragment for map lookup
+                    lookup_key = target_rel_posix.split('#')[0]
 
+                    if lookup_key in numbering_map:
+                        number_span = link.select_one('.chapter-number')
+                        title_span = link.select_one('.chapter-title')
+                        if number_span:
+                            number_span.string = numbering_map[lookup_key]
+                        # For items without a number (like Preface), ensure they don't get one
+                        elif title_span and lookup_key not in numbering_map:
+                            if link.select_one('.chapter-number'):
+                                link.select_one('.chapter-number').decompose()
+                except ValueError:
+                    # This can happen if the link points outside the book directory, e.g. `../index.html` from a top-level file
+                    print(f"  -> Skipping link with path pointing outside the book directory: {href}")
+                    continue
 
-        # Universal Page Navigation Renumbering
-        for nav_link in soup.select('.nav-page-previous a.pagination-link, .nav-page-next a.pagination-link'):
-            href = nav_link.get('href')
-            if href:
-                filename = href.split('/').pop().split('#')[0]
-                if filename in numbering_map:
-                    number_span = nav_link.select_one('.chapter-number')
-                    if number_span:
-                        number_span.string = numbering_map[filename]
 
         # Page-Specific Renumbering 
-        correct_number = numbering_map.get(file_path.name)
+        correct_number = numbering_map.get(relative_path_posix)
         if not correct_number:
             print(f"  -> No numbering entry found. Skipping page-specific changes.")
             # Clean up title number if it's not supposed to have one
