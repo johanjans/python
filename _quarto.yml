@@ -78,6 +78,16 @@ book:
         - Applications/Kinematics.ipynb
         - Applications/ComputationalThinking.ipynb
         - Applications/PendulumSimulation.ipynb
+
+    - part: "MechanicsKit API"
+      chapters:
+        - MechanicsKitDocs/index.qmd
+        - MechanicsKitDocs/latex_display.qmd
+        - MechanicsKitDocs/mesh.qmd
+        - MechanicsKitDocs/onearray.qmd
+        - MechanicsKitDocs/plotting.qmd
+        - MechanicsKitDocs/colormaps.qmd
+
 #comments:
 #  hypothesis: true  
 filters:

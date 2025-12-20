@@ -1,0 +1,109 @@
+# OneArray Class
+
+The `OneArray` class is a lightweight wrapper around a NumPy array that provides a 1-based indexing interface. This is particularly useful in FEM for handling result arrays (like element forces or nodal temperatures) where the index corresponds to a physical entity (element 1, node 2, etc.) rather than a zero-based array position.
+
+This class eliminates the need for manual index translation (e.g., `results[i-1]`) and makes the code more readable and less prone to off-by-one errors.
+
+## Initialization
+
+You can create a `OneArray` from any array-like object, such as a Python list or a NumPy array.
+
+**Signature:**
+```python
+class OneArray(data)
+```
+
+**Parameters:**
+
+- `data` (array-like): The data to be wrapped. The first element of this data will correspond to index `1`.
+
+**Example:**
+```{python}
+# | code-fold: false
+from mechanicskit import OneArray
+
+# Create from a list of element forces
+forces = OneArray([100.5, -200.0, 350.1])
+```
+
+---
+
+## Accessing Data (Get and Set)
+
+You can get and set items using standard square bracket notation, but with 1-based indices.
+
+**Usage:**
+```python
+# Get the force in element 1
+force_1 = forces[1] # Returns 100.5
+
+# Get the force in element 3
+force_3 = forces[3] # Returns 350.1
+
+# Set the force in element 2
+forces[2] = -250.0
+
+# Access multiple elements
+subset = forces[[1, 3]] # Returns a NumPy array: array([100.5, 350.1])
+```
+
+```{python}
+#| echo: false
+import numpy as np
+from mechanicskit import Mesh
+
+coords = np.array([[0, 0], 
+                  [1, 0], 
+                  [0, 1]])
+# A single triangle connecting nodes 1, 2, and 3
+elements = np.array([[1, 2],[1, 3],[2, 3]]) 
+
+mesh = Mesh(coords, elements)
+```
+
+This works seamlessly inside loops when iterating with the `Mesh` class's 1-based iterators.
+
+```{python}
+# | code-fold: false
+for iel in mesh.element_numbers():
+    # No need for `forces[iel-1]`, just use the element number directly
+    print(f"Force in element {iel} is {forces[iel]}")
+```
+
+---
+
+## Interoperability with NumPy
+
+While `OneArray` provides a 1-based interface, it's often necessary to work with standard 0-based NumPy arrays for use in other libraries (like SciPy or Matplotlib).
+
+### Accessing the underlying data
+
+The `.data` attribute holds the original 0-based NumPy array.
+
+**Usage:**
+```{python}
+# | code-fold: false
+numpy_array = forces.data
+print(numpy_array[0]) # Prints 100.5
+```
+
+### The `to_numpy()` method
+The `to_numpy()` method also returns the underlying 0-based NumPy array.
+
+**Usage:**
+```{python}
+# | code-fold: false
+numpy_array = forces.to_numpy()
+numpy_array
+```
+
+### NumPy Operations
+The `OneArray` class supports standard element-wise arithmetic operations, and methods like `.max()`, `.min()`, `.sum()`, etc., which operate on the underlying NumPy array.
+
+**Example:**
+```{python}
+# | code-fold: false
+doubled_forces = forces * 2
+total_force = forces.sum()
+total_force
+```

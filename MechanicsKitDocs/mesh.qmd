@@ -1,0 +1,175 @@
+# Mesh Class
+
+The `Mesh` class is a fundamental component of `MechanicsKit`, designed to provide a pedagogical and user-friendly interface for Finite Element Method (FEM) data. It internally handles the translation between 1-based indexing (common in mathematical notation and FEM literature) and Python's 0-based indexing, allowing for cleaner and more intuitive code.
+
+## Initialization
+
+A `Mesh` object is created by providing nodal coordinates and element connectivity.
+
+**Signature:**
+```python
+class Mesh(node_coords, element_connectivity, 
+           element_type=None, dofs_per_node=None)
+```
+
+**Parameters:**
+
+- `node_coords` (array-like): An array of shape `(n_nodes, n_dim)` containing the coordinates of each node.
+- `element_connectivity` (array-like): An array of shape `(n_elements, nodes_per_element)` that defines which nodes belong to each element. **This must use 1-based node numbers.**
+- `element_type` (str, optional): The type of element (e.g., `'ROD'`, `'TRIA3'`). If not provided, it will be auto-detected based on the number of nodes per element.
+- `dofs_per_node` (int, optional): The number of degrees of freedom per node. If not provided, it is inferred from the element type and dimension.
+
+**Example:**
+```{python}
+# | code-fold: false
+import numpy as np
+from mechanicskit import Mesh
+
+coords = np.array([[0, 0], 
+                  [1, 0], 
+                  [0, 1]])
+# A single triangle connecting nodes 1, 2, and 3
+elements = np.array([[1, 2, 3]]) 
+
+mesh = Mesh(coords, elements) # Auto-detects 'TRIA3'
+mesh
+```
+
+---
+
+## Properties
+
+You can access basic information about the mesh through its properties.
+
+- `mesh.nodes`: Returns the full `(n_nodes, n_dim)` NumPy array of node coordinates.
+- `mesh.elements`: Returns the `(n_elements, nodes_per_element)` NumPy array of element connectivity, using **1-based** node numbers.
+- `mesh.connectivity`: An alias for `mesh.elements`.
+- `mesh.n_nodes`: The total number of nodes.
+- `mesh.n_elements`: The total number of elements.
+- `mesh.n_dim`: The spatial dimension of the mesh (2 for 2D, 3 for 3D).
+- `mesh.element_type`: The detected or specified element type.
+- `mesh.dofs_per_node`: The number of degrees of freedom at each node.
+- `mesh.n_dofs`: The total number of degrees of freedom in the mesh.
+
+## Summary
+
+### `summary`
+Prints a detailed summary of the mesh, including its properties, and a sample of node coordinates and element connectivity (using 1-based numbering).
+
+**Signature:** `summary()`
+
+**Example:**
+```{python}
+# | code-fold: false
+mesh.summary()
+```
+
+---
+
+## Accessing Data
+
+These methods allow you to retrieve information about specific nodes or elements using 1-based numbering.
+
+### `get_node`
+Returns the coordinates of one or more nodes.
+
+**Signature:** `get_node(node_number)`
+- `node_number` (int or list): A single node number or a list of node numbers.
+
+**Example:**
+```python
+# Get coordinates of node 3
+coords_3 = mesh.get_node(3)
+
+# Get coordinates of nodes 1 and 3
+coords_1_3 = mesh.get_node([1, 3])
+```
+
+### `get_element`
+Returns the connectivity (as 1-based node numbers) and the coordinates of the nodes for a specific element.
+
+**Signature:** `get_element(elem_number)`
+- `elem_number` (int): A single element number.
+
+**Returns:** A tuple `(node_numbers, node_coords)`.
+
+**Example:**
+```python
+node_nums, coords = mesh.get_element(1)
+```
+
+---
+
+## DOF Management
+
+### `dofs_for_node`
+This critical method returns the 0-based Degree of Freedom (DOF) indices associated with a 1-based node number. This is the primary bridge for applying results from a global system matrix back to the mesh.
+
+**Signature:** `dofs_for_node(node_number)`
+- `node_number` (int or list): A single node number or a list of node numbers.
+
+**Returns:** A NumPy array of 0-based DOF indices.
+
+**Example:**
+```python
+# For a 2D mesh, node 3 has DOFs 5 and 6 (in 1-based math)
+# The method returns the 0-based indices for array access.
+dofs = mesh.dofs_for_node(3)
+# dofs is now array([4, 5])
+
+# Use this to access a global displacement vector `u_global`
+displacement_at_node_3 = u_global[dofs]
+```
+
+---
+
+## Iterators
+
+For clean, readable loops, the `Mesh` class provides iterators that yield 1-based numbers.
+
+- `mesh.element_numbers()`: Yields element numbers from 1 to `n_elements`.
+- `mesh.node_numbers()`: Yields node numbers from 1 to `n_nodes`.
+- `mesh.iter_elements()`: Yields a tuple `(elem_number, node_numbers, coords)` for each element.
+- `mesh.iter_nodes()`: Yields a tuple `(node_number, coords)` for each node.
+
+**Example:**
+```{python}
+# | code-fold: false
+# Calculate the length of each element
+for iel, node_nums, coords in mesh.iter_elements():
+    length = np.linalg.norm(coords[1] - coords[0])
+    print(f"Element {iel} has length {length:.2f}")
+```
+
+---
+
+## Field Management
+
+These methods allow you to associate data fields (like forces or temperatures) with the mesh and access them using 1-based indexing via the `OneArray` wrapper.
+
+### `Add_Nodal_Field`
+Adds a data field for each node.
+
+**Signature:** `Add_Nodal_Field(name, data)`
+
+**Example:**
+```{python}
+# | code-fold: false
+temps = mesh.Add_Nodal_Field('temperature', [20.0, 25.0, 30.0])
+print(temps[2]) # Access temperature at node 2
+```
+
+### `Add_Element_Field`
+Adds a data field for each element.
+
+**Signature:** `Add_Element_Field(name, data)`
+
+**Example:**
+```{python}
+# | code-fold: false
+forces = mesh.Add_Element_Field('forces', [100.0])
+print(forces[1]) # Access force in element 1
+```
+
+---
+

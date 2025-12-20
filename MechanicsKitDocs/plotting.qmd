@@ -1,0 +1,100 @@
+# Plotting Functions
+
+This page documents the high-level plotting functions `patch` and `fplot` provided by `MechanicsKit`.
+
+---
+
+## `patch`
+
+The `patch` function is a versatile plotting tool designed to mimic the functionality of MATLAB's `patch` command. It is primarily used for visualizing FEM meshes, and it can handle both line elements (like trusses) and surface elements (like triangles and quads) in 2D and 3D.
+
+It uses a "Faces/Vertices" notation and naturally supports 1-based indexing for element connectivity, making it easy to use directly with `Mesh` objects.
+
+**Signature:**
+```python
+def patch(*args, ax=None, return_mappable=False, **kwargs)
+```
+
+**Key Parameters (passed as name-value pairs or keywords):**
+
+- `Faces` (array): The element connectivity array, shape `(n_elements, nodes_per_element)`. Can be 1-based.
+- `Vertices` (array): The node coordinates array, shape `(n_nodes, n_dim)`.
+- `FaceVertexCData` or `CData` (array): The color data to be mapped to the plot. This can be per-vertex (for interpolated colors) or per-face (for flat colors).
+- `FaceColor` (str): Determines how faces are colored.
+    - `'flat'` (default): Each element gets a single, uniform color.
+    - `'interp'`: Colors are interpolated smoothly across the element based on vertex data.
+    - A color string (e.g., `'blue'`) or RGB tuple for a uniform color.
+- `EdgeColor` (str): The color of the element edges.
+- `LineWidth` (float): The width of the element edges.
+- `cmap` (str): The name of the colormap to use (e.g., `'jet'`, `'viridis'`).
+- `interpolation_method` (str, default `'auto'`): For 2D interpolated plots, chooses between `'tricontourf'` (high quality) and `'tripcolor'` (high performance). The `'auto'` setting intelligently selects the best method based on mesh size and colormap.
+
+**Example: Plotting a truss with color-coded forces**
+```python
+import numpy as np
+import mechanicskit as mk
+
+# Mesh data
+P = np.array([[0, 0], [1, 0], [0.5, 0.866]])
+elements = np.array([[1, 2], [2, 3], [3, 1]])
+
+# Element forces
+forces = np.array([100, -50, 75])
+
+# Create plot
+fig, ax = plt.subplots()
+mk.patch(
+    Faces=elements,
+    Vertices=P,
+    CData=forces,
+    FaceColor='flat', # Use flat color for each element
+    LineWidth=3,
+    cmap='RdBu_r' # Red for tension, blue for compression
+)
+mk.colorbar(label="Element Force (N)")
+ax.set_aspect('equal')
+plt.show()
+```
+
+---
+
+## `fplot`
+
+The `fplot` function provides a convenient way to plot symbolic expressions from SymPy, similar to MATLAB's `fplot`. It automatically handles the conversion from a symbolic expression to a numerical function and evaluates it over a specified range. It supports both standard 2D plots and parametric curves.
+
+**Signature:**
+```python
+def fplot(*args, range=(-5, 5), ax=None, npoints=100, **kwargs)
+```
+
+**Parameters:**
+
+- `*args`: The symbolic expression(s) to plot.
+    - For 2D plots: `fplot(expression, [parameter])`
+    - For parametric plots: `fplot(x_expression, y_expression, [parameter])`
+    If the `parameter` is not provided, `fplot` will try to infer it (looking for common variables like `x` or `t`).
+- `range` (tuple): The `(start, end)` range for the independent parameter.
+- `ax` (matplotlib.axes.Axes, optional): The axes to plot on.
+- `npoints` (int): The number of points to evaluate.
+- `**kwargs`: Other keyword arguments to pass to `matplotlib.pyplot.plot` (e.g., `color`, `linewidth`, `label`).
+
+**Example: Plotting a sine function**
+```python
+import sympy as sp
+from mechanicskit import fplot
+import matplotlib.pyplot as plt
+
+x = sp.Symbol('x')
+fplot(sp.sin(x) * x, range=(-10, 10), color='purple', label=r'$x \sin(x)$')
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+
+**Example: Parametric Plot (Circle)**
+```python
+t = sp.Symbol('t')
+fplot(sp.cos(t), sp.sin(t), range=(0, 2 * np.pi))
+plt.axis('equal')
+plt.show()
+```

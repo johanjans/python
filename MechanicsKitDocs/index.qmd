@@ -1,0 +1,17 @@
+# MechanicsKit API Reference
+
+This section provides a detailed reference for the `MechanicsKit` library API.
+
+## Core Components
+
+-   [**LaTeX Display**](latex_display.qmd): Functions for rendering NumPy and SymPy objects as LaTeX.
+-   [**Mesh**](mesh.qmd): The `Mesh` class for 1-based FEM data structures.
+-   [**OneArray**](onearray.qmd): A 1-based array wrapper for NumPy arrays.
+-   [**Plotting**](plotting.qmd): High-level plotting functions `patch` and `fplot`.
+-   [**Colormaps**](colormaps.qmd): Utilities for working with colormaps.
+
+---
+
+## Quick Reference
+
+This content can be generated from the `quick_ref` function in `help.py`.

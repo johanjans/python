@@ -1,0 +1,78 @@
+# LaTeX Display Functions
+
+This page documents functions related to the pretty-printing of NumPy arrays and SymPy objects as LaTeX in Jupyter and Marimo notebooks.
+
+## `la` (LatexArray)
+
+The `la` object is the primary and most convenient way to render arrays. It can be used with pipe syntax (`|`) for a clean, readable workflow.
+
+**Usage:**
+```{python}
+# | code-fold: false
+import numpy as np
+from mechanicskit import la
+
+# Create a NumPy array
+my_array = np.array([[1, 2], [3, 4]])
+
+# Use the pipe syntax to render it
+my_array | la
+```
+
+This will produce a nicely formatted LaTeX matrix in the notebook output.
+
+---
+
+## `LatexArray`
+
+This is the class that does the actual work of formatting. The `la` object is a convenient wrapper around this class. You can also use it directly.
+
+**Signature:**
+```python
+class LatexArray(array)
+```
+
+**Parameters:**
+- `array`: The NumPy array to be displayed.
+
+**Usage:**
+```{python}
+# | code-fold: false
+from mechanicskit import LatexArray
+import numpy as np
+
+LatexArray(np.arange(10))
+```
+
+---
+
+## `display_labeled_latex`
+
+This function is used to display a NumPy array or SymPy object with a preceding LaTeX label, which is useful for creating clear, readable equations in educational notebooks.
+
+**Signature:**
+```python
+def display_labeled_latex(label, array, precision=2,
+                          arrayStretch=1.5, show_shape=False)
+```
+
+**Parameters:**
+
+- `label` (str): The LaTeX string to display before the array (e.g., `r"\\mathbf{R} = "`).
+- `array` (array_like or sympy object): The NumPy array or SymPy object to display.
+- `precision` (int, optional): The number of decimal places for floating-point numbers. Defaults to 2.
+- `arrayStretch` (float, optional): A multiplier for the vertical spacing of rows in the matrix. Defaults to 1.5.
+- `show_shape` (bool, optional): If `True`, displays the shape of the array as a subscript. Defaults to `False`.
+
+**Usage:**
+```{python}
+# | code-fold: false
+import numpy as np
+from mechanicskit import display_labeled_latex
+
+A = np.array([[1.234, 5.678], 
+              [9.101, 11.121],
+              [np.pi, np.sqrt(2)]])
+
+display_labeled_latex(r"\mathbf{A} = ", A, precision=2, show_shape=True)
+```

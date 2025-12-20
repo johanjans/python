@@ -1,0 +1,58 @@
+# Colormap Utilities
+
+This page documents utilities for working with colormaps in `MechanicsKit`, primarily the convenient `colorbar` function.
+
+---
+
+## `colorbar`
+
+The `colorbar` function (also available as `cmap` for MATLAB compatibility) provides a simple way to add a colorbar to a plot created with `mechanicskit.patch`.
+
+A key feature of this function is that when called without arguments, it **automatically retrieves** the colormap and data limits from the most recent `patch` plot, eliminating the need to manually create and configure a `ScalarMappable`.
+
+**Signature:**
+```python
+def colorbar(cmap=None, limits=None, clims=None, 
+             ax=None, label=None, ticks=None, 
+             orientation='vertical', **kwargs)
+```
+
+**Key Parameters:**
+
+- `cmap` (str, optional): The name of the colormap. If `None`, it's retrieved from the last `patch` call.
+- `limits` or `clims` (tuple, optional): The `(vmin, vmax)` limits for the color data. If `None`, they are retrieved from the last `patch` call or inferred from the data.
+- `ax` (matplotlib.axes.Axes, optional): The axes to associate the colorbar with.
+- `label` (str, optional): A text label for the colorbar.
+- `ticks` (array-like, optional): Specific tick locations for the colorbar.
+- `orientation` (str, optional): `'vertical'` (default) or `'horizontal'`.
+
+**Automatic Mode (Most Common Usage):**
+
+The simplest way to use `colorbar` is to call it directly after `patch`.
+
+```python
+import numpy as np
+import mechanicskit as mk
+import matplotlib.pyplot as plt
+
+# Mesh data
+P = np.array([[0, 0], [1, 0], [0.5, 0.866]])
+elements = np.array([[1, 2], [2, 3], [3, 1]])
+forces = np.array([100, -50, 75])
+
+# Create the plot
+fig, ax = plt.subplots()
+mk.patch(Faces=elements, Vertices=P, CData=forces, cmap='coolwarm')
+
+# Add the colorbar automatically
+mk.colorbar(label="Element Force (N)")
+
+plt.show()
+```
+
+**Discrete vs. Continuous Colorbars:**
+
+The `colorbar` function is intelligent enough to create the correct type of colorbar based on the `patch` call:
+
+- If `patch` was used with `FaceColor='flat'` (for per-element data), `colorbar` will create a **discrete** colorbar with distinct color bands.
+- If `patch` was used with `FaceColor='interp'` (for per-vertex data), `colorbar` will create a **continuous**, smooth gradient colorbar.
