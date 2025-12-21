@@ -59,12 +59,12 @@ book:
     - part: "Applied Mathematics"
       chapters:
         - AppliedMaths/Intro_to_applied_maths.ipynb
-        - AppliedMaths/Numeric_Differentiation.ipynb
-        - AppliedMaths/Numeric_Integration.ipynb
+        - AppliedMaths/Interpolation_Methods.ipynb
+        - AppliedMaths/Numerical_Differentiation.ipynb
+        - AppliedMaths/Numerical_Integration.ipynb
         - AppliedMaths/Time_Integration_Methods.ipynb
         - AppliedMaths/Differential_Equations.ipynb
         - AppliedMaths/Root_Finding_Methods.ipynb
-        - AppliedMaths/Interpolation_Methods.ipynb
         - AppliedMaths/Interpolation2D.ipynb
         - AppliedMaths/Optimization_Methods.ipynb
     
