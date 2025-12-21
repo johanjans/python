@@ -88,6 +88,8 @@ book:
         - MechanicsKitDocs/plotting.qmd
         - MechanicsKitDocs/colormaps.qmd
         - MechanicsKitDocs/gaussint.qmd
+        - MechanicsKitDocs/examples_fplot.ipynb
+        - MechanicsKitDocs/examples_patch.ipynb
 
 #comments:
 #  hypothesis: true  
