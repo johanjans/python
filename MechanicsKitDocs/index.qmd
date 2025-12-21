@@ -8,6 +8,7 @@ This section provides a detailed reference for the `MechanicsKit` library API.
 -   [**Mesh**](mesh.qmd): The `Mesh` class for 1-based FEM data structures.
 -   [**OneArray**](onearray.qmd): A 1-based array wrapper for NumPy arrays.
 -   [**Plotting**](plotting.qmd): High-level plotting functions `patch` and `fplot`.
+-   [**Gaussian Quadrature**](gaussint.qmd): Numerical integration with `gaussint`.
 -   [**Colormaps**](colormaps.qmd): Utilities for working with colormaps.
 
 ---

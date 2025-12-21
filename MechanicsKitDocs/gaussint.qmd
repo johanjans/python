@@ -1,0 +1,75 @@
+# Gaussian Quadrature
+
+This page documents the `gaussint` function for numerical integration using Gaussian quadrature.
+
+---
+
+## `gaussint`
+
+The `gaussint` function provides a flexible way to compute definite integrals using Gaussian quadrature. It is designed to work seamlessly with SymPy symbolic expressions, Python functions (including lambdas), and lambdified expressions. This makes it a versatile tool for both symbolic and numeric workflows.
+
+**Signature:**
+```python
+def gaussint(f, a, b, n=5, param=None)
+```
+
+**Key Parameters:**
+
+- `f`: The function to integrate. It can be a SymPy expression, a Python function, or a lambdified expression.
+- `a` (float): The lower integration limit.
+- `b` (float): The upper integration limit.
+- `n` (int): The order of Gaussian quadrature (number of integration points). Default is 5.
+- `param` (sympy.Symbol, optional): The integration variable for symbolic expressions. This is only needed if the expression has multiple free symbols.
+
+**Example: Integrating a Symbolic Expression**
+```{python}
+# | code-fold: false
+import sympy as sp
+import mechanicskit as mk
+import numpy as np
+
+x = sp.Symbol('x')
+# Exact integral is 2.0
+integral_value = mk.gaussint(sp.sin(x), 0, np.pi, n=10)
+print(f"The integral is: {integral_value}")
+```
+
+**Example: Integrating a Python Lambda Function**
+```{python}
+# | code-fold: false
+import mechanicskit as mk
+import numpy as np
+
+# A simple quadratic function
+f = lambda x: x**2 + 2*x + 1
+
+# Exact integral from 0 to 2 is 8.666...
+integral_value = mk.gaussint(f, 0, 2, n=3)
+print(f"The integral is: {integral_value}")
+```
+
+**Example: Higher-Order Integration**
+
+For more complex functions, a higher order `n` can provide better accuracy. Let's integrate a more oscillatory function.
+
+```{python}
+# | code-fold: false
+import sympy as sp
+import mechanicskit as mk
+import numpy as np
+
+x = sp.Symbol('x')
+f_expr = sp.cos(x) * sp.exp(-x/5)
+
+# Integrate from 0 to 4*pi
+integral_low_order = mk.gaussint(f_expr, 0, 4 * np.pi, n=5)
+integral_high_order = mk.gaussint(f_expr, 0, 4 * np.pi, n=20)
+
+# For comparison, let's compute the symbolic (exact) integral
+exact_integral = sp.integrate(f_expr, (x, 0, 4 * np.pi)).evalf()
+
+print(f"Integral with n=5:  {integral_low_order:.6f}")
+print(f"Integral with n=20: {integral_high_order:.6f}")
+print(f"Exact integral:     {exact_integral:.6f}")
+```
+As you can see, increasing the number of quadrature points significantly improves the accuracy of the result.

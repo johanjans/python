@@ -87,6 +87,7 @@ book:
         - MechanicsKitDocs/onearray.qmd
         - MechanicsKitDocs/plotting.qmd
         - MechanicsKitDocs/colormaps.qmd
+        - MechanicsKitDocs/gaussint.qmd
 
 #comments:
 #  hypothesis: true  
