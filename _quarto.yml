@@ -70,6 +70,7 @@ book:
     
     - part: "Applications"
       chapters:
+        - Applications/index.qmd
         - Applications/FEM_in_python.ipynb
         - Applications/SystematicTrussAnalysis.ipynb
         - Applications/TrussViz.ipynb

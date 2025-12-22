@@ -1,0 +1,29 @@
+---
+title: "Introduction to Applications"
+---
+
+## From Theory to Practice
+
+Having established the principles and methods of computational mathematics, we now turn to their application in engineering contexts. The problems presented here are not contrived exercises designed for hand calculation but realistic scenarios drawn from kinematics, structural mechanics, and computational design. Each application demonstrates how mathematical principles, computational tools, and engineering judgment combine to solve problems of genuine complexity.
+
+As you work through these applications, observe how the concepts from other sections integrate into coherent solutions. Numerical integration appears in time-stepping schemes for dynamics. Data structures organize nodal coordinates and element connectivity. Symbolic algebra verifies force equilibrium before numerical evaluation. This synthesis, combining disparate mathematical and computational techniques to solve engineering problems, represents the core competency we develop throughout this course.
+
+These applications represent larger, open-ended problems where multiple solution approaches exist and the path forward is rarely linear. We can ask different questions about each problem, dig deeper into specific aspects, or reformulate our objectives as we proceed. This mirrors how these problems were originally solved, both by us and by students who have worked through them. The problems are not meant to be easy; they are meant to prepare you for what you will encounter during your studies and professional practice.
+
+Students sometimes ask whether we have ready-made scripts that solve specific problems they encounter in thesis or project work. The honest answer is that we usually do not, but what we possess is a certain skill set that we want you to develop as well: computational thinking. The hard truth is that acquiring this skill set requires substantial practice. This is why you receive many problems to solve in Canvas. The actual learning happens when you wrestle with a problem on your own, without help initially. Getting it right can take hours. We strongly encourage discussion with other students, however. Checking approaches and verifying solutions is more productive in groups, and all parties learn from the exchange.
+
+The applications vary in scope and sophistication. Some emphasize physical insight through visualization and parameter studies. Others focus on systematic computational workflows applicable to broad problem classes. Several demonstrate the interplay between analytical understanding and numerical implementation, showing how each perspective illuminates aspects invisible to the other. What unifies them is the methodology: we formulate problems precisely, leverage computational tools strategically, and interpret results critically to extract engineering insight.
+
+## Notebooks
+
+*   [Computational Thinking](./ComputationalThinking.ipynb)
+*   [FEM in Python](./FEM_in_python.ipynb)
+*   [Kinematics](./Kinematics.ipynb)
+*   [Pendulum Simulation](./PendulumSimulation.ipynb)
+*   [Systematic Truss Analysis](./SystematicTrussAnalysis.ipynb)
+*   [Truss Visualization](./TrussViz.ipynb)
+
+## Quarto Documents
+
+*   [Fusion 360 API](./fusion360api.qmd)
+*   [Parsing Files](./parsing_files.qmd)
