@@ -58,7 +58,7 @@ book:
         
     - part: "Applied Mathematics"
       chapters:
-        - AppliedMaths/Intro_to_applied_maths.ipynb
+        - AppliedMaths/index.ipynb
         - AppliedMaths/Interpolation_Methods.ipynb
         - AppliedMaths/Numerical_Differentiation.ipynb
         - AppliedMaths/Numerical_Integration.ipynb
