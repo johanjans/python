@@ -96,7 +96,6 @@ book:
 #  hypothesis: true  
 filters:
   - lastModified.lua
-  - section-bibliographies
 bibliography: references.bib
 csl: elsevier-vancouver.csl
 reference-section-title: "References"
@@ -112,7 +111,6 @@ format:
       - hint.lua
       - color-emphasis.lua
       - lastModified.lua
-      - section-bibliographies
     toc: true
     code-fold: True
     html-math-method:
