@@ -2,6 +2,16 @@
 
 This section provides a detailed reference for the `MechanicsKit` library API.
 
+## Installation
+
+The library can be found [here](https://github.com/cenmir/MechanicsKit).
+
+Install it using
+
+```bash
+uv pip install git+https://github.com/cenmir/MechanicsKit.git
+```
+
 ## Core Components
 
 -   [**LaTeX Display**](latex_display.qmd): Functions for rendering NumPy and SymPy objects as LaTeX.
