@@ -54,7 +54,9 @@ book:
     - part: "Matplotlib"
       chapters:
         - MatplotLib/plotting_examples.ipynb
+        - MatplotLib/Animations.ipynb
         - MatplotLib/ReplicatingInterp.qmd
+
         
     - part: "Applied Mathematics"
       chapters:
