@@ -71,13 +71,13 @@ book:
     - part: "Applications"
       chapters:
         - Applications/index.qmd
+        - Applications/ComputationalThinking.ipynb
+        - Applications/Kinematics.ipynb
         - Applications/FEM_in_python.ipynb
         - Applications/SystematicTrussAnalysis.ipynb
         - Applications/TrussViz.ipynb
         - Applications/parsing_files.qmd
         - Applications/fusion360api.qmd
-        - Applications/Kinematics.ipynb
-        - Applications/ComputationalThinking.ipynb
         - Applications/PendulumSimulation.ipynb
 
     - part: "MechanicsKit API"
