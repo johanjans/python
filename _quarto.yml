@@ -24,7 +24,7 @@ book:
   sidebar:
     #style: "floating"
     search: true
-    collapse-level: 2
+    collapse-level: 1
     
   chapters:
     - index.qmd
@@ -121,8 +121,10 @@ format:
     header-includes: |
       <link href='https://fonts.googleapis.com/css?family=Vollkorn' rel='stylesheet'>
       <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css">
-    include-after-body: 
+    include-after-body:
       - footer.html
+      - text: |
+          <script src="/js/sidebar-state.js"></script>
     number-sections: true
     number-depth: 1
       
