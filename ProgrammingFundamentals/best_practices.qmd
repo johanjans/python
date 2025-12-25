@@ -29,9 +29,13 @@ cylinder_volume = 3.14159 * radius**2 * height
 
 If you're copying and pasting code, write a function instead. One fix beats five.
 
-## KISS: Keep It Simple
+## KISS: Keep It Simple Stupid
 
 A simple solution that works beats a clever one that's hard to debug.
+
+## RTFM: Read The Fucking Manual
+
+Learn how to find and read documentation.
 
 ## Style Matters (PEP 8)
 
