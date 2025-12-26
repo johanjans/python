@@ -7,4 +7,462 @@ jupyter: python3
 
 # Fusion360 API
 
-Examples!
+This guide will help you get started with the Fusion 360 API and develop custom scripts for automating CAD tasks.
+
+## Getting Started
+
+### Installing Fusion 360
+
+1. **Download Fusion 360**
+   - Visit [Autodesk Fusion 360 download page](https://www.autodesk.com/products/fusion-360/free-trial)
+   - Click "Download free trial"
+
+2. **Get a Student License**
+   - During registration, use your **university email address**
+   - This gives you free access to Fusion 360 for educational purposes
+   - The student license is valid for 1 year and can be renewed
+   - Visit [Autodesk Education Community](https://www.autodesk.com/education/edu-software/overview) for more information
+
+3. **Complete Installation**
+   - Run the installer and follow the prompts
+   - Sign in with your Autodesk account
+   - Verify your educational status if prompted
+
+### Setting Up Your Development Environment
+
+Fusion 360 scripts are written in Python. For efficient development, we'll use Visual Studio Code alongside Fusion 360.
+
+1. **Install VS Code** from [https://code.visualstudio.com/](https://code.visualstudio.com/)
+2. **Install Python extension** in VS Code for syntax highlighting and IntelliSense
+
+### Your First Script: Hello World
+
+Let's create a simple script that displays a message in Fusion 360.
+
+#### Step 1: Create the Script File
+
+1. In Fusion 360, go to **Utilities** → **ADD-INS** → **Scripts and Add-Ins**
+2. Click the **+ button** on the top → **Create script or Add-In**
+3. Leave the default **Script** 
+4. Name it `HelloWorld`
+5. Leave the default programming language: **Python**
+6. This creates a folder in your scripts directory (typically `~/Autodesk/Autodesk Fusion 360/API/Scripts/`)
+
+#### Step 2: Edit in VS Code
+
+The **HelloWorld** script will appear in the list. 
+
+Right-click and choose **Edit in code editor** to open the project in vs code.
+
+You will see this code in the **HelloWorld.py**:
+
+```python
+"""This file acts as the main module for this script."""
+
+import traceback
+import adsk.core
+import adsk.fusion
+# import adsk.cam
+
+# Initialize the global variables for the Application and UserInterface objects.
+app = adsk.core.Application.get()
+ui  = app.userInterface
+
+
+def run(_context: str):
+    """This function is called by Fusion when the script is run."""
+
+    try:
+        # Your code goes here.
+        ui.messageBox(f'"{app.activeDocument.name}" is the active Document.')
+    except:  #pylint:disable=bare-except
+        # Write the error message to the TEXT COMMANDS window.
+        app.log(f'Failed:\n{traceback.format_exc()}')
+```
+
+:::{.callout-important}
+You cannot run the python file from VS-Code! It needs to be run from Fusion 360 as a script or add-in.
+:::
+
+#### Step 3: Run the Script
+
+1. In Fusion 360, open **Tools** → **ADD-INS** → **Scripts and Add-Ins**
+2. Under "My Scripts", select `HelloWorld`
+3. Click **Run**
+4. You should see a message box with "Untitled is the active Document."
+
+## Workflow: VS Code + Fusion 360
+
+The typical development workflow is:
+
+1. **Edit in VS Code**: Write/modify your Python script
+2. **Save the file** (Ctrl+S)
+3. **Run/Reload in Fusion 360**:
+  Open the scripts and add-ins menu (Shift+S)
+   - For scripts: Click Run in the Scripts dialog
+   - For add-ins: Click Stop, then Run again to reload changes
+4. **Test the functionality** in Fusion 360
+5. **Debug if needed** (see Debugging section below)
+6. **Iterate**: Return to step 1
+
+**Tips:**
+- Keep both VS Code and Fusion 360 open side-by-side
+- Use VS Code's Python extension for autocomplete and error checking
+- Comment your code thoroughly for future reference
+
+## Reference Materials
+
+### Official Documentation
+
+- **[Fusion 360 API Reference](https://help.autodesk.com/view/fusion360/ENU/?guid=GUID-A92A4B10-3781-4925-94C6-47DA85A4F65A)**: Complete API documentation
+- **[Python Documentation](https://help.autodesk.com/view/fusion360/ENU/?guid=GUID-7B5A90C8-E94C-48DA-B16B-430729B734DC)**: Fusion-specific Python guide
+
+### Key API Namespaces
+
+- `adsk.core`: Core application functionality (UI, events, geometry)
+- `adsk.fusion`: Fusion-specific features (bodies, components, features)
+- `adsk.cam`: CAM-related functionality
+
+### Additional Tutorials
+
+- [Beginner Intro to API in Fusion 360](https://www.youtube.com/watch?v=YR-TNIDhI7c&list=PLBDfGh8A8kXWGS4G5TNpHHVSIQPnSXCFV)
+
+## Example: Sequential Bridges for 3D Printing
+
+This example is based on [Fusion360GenerateSequentialBridges](https://github.com/cenmir/Fusion360GenerateSequentialBridges).
+
+
+### What are Sequential Bridges?
+
+When 3D printing with FDM printers, overhanging features need support. Sequential bridges create stepped extrusions that allow the printer to build bridges progressively, layer by layer, without traditional support structures.
+
+![](https://github.com/cenmir/Fusion360GenerateSequentialBridges/raw/main/graphics/HowTo.gif){width=80% fig-align="center"}
+
+![](https://github.com/cenmir/Fusion360GenerateSequentialBridges/raw/main/graphics/HowToHole.gif){width=80% fig-align="center"}
+
+### The Code
+
+```python
+#Author-Your Name
+#Description-Generate sequential bridges for 3D printing
+
+import adsk.core, adsk.fusion, traceback
+
+# Configuration: Define extrusion amounts for each bridge layer
+# Adjust these values based on your layer height (e.g., 0.2mm)
+extrusionAmounts = ["-0.5 mm", "-0.25 mm"]
+
+def run(context):
+    ui = None
+    try:
+        app = adsk.core.Application.get()
+        ui = app.userInterface
+        design = adsk.fusion.Design.cast(app.activeProduct)
+
+        if not design:
+            ui.messageBox('No active Fusion design', 'Error')
+            return
+
+        # Get the root component
+        rootComp = design.rootComponent
+
+        # Prompt user to select faces
+        selection = ui.selectEntity('Select faces for bridging', 'Faces')
+        if not selection:
+            return
+
+        selectedFace = adsk.fusion.BRepFace.cast(selection.entity)
+
+        # Create extrusions for each bridge level
+        extrudes = rootComp.features.extrudeFeatures
+
+        for i, amount in enumerate(extrusionAmounts):
+            # Create a collection for the face
+            faces = adsk.core.ObjectCollection.create()
+            faces.add(selectedFace)
+
+            # Create extrude input
+            extrudeInput = extrudes.createInput(
+                faces,
+                adsk.fusion.FeatureOperations.NewBodyFeatureOperation
+            )
+
+            # Define distance
+            distance = adsk.core.ValueInput.createByString(amount)
+            extrudeInput.setDistanceExtent(False, distance)
+
+            # Create the extrusion
+            extrude = extrudes.add(extrudeInput)
+
+            # Update the selected face to the new surface for next iteration
+            if i < len(extrusionAmounts) - 1:
+                newBody = extrude.bodies.item(0)
+                selectedFace = newBody.faces.item(0)
+
+        ui.messageBox('Sequential bridges created successfully!')
+
+    except:
+        if ui:
+            ui.messageBox('Failed:\n{}'.format(traceback.format_exc()))
+```
+
+### How It Works
+
+1. **User selects a face** that needs bridging
+2. **Loop through extrusion amounts**: Each iteration creates a stepped layer
+3. **Create extrusion**: Uses the `extrudeFeatures` API
+4. **Update face reference**: The new surface becomes the base for the next layer
+
+### Customization
+
+Modify `extrusionAmounts` based on your printer's layer height and bridge requirements:
+
+```python
+# For 0.2mm layer height
+extrusionAmounts = ["-0.6 mm", "-0.4 mm", "-0.2 mm"]  # 3 steps
+
+# For 0.15mm layer height
+extrusionAmounts = ["-0.45 mm", "-0.30 mm", "-0.15 mm"]
+```
+
+## Project Preparation: Shampoo Bottle Level Lines
+
+For your project, you'll need to create level lines on a non-trivial shaped bottle that correspond to specific volumes (100ml, 200ml, etc.).
+
+### Key Challenge
+
+**Correlate volume with height**: Since the bottle shape is non-uniform, equal height intervals don't correspond to equal volume intervals.
+
+### Required API Functions
+
+####  Calculating Volume
+
+Use the `physicalProperties` to get volume:
+
+```python
+import adsk.core, adsk.fusion
+
+def get_body_volume(body):
+    """Get the volume of a body in cm³"""
+    app = adsk.core.Application.get()
+    design = adsk.fusion.Design.cast(app.activeProduct)
+
+    # Get physical properties
+    physicalProps = body.physicalProperties
+
+    # Volume is in cm³
+    volume_cm3 = physicalProps.volume
+
+    # Convert to ml (1 cm³ = 1 ml)
+    volume_ml = volume_cm3
+
+    return volume_ml
+
+# Example usage:
+# ui = app.userInterface
+# selection = ui.selectEntity('Select bottle body', 'Bodies')
+# body = adsk.fusion.BRepBody.cast(selection.entity)
+# volume = get_body_volume(body)
+# ui.messageBox(f'Volume: {volume:.2f} ml')
+```
+
+**API Reference**: [PhysicalProperties.volume](https://help.autodesk.com/view/fusion360/ENU/?guid=GUID-115B0D1C-AB81-4B6A-BEB5-70F6000AD657)
+
+#### Splitting Bodies with Planes
+
+To find the height for a specific volume, you'll need to create cutting planes:
+
+```python
+def create_construction_plane_at_height(rootComp, height_cm):
+    """Create a construction plane at specified height from XY plane"""
+
+    planes = rootComp.constructionPlanes
+    planeInput = planes.createInput()
+
+    # Offset from XY plane
+    offsetValue = adsk.core.ValueInput.createByReal(height_cm)
+    planeInput.setByOffset(
+        rootComp.xYConstructionPlane,
+        offsetValue
+    )
+
+    plane = planes.add(planeInput)
+    return plane
+
+def split_body_with_plane(rootComp, body, plane):
+    """Split a body using a construction plane"""
+
+    splitFaces = adsk.core.ObjectCollection.create()
+    splitFaces.add(plane)
+
+    splitFeatures = rootComp.features.splitBodyFeatures
+    splitInput = splitFeatures.createInput(
+        body,
+        splitFaces,
+        True  # True = split along both sides
+    )
+
+    splitFeature = splitFeatures.add(splitInput)
+    return splitFeature
+```
+
+**API References**:
+- [ConstructionPlanes](https://help.autodesk.com/view/fusion360/ENU/?guid=GUID-21acafba-2636-4747-b64f-3e47133a23f0)
+- [SplitBodyFeature](https://help.autodesk.com/view/fusion360/ENU/?guid=GUID-356556a7-cbdf-48ab-9ecf-5348a357cf37)
+
+#### Finding correct height given a volume
+
+This is where you need to create your own solution.
+
+#### Creating Sketches on Surfaces
+
+Once you have the correct height, create a sketch for the level line:
+
+```python
+def create_level_line_at_height(rootComp, body, height_cm, volume_ml):
+    """Create a sketch line at the specified height on the body surface"""
+
+    # Create construction plane at height
+    plane = create_construction_plane_at_height(rootComp, height_cm)
+
+    # Create sketch on the plane
+    sketches = rootComp.sketches
+    sketch = sketches.add(plane)
+    sketch.name = f"Level_{volume_ml}ml"
+
+    # Create intersection curve with body
+    # This projects the plane intersection onto a sketch
+    curves = sketch.intersectWithSketchPlane(body)
+
+    return sketch
+```
+
+**API Reference**: [Sketch.intersectWithSketchPlane](https://help.autodesk.com/view/fusion360/ENU/?guid=GUID-1EB28A55-7250-4694-A253-582B395AB234)
+
+### Project Tips
+
+1. **Start simple**: Test with a cylinder first where volume/height relationship is known
+2. **Validate volumes**: After creating level lines, verify by measuring the split volumes
+3. **Consider bottle orientation**: Make sure Z-axis is vertical (height direction)
+4. **Handle complex intersections**: Some bottles may have multiple intersection curves at one height
+
+## Debugging Your Scripts
+
+Debugging Fusion 360 scripts can be challenging since they run inside Fusion. Here are strategies:
+
+### Text Commands Window
+
+Use Fusion's Text Commands for output:
+
+```python
+# Show the Text Commands window
+app = adsk.core.Application.get()
+ui = app.userInterface
+
+# Write debug messages
+ui.palettes.itemById('TextCommands').writeText('Debug: Variable value = ' + str(myVar))
+```
+
+To open Text Commands: **Tools** → **Text Commands** (or Ctrl+Shift+P)
+
+### Message Boxes for Checkpoints
+
+```python
+ui.messageBox(f'Checkpoint: volume = {volume}, height = {height}')
+```
+
+**Caution**: Don't overuse in loops - it will require clicking OK many times!
+
+### Try-Except Blocks with Traceback
+
+Always wrap your code:
+
+```python
+import traceback
+
+try:
+    # Your code here
+    risky_operation()
+except:
+    if ui:
+        ui.messageBox('Failed:\n{}'.format(traceback.format_exc()))
+```
+
+This shows the exact line number and error type.
+
+### Logging to File
+
+For complex debugging, write to a log file:
+
+```python
+import os
+from datetime import datetime
+
+def log_debug(message):
+    """Write debug message to log file"""
+    log_path = os.path.join(
+        os.path.expanduser('~'),
+        'fusion360_debug.log'
+    )
+
+    with open(log_path, 'a') as f:
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        f.write(f'[{timestamp}] {message}\n')
+
+# Usage:
+log_debug(f'Volume calculated: {volume}')
+log_debug(f'Height found: {height}')
+```
+
+Check the log file at `~/fusion360_debug.log`
+
+
+### Incremental Development
+
+- **Build in small steps**: Test each function individually
+- **Use simple test cases**: Start with basic shapes (cube, cylinder)
+- **Verify intermediate results**: Check values at each stage
+- **Comment liberally**: Future you will thank present you
+
+### Common Errors and Solutions
+
+**Error**: `AttributeError: 'NoneType' object has no attribute 'X'`
+- **Cause**: Object not found or invalid selection
+- **Fix**: Always check if objects exist before using them
+
+```python
+selection = ui.selectEntity('Select body', 'Bodies')
+if not selection:
+    ui.messageBox('No selection made')
+    return
+```
+
+**Error**: `RuntimeError: 2 : InternalValidationError : offset`
+- **Cause**: Invalid parameter value (e.g., negative extrusion where not allowed)
+- **Fix**: Validate inputs and use `ValueInput.createByReal()` for numeric values
+
+**Error**: Script runs once but fails on subsequent runs
+- **Cause**: Objects/handlers not cleaned up properly
+- **Fix**: Implement proper `stop()` function to remove UI elements and clear handlers
+
+## Summary
+
+You now have:
+
+- Setup instructions for Fusion 360 with student license
+- A working Hello World example with toolbar button
+- Understanding of the VS Code + Fusion workflow
+- A practical Sequential Bridges example
+- API functions for starting the shampoo bottle project
+- Debugging strategies
+
+**Next Steps:**
+
+1. Install Fusion 360 and VS Code
+2. Run the Hello World examples
+3. Study the Sequential Bridges code
+4. Start experimenting with volume calculations on simple shapes
+5. Build up to your shampoo bottle project
+
+**Remember**: The Fusion 360 API has a learning curve, but with practice and the debugging techniques above, you'll be automating complex CAD tasks in no time!
+
