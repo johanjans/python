@@ -1,3 +1,9 @@
+# Basic usage:
+# sudo systemctl restart marimo-python-server.service
+# accessable at python.ju.se/marimo
+# Edit /etc/systemd/system/marimo-server.service
+# Nginx config: /etc/nginx/sites-available/python.conf
+
 from typing import Annotated, Callable, Coroutine
 from fastapi.responses import HTMLResponse, RedirectResponse
 import marimo
@@ -84,4 +90,4 @@ app.mount("/marimo/", server.build())
 # Run the server
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="localhost", port=3000)
+    uvicorn.run(app, host="localhost", port=3100)
