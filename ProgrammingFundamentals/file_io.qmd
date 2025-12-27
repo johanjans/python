@@ -7,11 +7,11 @@ jupyter: python3
 
 # File I/O
 
-File I/O is the process of reading data from a file or writing data to a file. This is crucial for handling persistent data, configuration, and data sets. 
+File I/O is the process of reading data from files or writing data to files. Programs frequently need to persist data beyond a single execution, load configuration settings, or process datasets stored externally. Python provides straightforward mechanisms for these operations through its built-in file handling capabilities.
 
 ## Opening and closing files
 
-To interact with any file, you must first open it. The best practice is to use the `with` statement, which automatically handles closing the file, even if errors occur. The `open()` function requires a file path, and a `mode` (what you intend to do with the file). 
+To interact with any file, we must first open it. The best practice is to use the `with` statement, which automatically handles closing the file even if errors occur during processing. The `open()` function requires a file path and a mode string that specifies our intended operations. 
 
 | Mode | Purpose                                                                                |
 | ---- | -------------------------------------------------------------------------------------- | 
@@ -28,15 +28,11 @@ with open("data.txt", 'r') as file:
     # The file is automatically closed when the 'with' block ends
 ````
 
-Files are fundamentally stored as sequences of bytes, but how those bytes are interpreted defines the format. 
-
-In ASCII/Text format, bytes are interpreted as human-readable characters (letters, numbers, symbols) according to an encoding standard (like UTF-8 🔥 or ASCII). This is what happens when using the default text mode (`t`). This is common for files such as source code, configuration files, text logs, and simple data tables (CSV).
-
-In binary format, bytes are read directly as raw data (e.g., machine code, image pixels, compressed files) without character encoding. This is what happens when using binary mode (`b`). This is common for images (PNG, JPG), audio files, executables, and serialized Python objects (using the pickle module).
+Files are fundamentally stored as sequences of bytes, but how we interpret those bytes defines the format. In text mode (the default mode `t`), bytes are interpreted as human-readable characters according to an encoding standard like UTF-8 or ASCII. Text mode suits source code files, configuration files, logs, and simple data tables such as CSV. In binary mode (`b`), we read bytes directly as raw data without character encoding interpretation. Binary mode applies to images, audio files, executables, and serialized Python objects created with modules like pickle.
 
 ## Reading from text files
 
-Text files are the simplest format, typically used for configuration or raw log data. Three commonly used methods are: `file.read()` which reads the entire file content into a single string, `file.readline()` which reads just one line from the file, and `file.readlines()` which reads all lines into a **list of strings**, where each element is one line.
+Text files represent the simplest format, typically used for configuration or raw log data. Python provides three commonly used methods: `file.read()` reads the entire file content into a single string, `file.readline()` reads just one line from the file, and `file.readlines()` reads all lines into a *list of strings* where each element represents one line. For large files, iterating directly over the file object proves more memory-efficient than loading everything at once.
 
 ````python
 # Example: Reading line by line (efficient for large files)
@@ -47,7 +43,7 @@ with open("data.txt", 'r') as f:
 
 ## Writing to text files
 
-Use the `write()` method to place strings into the file. Remember the need for explicit newline characters (`\n`).
+We use the `write()` method to place strings into the file. Note that we must include explicit newline characters (`\n`) to create line breaks—unlike `print()`, the `write()` method does not add them automatically.
 
 ````python
 with open("output.txt", 'w') as f:
@@ -73,7 +69,7 @@ with open('grades.csv', 'r', newline='') as f:
 
 ## Writing to CSV-files
 
-The `csv.writer` object formats your data (lists or tuples) into proper CSV syntax.
+The `csv.writer` object formats our data (lists or tuples) into proper CSV syntax, handling quoting and escaping automatically.
 
 ````python
 import csv
@@ -90,3 +86,255 @@ with open('products.csv', 'w', newline='') as f:
 ````
 
 Note: The `newline=''` argument in `open()` prevents extra blank rows in the output CSV.
+
+## Binary serialization: pickle, dill, and NumPy formats
+
+Serialization is the process of converting Python objects (lists, dictionaries, custom classes, functions, etc.) into a byte stream that can be saved to disk or transmitted over a network. The reverse process, deserialization, reconstructs the original object from bytes. While text formats like CSV work well for simple tabular data, many applications require preserving complex Python data structures with their types and relationships intact. Python provides several serialization approaches, each suited to different use cases.
+
+### Pickle - Python's standard serialization
+
+The `pickle` module is Python's built-in solution for serializing most Python objects. It can handle lists, dictionaries, custom class instances, and many other types. We use pickle when saving Python objects for later use in Python programs, when caching computation results to avoid redundant calculations, or when temporarily storing complex data structures between program runs. Machine learning workflows sometimes use pickle for model storage, though specialized formats often provide better performance and interoperability.
+
+**Example:**
+
+```{python}
+import pickle
+
+# Serialize complex data
+data = {
+    'name': 'Analysis Results',
+    'values': [1.5, 2.3, 4.7],
+    'metadata': {'date': '2025-01-15', 'version': 2}
+}
+
+# Write to file
+with open('data.pkl', 'wb') as f:
+    pickle.dump(data, f)
+
+# Read from file
+with open('data.pkl', 'rb') as f:
+    loaded_data = pickle.load(f)
+
+print(loaded_data)
+```
+
+Pickle offers several advantages that make it the default choice for many Python serialization tasks. Being built into Python's standard library, it requires no external dependencies and integrates seamlessly with the language. The module operates efficiently for most common objects, preserving both structure and types accurately. Protocol versions enable backward compatibility, allowing files created with older Python versions to be read by newer ones in most cases.
+
+However, pickle has important limitations that we must consider. The most critical concern is security: pickle can execute arbitrary code during deserialization, so we should *never* unpickle data from untrusted sources. The format is Python-specific, meaning other languages cannot read pickle files without specialized libraries. Furthermore, pickle cannot serialize everything—file handles, network connections, and lambda functions remain beyond its capabilities. Version compatibility can present challenges when sharing pickled objects between different Python versions, particularly when custom classes change their structure between versions.
+
+### Dill - Extended serialization
+
+The `dill` module extends pickle's capabilities, allowing serialization of objects that pickle cannot handle, including lambda functions, nested functions, and interactive interpreter sessions. We turn to dill when serializing functions and closures, when saving entire interpreter sessions for later resumption, or when working with distributed computing frameworks that need to transmit complex functions between processes. Dill serves as the solution when pickle fails with "can't pickle" errors, particularly for dynamically created functions or objects with unusual closure patterns.
+
+**Example:**
+
+```python
+import dill
+
+# Define a function with a closure
+def create_multiplier(factor):
+    def multiply(x):
+        return x * factor
+    return multiply
+
+times_three = create_multiplier(3)
+
+# Pickle would fail here, but dill works
+with open('function.dill', 'wb') as f:
+    dill.dump(times_three, f)
+
+with open('function.dill', 'rb') as f:
+    loaded_function = dill.load(f)
+
+print(loaded_function(5))  # Output: 15
+```
+
+Dill's primary strength lies in its comprehensive coverage—it handles almost all Python objects, including functions, lambdas, and class definitions that pickle rejects. As a drop-in replacement for pickle (using the same API), dill requires minimal code changes when migration becomes necessary. The module excels at serializing code and functions, making it particularly valuable for parallel computing frameworks that need to distribute computational tasks across multiple processes.
+
+These capabilities come with trade-offs. Dill requires installation as an external dependency since it is not part of Python's standard library. The same security concerns that affect pickle apply equally to dill—deserializing untrusted data can execute arbitrary code. Files created with dill tend to be larger than equivalent pickle files due to the additional metadata required for complex objects. Performance can also suffer, with dill operating more slowly than pickle for simple objects where the extra capabilities are unnecessary.
+
+### NumPy formats (.npy and .npz)
+
+NumPy provides `.npy` (single array) and `.npz` (multiple arrays) formats specifically optimized for numerical array data. We use these formats when storing large numerical arrays efficiently, when working within scientific computing and data analysis workflows where NumPy arrays dominate, or when fast I/O with numerical data becomes a performance concern. The specialization of these formats—their focus exclusively on array data—enables optimizations that general-purpose serialization cannot match.
+
+**Example:**
+
+```{python}
+import numpy as np
+
+# Single array with .npy
+array_data = np.array([[1, 2, 3], [4, 5, 6]])
+np.save('array.npy', array_data)
+loaded_array = np.load('array.npy')
+print("Loaded array:", loaded_array)
+
+# Multiple arrays with .npz
+results = np.array([10, 20, 30])
+metadata = np.array(['a', 'b', 'c'])
+
+np.savez('data.npz', results=results, metadata=metadata)
+
+# Load multiple arrays
+loaded = np.load('data.npz')
+print("Results:", loaded['results'])
+print("Metadata:", loaded['metadata'])
+```
+
+NumPy's binary formats excel at their specialized task. Reading and writing numerical arrays proceeds extremely fast, often orders of magnitude faster than text-based formats or general serialization. The compact binary format minimizes storage requirements while preserving array shape and data type (`dtype`) precisely. Compression using `savez_compressed()` further reduces file size when working with large datasets. Unlike pickle, NumPy formats enjoy broader language support—C, Julia, and MATLAB can read these files with appropriate libraries, enabling cross-language workflows.
+
+The specialization that enables these advantages also imposes limitations. These formats work only for NumPy arrays, not for general Python objects like dictionaries or custom classes. Using the formats obviously requires NumPy as a dependency. The `.npz` format, while convenient for multiple arrays, loads all arrays into memory when opened, which can be problematic for very large datasets. Finally, the binary encoding makes these files unreadable to humans, unlike text formats where we can inspect contents directly.
+
+### Comparison summary
+
+| Feature | pickle | dill | NumPy (.npy/.npz) |
+|---------|--------|------|-------------------|
+| Objects supported | Most Python objects | Almost all Python objects | NumPy arrays only |
+| Functions/lambdas | No | Yes | No |
+| Speed | Fast | Medium | Very fast (for arrays) |
+| File size | Medium | Large | Small (especially compressed) |
+| Security | Unsafe | Unsafe | Safe |
+| Cross-language | No | No | Yes (with libraries) |
+| Stdlib | Yes | No | No |
+
+The choice among these formats depends on our data type and requirements. For numerical array data, NumPy formats provide the best combination of speed, size, and precision. For general Python objects in trusted environments where security concerns do not apply, pickle offers the simplest solution with no external dependencies. When we need to serialize functions or encounter objects that pickle cannot handle, dill extends the capabilities at the cost of additional dependency and larger file sizes.
+
+## Distributing functions and code obfuscation
+
+When distributing Python code, we face questions about intellectual property protection, the difficulty of reverse engineering, and performance optimization through compilation. Python offers several approaches that balance these concerns against implementation complexity and portability. The methods range from minimal obfuscation through bytecode compilation to strong protection via server-hosted APIs, each with distinct trade-offs in security, performance, and deployment complexity.
+
+### Bytecode compilation (.pyc files)
+
+Python automatically compiles `.py` source files to bytecode (`.pyc` files) stored in `__pycache__` directories. We can distribute only these `.pyc` files without including source code, providing minimal obfuscation at essentially zero cost.
+
+**Creating .pyc files:**
+
+```python
+import py_compile
+
+# Compile a single file
+py_compile.compile('my_module.py')
+
+# Or compile manually with compileall
+import compileall
+compileall.compile_dir('my_package/', force=True)
+```
+
+**Example usage:**
+
+```python
+# my_secret_function.py
+def calculate_license_key(user_id):
+    """Proprietary algorithm"""
+    secret_multiplier = 12345
+    return (user_id * secret_multiplier) % 1000000
+
+# Compile it
+import py_compile
+py_compile.compile('my_secret_function.py')
+
+# You can now distribute only the .pyc file from __pycache__/
+# Users can still import it:
+# from my_secret_function import calculate_license_key
+```
+
+Bytecode compilation offers convenience and minimal performance benefits. Creating `.pyc` files happens automatically during normal Python execution, or we can invoke `py_compile` explicitly for controlled compilation. Loading bytecode files proceeds slightly faster than parsing source files since the compilation step is already complete. The source code does not appear immediately visible to casual inspection, providing weak deterrence against trivial copying. Native Python support means bytecode works without additional tools or dependencies.
+
+However, this approach provides only superficial protection. Tools like `uncompyle6` easily decompile bytecode back to readable source, making this unsuitable for protecting valuable algorithms. Bytecode remains Python version specific—files compiled with Python 3.10 may not work with Python 3.11. Anyone with basic knowledge can reverse engineer `.pyc` files, so we should not consider this true protection against determined adversaries. The bytecode itself remains somewhat human-readable to those familiar with Python's internal representation.
+
+### Cython - Compiling to C extensions
+
+Cython compiles Python-like code to C extensions (`.so` files on Linux, `.pyd` on Windows), which are much harder to reverse engineer and can offer significant performance improvements. This approach transforms our Python code into compiled machine code, providing both security and speed advantages over pure Python or bytecode.
+
+**Example:**
+
+```python
+# calculation.pyx (Cython source file)
+def fast_calculation(int n):
+    """Compiled to C - harder to reverse engineer"""
+    cdef int i, result = 0
+    for i in range(n):
+        result += i * i
+    return result
+
+# setup.py
+from setuptools import setup
+from Cython.Build import cythonize
+
+setup(
+    ext_modules=cythonize("calculation.pyx"),
+)
+
+# Compile with: python setup.py build_ext --inplace
+# This creates calculation.so (or .pyd on Windows)
+```
+
+After compilation, users import the compiled extension:
+
+```python
+from calculation import fast_calculation
+result = fast_calculation(1000000)
+```
+
+Cython provides substantial advantages for both protection and performance. Compilation to machine code makes reverse engineering significantly harder—adversaries must work with assembly language rather than readable Python bytecode. Performance improvements can be dramatic, with speedups of 10-100x common for numerical code when we add type declarations. The ability to interface directly with C and C++ libraries opens access to high-performance native code. For commercial software requiring both speed and IP protection, Cython represents a professional solution used widely in industry.
+
+The approach demands more complex infrastructure. Building Cython extensions requires a C compiler on the build system, adding setup complexity compared to pure Python. Compiled binaries are platform-specific, necessitating separate builds for Windows, Linux, and macOS. The build process becomes more involved, requiring `setup.py` configuration and understanding of compilation options. Debugging compiled code presents greater challenges than debugging pure Python. While Cython significantly raises the bar for reverse engineering, determined adversaries with binary analysis tools can still disassemble the machine code—no client-side protection achieves perfect security.
+
+### Hosting functions on a server (API approach)
+
+Instead of distributing code, we can expose functionality through a web API. Users call our server, which executes the code and returns results. This approach fundamentally changes the protection model—rather than trying to secure code running on untrusted client machines, we keep the code on our own servers where we maintain complete control.
+
+**Example server (using Flask):**
+
+```python
+# server.py
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+def proprietary_algorithm(data):
+    """Your secret sauce - never leaves the server"""
+    secret_coefficient = 3.141592653
+    return sum(x ** 2 for x in data) * secret_coefficient
+
+@app.route('/api/process', methods=['POST'])
+def process_data():
+    data = request.json.get('values', [])
+    result = proprietary_algorithm(data)
+    return jsonify({'result': result})
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+```
+
+**Example client:**
+
+```python
+# client.py
+import requests
+
+def process_data_remotely(values):
+    """Calls the remote API"""
+    response = requests.post(
+        'http://your-server.com:5000/api/process',
+        json={'values': values}
+    )
+    return response.json()['result']
+
+# Usage
+result = process_data_remotely([1, 2, 3, 4, 5])
+print(f"Result: {result}")
+```
+
+The server-based approach offers maximum code protection. The implementation never leaves our server, providing complete security against reverse engineering—clients have no access to even compiled versions of our algorithms. We can update the server code at any time without requiring client updates or redistribution. Centralized operation enables comprehensive control and monitoring of usage patterns, errors, and performance. We can implement sophisticated features like usage limits, authentication, and billing naturally within the server framework. The API approach achieves platform independence—any language capable of HTTP requests can use our functionality, from Python and JavaScript to C++ and mobile apps.
+
+These advantages come with operational overhead and architectural constraints. We must provision and maintain server infrastructure, incurring hosting costs that scale with usage. The system acquires a network dependency—clients require internet connectivity to access functionality. Network latency adds overhead that may be unacceptable for time-critical applications. Scalability becomes a challenge as user numbers grow, potentially requiring load balancing and distributed architecture. The server represents a single point of failure—if it goes down, all clients lose functionality. For applications requiring offline capability or minimal latency, the server approach may be inappropriate despite its security benefits.
+
+### Comparison and recommendations
+
+| Approach | Protection Level | Performance | Distribution Complexity | Best For |
+|----------|-----------------|-------------|------------------------|----------|
+| .pyc files | Very Low | Slight improvement | Easy | Quick distribution, minimal effort |
+| Cython | High | Significant improvement | Medium | Commercial software, performance-critical code |
+| Server API | Complete | Network overhead | High | SaaS, valuable algorithms, usage monitoring |
+
+The choice among these approaches depends on our protection requirements, performance needs, and deployment constraints. For open-source projects or internal tools where transparency is valuable, we should use plain `.py` files without obfuscation. When we need moderate protection with minimal effort, `.pyc` files provide a weak deterrent, though we must recognize their limitations. Commercial software with performance-critical code benefits from Cython, which combines speed improvements with meaningful reverse-engineering resistance. For highly valuable algorithms or SaaS products where we can accept the operational overhead, hosting functionality on a server with API access provides the strongest protection. Maximum security comes from a hybrid approach—using Cython for client-side components that handle user interaction while keeping critical algorithms on the server accessed through APIs. This combination protects our most valuable code absolutely while enabling responsive local functionality.
