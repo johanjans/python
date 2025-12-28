@@ -187,13 +187,25 @@ def post_process_html(numbering_map):
                 if isinstance(node, NavigableString) and node.strip():
                     caption_text_node = node
                     break
-            
+
             if caption_text_node:
                 original_text = str(caption_text_node).lstrip()
                 # Regex to match "Figure 1.", "Table 1.", etc.
                 new_text = re.sub(rf'^(Figure|Table|Listing)([\s\xa0]){re.escape(incorrect_number)}\.', rf'\g<1>\g<2>{correct_number}.', original_text)
                 if new_text != original_text:
                     caption_text_node.replace_with(new_text)
+
+        # Update Theorem-like environment titles (Theorem, Lemma, Example, etc.)
+        for theorem_title in soup.select('.theorem-title strong'):
+            original_text = theorem_title.get_text(strip=True)
+            # Match patterns like "Theorem 25.2", "Example 25.1", etc.
+            new_text = re.sub(
+                rf'^(Theorem|Lemma|Corollary|Proposition|Conjecture|Definition|Example|Exercise|Solution|Remark|Algorithm)([\s\xa0]+){re.escape(incorrect_number)}\.',
+                rf'\g<1>\g<2>{correct_number}.',
+                original_text
+            )
+            if new_text != original_text:
+                theorem_title.string = new_text
 
         # Update MathJax Equation Numbers in \tag{} and data-eq-number for inline equations
         # This must run BEFORE cross-reference updates to ensure the correct numbers are available.
@@ -255,6 +267,28 @@ def post_process_html(numbering_map):
                 elif target_id.startswith('eq-'):
                     # Use "Equation" for consistency with Quarto's output for this case
                     ref_type = 'Equation'
+                elif target_id.startswith('thm-'):
+                    ref_type = 'Theorem'
+                elif target_id.startswith('lem-'):
+                    ref_type = 'Lemma'
+                elif target_id.startswith('cor-'):
+                    ref_type = 'Corollary'
+                elif target_id.startswith('prp-'):
+                    ref_type = 'Proposition'
+                elif target_id.startswith('cnj-'):
+                    ref_type = 'Conjecture'
+                elif target_id.startswith('def-'):
+                    ref_type = 'Definition'
+                elif target_id.startswith('exm-'):
+                    ref_type = 'Example'
+                elif target_id.startswith('exr-'):
+                    ref_type = 'Exercise'
+                elif target_id.startswith('sol-'):
+                    ref_type = 'Solution'
+                elif target_id.startswith('rem-'):
+                    ref_type = 'Remark'
+                elif target_id.startswith('alg-'):
+                    ref_type = 'Algorithm'
             
             if not ref_type:
                 continue
@@ -264,7 +298,7 @@ def post_process_html(numbering_map):
             # Find number for sections/headers
             if target_element.has_attr('data-number'):
                 correct_target_number = target_element['data-number']
-            
+
             # Find number for figures/tables
             elif 'quarto-float' in target_element.get('class', []):
                 caption = target_element.select_one('.quarto-float-caption')
@@ -272,6 +306,16 @@ def post_process_html(numbering_map):
                     caption_text = caption.get_text().strip()
                     # Extract the full number (e.g., "6.2.1") from the corrected caption
                     match = re.search(rf'^(?:Figure|Table|Listing)[\s\xa0]+({re.escape(correct_number)}\.\d+)', caption_text)
+                    if match:
+                        correct_target_number = match.group(1)
+
+            # Find number for theorem-like environments (Theorem, Lemma, Example, etc.)
+            elif 'theorem' in target_element.get('class', []):
+                theorem_title = target_element.select_one('.theorem-title strong')
+                if theorem_title:
+                    title_text = theorem_title.get_text(strip=True)
+                    # Extract number from patterns like "Theorem 25.2", "Example 25.1", etc.
+                    match = re.search(rf'^(?:Theorem|Lemma|Corollary|Proposition|Conjecture|Definition|Example|Exercise|Solution|Remark|Algorithm)[\s\xa0]+({re.escape(correct_number)}\.\d+)', title_text)
                     if match:
                         correct_target_number = match.group(1)
 
@@ -322,7 +366,9 @@ def post_process_html(numbering_map):
         if main_content:
             # This regex finds numbers that start with the incorrect chapter number, e.g., "15.3", "15.3.1"
             number_pattern = re.compile(rf'^{re.escape(incorrect_number)}\.[\d\.]*$')
-            keywords = ['Figure', 'Table', 'Listing', 'Section', 'Equation', 'Eq.']
+            keywords = ['Figure', 'Table', 'Listing', 'Section', 'Equation', 'Eq.',
+                       'Theorem', 'Lemma', 'Corollary', 'Proposition', 'Conjecture',
+                       'Definition', 'Example', 'Exercise', 'Solution', 'Remark', 'Algorithm']
 
             # PASS 1: Handle split elements like "Figure <span>15.3</span>"
             # Find all text nodes that are not in excluded tags

@@ -98,9 +98,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .Remark {
-    border-bottom: 1px solid var(--bs-body-color);
+    // border-bottom: 1px solid var(--bs-body-color);
     margin-top: 2rem;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     counter-increment: remark;
     padding-bottom: 3rem;
 
@@ -110,13 +110,14 @@ h1, h2, h3, h4, h5, h6 {
     content: "Remark " counter(remark) ": ";
     font-style: italic;
     display: block;
-    border-top: 1px solid var(--bs-body-color);
+    // border-top: 1px solid var(--bs-body-color);
 }
 
 .Remark::after {
-    font-size: 2em;
+    font-size: 1em;
     content: "□";
-    float: right;
+    display: block;
+    text-align: right; 
 }
 
 
@@ -137,3 +138,46 @@ figure {
 .size-small figure img[src*=".svg"] { width: 200px !important; }
 
 
+.Example {
+    // border-bottom: 1px solid var(--bs-body-color);
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+    counter-increment: example;
+    padding-bottom: 3rem;
+
+}
+
+.Example::before {
+    content: "Example " counter(example) ": ";
+    font-style: italic;
+    display: block;
+    // border-top: 1px solid var(--bs-body-color);
+}
+
+.Example::after {
+    font-size: 1em;
+    content: "◊";
+    float: right;
+}
+
+.theorem::after {
+    content: "■";
+    display: block;
+    text-align: right; 
+    margin-bottom: 1rem;
+}
+
+.theorem.example::after{
+    font-size: 1em;
+    content: "◊";
+    display: block;
+    text-align: right;
+    margin-bottom: 1rem;
+}
+
+.proof.remark::after{
+    font-size: 1em;
+    content: "□";
+    display: block;
+    text-align: right; 
+}
