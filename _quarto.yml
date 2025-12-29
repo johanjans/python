@@ -129,6 +129,8 @@ format:
           <script src="/js/sidebar-state.js"></script>
     number-sections: true
     number-depth: 1
+    crossref:
+      eq-prefix: ""
       
   #pdf:
   #  documentclass: book
