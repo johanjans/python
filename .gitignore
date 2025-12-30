@@ -21,3 +21,11 @@ _freeze/*
 litterature/*
 
 sources/*
+.vscode/settings.json
+planning/diataxis_analysis.pdf
+planning/diataxis_analysis.qmd
+planning/diataxis_implementation_plan.pdf
+planning/diataxis_implementation_plan.qmd
+planning/documentation_plan.pdf
+planning/documentation_plan.qmd
+todo.md
