@@ -242,10 +242,7 @@ The `tripcolor` function with Gouraud shading offers high performance. Its prima
 
 In contrast, `tricontourf` achieves superior visual smoothness, creating high-fidelity results that are less sensitive to the underlying triangulation. This comes at a computational cost, as its multi-step process of gridding, interpolating, and drawing many contour polygons is computationally intensive and scales with the number of levels specified.
 
-Given these characteristics, we can establish clear selection criteria:
-
-*   **For large, pre-triangulated meshes** (e.g., from a finite element analysis), `tripcolor` is typically the appropriate choice. In such cases, performance is critical, and the individual elements are usually small enough that interpolation artifacts are not visually distracting.
-*   **For generating high-quality figures** of a few large polygons for exercises or instructions, etc, `tricontourf` is often the superior method. The performance penalty is acceptable in this context, and the resulting visual smoothness more accurately conveys the continuous nature of the underlying data field, free of triangulation artifacts.
+Given these characteristics, we can establish clear selection criteria. For large pre-triangulated meshes from finite element analysis, `tripcolor` is typically the appropriate choice since performance is critical and the individual elements are usually small enough that interpolation artifacts are not visually distracting. Conversely, when generating high-quality figures of a few large polygons for exercises or instructional materials, `tricontourf` is often the superior method. The performance penalty is acceptable in this context, and the resulting visual smoothness more accurately conveys the continuous nature of the underlying data field, free of triangulation artifacts.
 
 ## Generating Smoother Gradients by Subdivision
 
@@ -544,11 +541,7 @@ The MechanicsKit library provides a MATLAB-like `patch` function that automatica
 
 ### Automatic Method Selection
 
-The `patch` function implements the following automatic selection strategy when `FaceColor='interp'`:
-
-- For **small meshes** (< 100 elements) with **non-linear colormaps** (e.g., 'jet', 'hsv', 'hot'): uses `tricontourf` with 256 levels for high visual fidelity
-- For **large meshes** or **linear colormaps** (e.g., 'viridis', 'plasma'): uses `tripcolor` with Gouraud shading for performance
-- Users can override this behavior with the `interpolation_method` parameter
+The `patch` function implements automatic method selection when `FaceColor='interp'` is specified. For small meshes with fewer than 100 elements using non-linear colormaps such as 'jet', 'hsv', or 'hot', the function selects `tricontourf` with 256 levels to achieve high visual fidelity. For large meshes or when using perceptually uniform colormaps such as 'viridis' or 'plasma', the function selects `tripcolor` with Gouraud shading to prioritize performance. Users can override this automatic selection using the `interpolation_method` parameter to force either approach when specific requirements demand explicit control.
 
 ### Example: Single Quadrilateral with Different Colormaps
 
