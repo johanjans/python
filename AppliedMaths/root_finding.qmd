@@ -1,3 +1,9 @@
+---                                                                                                                                        
+format:                                                                                                                                    
+  html:                                                                                                                                    
+    fig-format: svg                                                                                                                        
+---  
+
 ```{python}
 #| echo: false
 import sympy as sp
@@ -16,7 +22,7 @@ import warnings
 warnings.filterwarnings('ignore', message='divide by zero encountered')
 ```
 
-# Root Finding (Methods)
+# Root Finding Methods
 
 ## Basic concepts
 
@@ -61,7 +67,7 @@ plt.show()
 
 ## The Bisection Method
 
-We begin with the bisection method, one of the most intuitive and robust derivative-free methods. The method applies to any continuous function of one variable and rests on a simple geometric idea: if a continuous function $f$ has opposite signs at two points, it must cross zero somewhere between them. More precisely, the intermediate value theorem guarantees that if $f(a)f(b) < 0$ on an interval $[a,b]$, then at least one solution to $f(x)=0$ exists within that interval.
+We begin with the bisection method, one of the most intuitive and robust derivative-free methods. The method applies to any continuous function of one variable and rests on a simple geometric idea: if a continuous function $f$ has opposite signs at two points, it must cross zero somewhere between them. More precisely, the [intermediate value theorem]([intermediate value theorem](https://en.wikipedia.org/wiki/Intermediate_value_theorem)) guarantees that if $f(a)f(b) < 0$ on an interval $[a,b]$, then at least one solution to $f(x)=0$ exists within that interval.
 
 The method's robustness comes from its systematic bracketing strategy. If multiple solutions exist in $[a,b]$, the method converges to one of them. Should we approach an unintended root, we simply narrow the interval to bracket the desired solution and restart. Plotting the function beforehand reveals how many roots exist and where to position the initial interval.
 
@@ -310,7 +316,190 @@ This proof gives the central guarantee of bisection: with a valid bracketing int
 See the video explanation: [Bisection Method Video](https://www.youtube.com/watch?v=qBAMl94gMjc)
 
 
+
+
+
+
 ## Fixed Point Iteration
+
+This method relies upon that we in some way or another can algebraically transform $f(x)=0$ into the form $x=g(x)$. Choose a starting point $x_0$ and compute $x_1=g\left(x_0\right), x_2=g\left(x_1\right)$, and in general
+
+$$
+x_{k+1}=g\left(x_k\right), \quad k=0,1, \ldots
+$$ {#eq-fixed-point}
+
+
+A solution $x^*$ of (@eq-fixed-point) is called a fixed point of $g$, motivating the name of the method, also known as Picard iteration ([Emile Picard](https://en.wikipedia.org/wiki/%C3%89mile_Picard)). This means that $x^*$ also is a solution to $f(x)=0$. We may get several different forms of (6.1) from $f(x)=0$. The behavior of corresponding iterative sequences $x_0, x_1, x_2, \ldots$ may differ, in particular, with respect to their speed of convergence. Indeed, some of them may not converge at all.
+
+If the natural convergence test $\left|x_{k+1}-x_k\right|<\varepsilon$ is satisfied for some predefined small parameter $\varepsilon>0$, then we can choose $x^*=x_{k+1}$. The machinery relies on the following theorems of Brouwer and Banach, ranging from existence to uniqueness.
+
+:::{#thm-Brouwer}
+**Brouwer fixed point theorem. **
+
+Assume that $g(x)$ is continuous on the closed interval $[a, b]$. Assume that the interval $[a, b]$ is mapped to itself by $g(x)$, that is, for any $x \in[a, b], g(x) \in[a, b]$. Then there exists a point $x^* \in[a, b]$ such that $x^*=g\left(x^*\right)$. The point $x^*$ is a fixed point of $g(x)$. ([Jan Brouwer](https://en.wikipedia.org/wiki/L._E._J._Brouwer)) 
+:::
+
+::: {.proof}
+Let $u(x)=x-g(x)$. Since $g(a) \in[a, b]$ and also $g(b) \in[a, b]$, we know that $u(a)=a-g(a) \leq 0$ and $u(b)=b-g(b) \geq 0$. Since $g(x)$ is continuous in $[a, b]$, so is $u(x)$, and hence according to the [intermediate value theorem](https://en.wikipedia.org/wiki/Intermediate_value_theorem), there must exist a point $x^* \in[a, b]$ at which $u\left(x^*\right)=0$. At this point $x^*=g\left(x^*\right)$. 
+:::
+
+An iteration process defined by (@eq-fixed-point) is called convergent for a value $x_0$ if the corresponding sequence $x_0, x_1, x_2, \ldots$ is convergent. A sufficient condition for convergence is given in the following theorem, which has various practical applications.
+
+:::{#thm-Banach}
+**Banach fixed point theorem. **
+
+Let $x^*$ be a solution of $x=g(x)$ and suppose that $g$ has a continuous first derivative in some interval $I$ containing $x^*$. Then if $\left|g^{\prime}(x)\right| \leq L<1$ in $I$, the iteration process defined by (@eq-fixed-point) converges for any $x_0$ in $I$, and the limit of the sequence $\left\{x_k\right\}$ is $x^*$. ([Stefan Banach](https://en.wikipedia.org/wiki/Stefan_Banach))
+:::
+
+::: {.proof}
+By the mean value theorem there is a $t$ between $x, x^* \in I$, such that
+
+$$
+g(x)-g\left(x^*\right)=g^{\prime}(t)\left(x-x^*\right)
+$$
+
+
+Since $x^*=g\left(x^*\right)$ and $x_1=g\left(x_0\right), x_2=g\left(x_1\right), \ldots$ we obtain from this and the condition on $\left|g^{\prime}(x)\right|$ in the theorem
+
+$$
+\left|x_k-x^*\right|=\left|g\left(x_{k-1}\right)-g\left(x^*\right)\right|=\left|g^{\prime}(t) \| x_{k-1}-x^*\right| \leq L\left|x_{k-1}-x^*\right| .
+$$
+
+
+Applying this inequality $k$ times, for $k, k-1, \ldots, 1$ gives
+
+$$
+\left|x_k-x^*\right| \leq L\left|x_{k-1}-x^*\right| \leq L^2\left|x_{k-2}-x^*\right| \leq \ldots \leq L^k\left|x_0-x^*\right| .
+$$
+
+
+Since $L<1$, we have $L^k \rightarrow 0$, hence $\left|x_k-x^*\right| \rightarrow 0$. 
+:::
+
+A function $g$ satisfying the condition in the theorem is called a contraction because $|g(x)-g(y)| \leq L|x-y|, x, y \in I$, where $L<1$. Furthermore, $L$ gives information on the speed of convergence, smaller $L$ implies faster convergence, i.e. less number of iterations. Note, $|g(x)-g(y)| \leq L|x-y|$ is called the Lipschitz condition ([Rudolf Lipschitz](https://en.wikipedia.org/wiki/Rudolf_Lipschitz)) where $L$ is the Lipschitz constant, and offer an alternative and more demanding definition of continuity and derivation that is constructive, in comparison with the "usual" Cauchy existence $\varepsilon-\delta$ definitions we happened to learn in a standard analysis course. This theorem will guarantee convergence to a fixed point, $x^*$, of $g(x)$ if we start the iterations sufficiently close to that point $x^*$. Starting "far" from $x^*$ may or may not lead to a convergence to $x^*$. Also, since we consider only a neighborhood of the fixed point $x^*$, we can no longer guarantee the uniqueness of the fixed point. Finally, we illustrate the fixed point iteration process. The behavior of the iteration, whether it converges or diverges, is determined by the derivative of the iteration function $g(x)$ at the fixed point $x^*$. If $|g'(x^*)| < 1$, the iteration will converge if started sufficiently close to the fixed point. If $|g'(x^*)| > 1$, it will diverge, even when starting close to $x^*$. The following plots demonstrate both scenarios.
+
+::: {layout="[1,1]"}
+
+````{python}
+#| label: fig-fixed-point-conv
+#| fig-cap: "Convergence, $|g'(x^*)|<1$"
+#| code-fold: true
+#| classes: size-100
+import numpy as np
+import matplotlib.pyplot as plt
+import sympy as sp
+
+x = sp.symbols('x')
+g_conv = 2.9*x*(1-x)
+x1, x2 = (0.58, 0.72)
+fixed_point = float(sp.nsolve(x - g_conv, 0.5))
+g_conv_num = sp.lambdify(x, g_conv, 'numpy')
+
+fig, ax = plt.subplots()
+x_vals = np.linspace(x1, x2, 400)
+
+ax.plot(x_vals, g_conv_num(x_vals), 'b-', label=f'$g(x) = {sp.latex(g_conv)}$')
+ax.plot(x_vals, x_vals, 'k--', label='$y=x$', alpha=0.5)
+ax.plot(fixed_point, fixed_point, 'ro', label=f'Fixed Point $x^* \\approx {fixed_point:.3f}$')
+
+# Cobweb plot
+x_n = 0.7 # Starting point
+n_iter = 20
+y_n = 0
+
+scale = 0.1
+# First arrow from x-axis
+g_x_n = g_conv_num(x_n)
+ax.arrow(x_n, y_n, 0, g_x_n - y_n, width=0.005*scale, 
+head_width=0.02*scale, head_length=0.04*scale, 
+fc='g', ec='g', length_includes_head=True)
+y_n = g_x_n
+
+for _ in range(n_iter):
+    next_x_n = y_n
+    ax.arrow(x_n, y_n, next_x_n - x_n, 0, width=0.005*scale,
+    head_width=0.02*scale, head_length=0.04*scale, 
+    fc='g', ec='g', length_includes_head=True)
+    x_n = next_x_n
+    
+    next_y_n = g_conv_num(x_n)
+    ax.arrow(x_n, y_n, 0, next_y_n - y_n, width=0.005*scale,
+    head_width=0.02*scale, head_length=0.04*scale, 
+    fc='g', ec='g', length_includes_head=True)
+    y_n = next_y_n
+
+ax.set_title('Fixed-Point Iteration: Convergence')
+ax.set_xlabel('$x$')
+ax.set_ylabel('$y$')
+ax.legend(loc='upper center')
+ax.grid(True, which='both', linestyle='--', linewidth=0.5)
+ax.set_xlim(x1, x2)
+ax.set_ylim(x1, x2)
+ax.set_aspect('equal', adjustable='box')
+plt.show()
+````
+
+````{python}
+#| label: fig-fixed-point-div
+#| fig-cap: "Divergence, $|g'(x^*)|>1$"
+#| code-fold: true
+#| classes: size-100
+import numpy as np
+import matplotlib.pyplot as plt
+import sympy as sp
+
+x = sp.symbols('x')
+# g_div = -1.5*(1-x)+1
+# g_div = 3.2*x*(1-x)
+g_div = 1/x**2
+x1, x2 = (0.6, 1.4)
+# Find the fixed point numerically (same as for convergence case)
+fixed_point = float(sp.nsolve(x - g_div, 0.5))
+g_div_num = sp.lambdify(x, g_div, 'numpy')
+
+fig, ax = plt.subplots()
+x_vals = np.linspace(0.01, 3, 400)
+
+ax.plot(x_vals, g_div_num(x_vals), 'b-', label=f'$g(x) = {sp.latex(g_div)}$')
+ax.plot(x_vals, x_vals, 'k--', label='$y=x$', alpha=0.5)
+ax.plot(fixed_point, fixed_point, 'ro', label=f'Fixed Point $x^* \\approx {fixed_point:.3f}$')
+
+# Cobweb plot
+x_n = 1.05 # Starting point
+n_iter = 3
+y_n = 0
+
+scale = 0.8
+# First arrow from x-axis
+g_x_n = g_div_num(x_n)
+ax.arrow(x_n, y_n, 0, g_x_n - y_n, width=0.005*scale,
+head_width=0.02*scale, head_length=0.04*scale, 
+fc='g', ec='g', length_includes_head=True)
+y_n = g_x_n
+
+for _ in range(n_iter):
+    next_x_n = y_n
+    if next_x_n <= 0: break # Avoid domain error for ln(x)
+    ax.arrow(x_n, y_n, next_x_n - x_n, 0, width=0.005*scale,
+     head_width=0.02*scale, head_length=0.04*scale, fc='g', ec='g', length_includes_head=True)
+    x_n = next_x_n
+    
+    next_y_n = g_div_num(x_n)
+    ax.arrow(x_n, y_n, 0, next_y_n - y_n, width=0.005*scale, head_width=0.02*scale, head_length=0.04*scale, fc='g', ec='g', length_includes_head=True)
+    y_n = next_y_n
+
+ax.set_title('Fixed-Point Iteration: Divergence')
+ax.set_xlabel('$x$')
+ax.set_ylabel('$y$')
+ax.legend(loc='upper center')
+ax.grid(True, which='both', linestyle='--', linewidth=0.5)
+ax.set_xlim(x1, x2)
+ax.set_ylim(x1, x2)
+ax.set_aspect('equal', adjustable='box')
+plt.show()
+````
+
+:::
 
 [Fixed Point Method Video](https://youtu.be/qBAMl94gMjc?t=153)
 

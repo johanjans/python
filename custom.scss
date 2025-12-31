@@ -181,3 +181,10 @@ figure {
     display: block;
     text-align: right; 
 }
+
+.proof::after {
+    font-size: 1em;
+    content: "□";
+    display: block;
+    text-align: right; 
+}
