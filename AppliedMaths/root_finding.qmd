@@ -1,0 +1,623 @@
+```{python}
+#| echo: false
+import sympy as sp
+import numpy as np
+import matplotlib.pyplot as plt
+import mechanicskit as mk
+
+%config InlineBackend.figure_format = 'svg'
+
+plt.rcParams.update({
+    "font.family": "serif",      # Use serif fonts for text
+    "mathtext.fontset": "cm",    # 'cm' stands for Computer Modern (Standard LaTeX font)
+})
+
+import warnings
+warnings.filterwarnings('ignore', message='divide by zero encountered')
+```
+
+# Root Finding (Methods)
+
+## Basic concepts
+
+In our study of mathematical models, we frequently encounter equations of the form $f(x)=0$. The function $f$ can take many forms, and our goal is to find a solution $x^*$ that satisfies the equation. For linear systems such as $\mathbf{A x}=\mathbf{b}$, solutions for systems with millions of unknowns are routinely found using methods like the finite element method. Nonlinear cases require different strategies: we either use pure search methods or linearize the system into a sequence of more manageable linear systems. In the one-dimensional case, simple solution formulas sometimes exist. A classical example is the quadratic polynomial $f(x)=x^2+a x+b$, whose solution is given by the familiar formula
+
+$$
+x_{1,2}^*=-\frac{a}{2} \pm \sqrt{\left(\frac{a}{2}\right)^2-b}
+$$
+
+For polynomial equations, the solutions are also known as roots. Formulas exist for finding roots of polynomials of degree 3 and 4 (discovered by [Girolamo Cardano](https://en.wikipedia.org/wiki/Gerolamo_Cardano)), but these are considerably more complex than the quadratic formula. For polynomials of degree greater than 4, [Niels Henrik Abel](https://en.wikipedia.org/wiki/Niels_Henrik_Abel) proved that no general formula exists. Beyond polynomials, most functions $f(x)$ admit no analytic solution formulas whatsoever. In these cases, we must use approximation methods. Moreover, even when exact formulas exist (such as for polynomials of degree 2, 3, or 4), they may be too complex or time-consuming to evaluate in practice. An approximate numerical method can often provide accurate solutions more efficiently. For more historical context see the video by [Veritasium](https://www.youtube.com/watch?v=cUzklzVXJwo) as well as [this](https://www.youtube.com/watch?v=gMlf1ELvRzc).
+
+For many other equations, such as [transcendental equations](https://en.wikipedia.org/wiki/Transcendental_equation) (involving exponential, logarithmic or trigonometric functions), no exact solution formulas are known. In these cases, numerical methods are the only way to find approximate solutions. One of the most famous examples is Kepler's equation, which relates the position of a planet in its orbit to time. Kepler's equation is given by
+
+$$
+m = x - e \sin(x)
+$$
+
+where $m$ is the mean anomaly, $x$ is the eccentric anomaly, and $e$ is the eccentricity of the orbit. Rearranging this equation to the standard root-finding form gives
+$$
+f(x) = x - e \sin(x) - m = 0
+$$
+
+This equation cannot be solved analytically for $x$ in terms of elementary functions, so numerical methods are used to find approximate solutions for given values of $m$ and $e$.
+
+
+The methods we describe belong to the category of iterative methods. These methods begin with an initial guess $x_0$ near a solution and generate a sequence $x_0, x_1, \ldots$ of progressively better approximations, eventually terminating at $x^*$ to a desired tolerance. Before applying an iterative method, we must determine how many solutions exist and decide which one is relevant for the application at hand. Visualizing the function is an invaluable first step. We also need to consider whether we seek real or complex solutions, as this choice affects which methods are appropriate. The question of convergence is central: does the method approach the solution, and if so, how fast? Methods that fail to converge are said to diverge. Finally, we must decide on a suitable tolerance for the solution, often using a termination criterion such as $\left|x_{k+1}-x_k\right|<\varepsilon$ for some small $\varepsilon > 0$, and verify that the computational cost is acceptable for the application.
+
+Many different iterative methods exist, some highly specialized for particular problem types. We can broadly divide them into two categories: those that use derivatives and those that do not. Methods that use the derivative of $f$ typically gain more information about the function's behavior, and their convergence is generally faster. However, when derivatives of $f$ are unavailable or too expensive to evaluate, we must use derivative-free methods. These derivative-free methods are often the simplest and most robust, so we begin with one of the most widely used. From this point on we stay close to a scientific computing workflow: we bracket roots, evaluate functions numerically, monitor convergence, and decide when to stop based on error criteria rather than exact formulas.
+
+````{python}
+#| echo: false
+#| classes: size-80
+x = sp.symbols('x')
+f = x -  1 + sp.sin(x)*0.2
+# g = x
+mk.fplot(f, range=[-5, 5], label=f'$f(x)={sp.latex(f)}$', lw=3)
+plt.axhline(0, color='black', lw=0.5)
+plt.gca().legend() 
+plt.gca().set_ylim([-3,3])
+plt.show()
+````
+
+## The Bisection Method
+
+We begin with the bisection method, one of the most intuitive and robust derivative-free methods. The method applies to any continuous function of one variable and rests on a simple geometric idea: if a continuous function $f$ has opposite signs at two points, it must cross zero somewhere between them. More precisely, the intermediate value theorem guarantees that if $f(a)f(b) < 0$ on an interval $[a,b]$, then at least one solution to $f(x)=0$ exists within that interval.
+
+The method's robustness comes from its systematic bracketing strategy. If multiple solutions exist in $[a,b]$, the method converges to one of them. Should we approach an unintended root, we simply narrow the interval to bracket the desired solution and restart. Plotting the function beforehand reveals how many roots exist and where to position the initial interval.
+
+The algorithm proceeds iteratively, halving the interval at each step. We first calculate the midpoint $c=\frac{1}{2}(a+b)$, which divides the interval into two equal subintervals: $[a, c]$ and $[c, b]$. We then determine which subinterval must contain a root.
+
+In the rare event that $f(c)=0$, we have found the exact solution and terminate immediately. Otherwise, we evaluate the product $f(a)f(c)$. If $f(a)f(c) < 0$, then the function has opposite signs at $a$ and $c$, so the root must lie in $[a,c]$, and we update the interval accordingly. If $f(a)f(c) > 0$, the root must lie in $[c,b]$, and we update to that subinterval instead.
+
+We repeat this halving procedure until a stopping criterion is satisfied, such as $|f(c)|<\delta$ (the function value is sufficiently small) or $b-a<\varepsilon$ (the interval is sufficiently narrow) for some predefined tolerance. The final midpoint $c$ serves as our approximation $x^*$ to the root.
+
+To see how the bisection method works in practice, we now work through a complete example, starting with a simple polynomial where we can verify our numerical result against the exact analytical solution.
+
+:::{#exm-bisection}
+## Example: Finding the largest root of a quadratic
+
+We now apply the bisection method to find the largest root of $x^2-x-6=0$ and compare our numerical approximation with the exact analytical solution.
+
+````{python}
+#| echo: false
+#| classes: size-80
+x = sp.symbols('x')
+f = x**2 - x - 6
+plot_range = [-5, 5]
+mk.fplot(f, range=plot_range, label=f'$f(x)={sp.latex(f)}$', lw=3)
+plt.axhline(0, color='black', lw=0.5)
+plt.gca().legend() 
+# plt.gca().set_ylim([-3,3])
+plt.show()
+````
+
+We first compute the exact roots using SymPy's `solve()` function for comparison:
+
+````{python}
+#| code-fold: false
+sp.solve(f, x)
+````
+
+We target the root $x^*=3$ using the bisection method. From the graph, we see that the starting interval $[1,4]$ brackets this root since $f(1) < 0$ and $f(4) > 0$. We set the tolerance to $\varepsilon=0.01$ and expect convergence to this single root within the interval.
+
+
+````{python}
+#| code-fold: false
+a, b = (1, 4) # initial interval
+
+i = 1 # iteration counter
+while (b-a) > 0.01: # stopping criterion
+    c = (a + b) / 2 # midpoint
+    if f.subs(x, c) * f.subs(x, a) < 0: # root in [a,c]
+        b = c # update b
+    else:
+        a = c # root in [c,b], update a
+    i += 1 # increment iteration counter
+    print(f"Iteration {i}: a = {a:0.3f}, b = {b:0.3f}, c = {c:0.3f}, f(c) = {f.subs(x, c):0.3f}")
+    if i > 100: # safeguard against infinite loops
+        print("Max iterations reached"); break
+````
+
+
+````{python}
+#| code-fold: true
+from matplotlib.animation import FuncAnimation
+
+# Recreate bisection iterations for animation
+a_init, b_init = (1, 4)
+tol = 0.01
+a_vals = [a_init]
+b_vals = [b_init]
+c_vals = []
+diffs = []
+
+a_temp, b_temp = a_init, b_init
+while (b_temp - a_temp) > tol:
+    c_temp = (a_temp + b_temp) / 2
+    diffs.append(b_temp - a_temp)
+    c_vals.append(c_temp)
+    if float(f.subs(x, c_temp) * f.subs(x, a_temp)) < 0:
+        b_temp = c_temp
+    else:
+        a_temp = c_temp
+    a_vals.append(a_temp)
+    b_vals.append(b_temp)
+
+# Generate function values for plotting
+x_plot = np.linspace(-1, 5, 400)
+f_numpy = sp.lambdify(x, f, 'numpy')
+y_plot = f_numpy(x_plot)
+
+# Create animation
+fig, ax = plt.subplots(figsize=(8, 5), dpi=150)
+
+def animate(frame):
+    ax.clear()
+
+    # Problem info box at top center
+    problem_text = r"$f(x) = x^2 - x - 6$"
+    ax.text(0.5, 0.98, problem_text,
+            transform=ax.transAxes,
+            fontsize=11,
+            verticalalignment='top',
+            horizontalalignment='center',
+            bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
+
+    # Plot function
+    ax.plot(x_plot, y_plot, 'b-', lw=2, label='$f(x)$')
+    ax.axhline(0, color='black', lw=0.5, linestyle='--', alpha=0.5)
+    ax.grid(True, alpha=0.3)
+
+    if frame < len(c_vals):
+        a_curr = a_vals[frame]
+        b_curr = b_vals[frame]
+        c_curr = c_vals[frame]
+
+        f_a = float(f.subs(x, a_curr))
+        f_b = float(f.subs(x, b_curr))
+        f_c = float(f.subs(x, c_curr))
+
+        # Highlight current interval
+        ax.axvspan(a_curr, b_curr, alpha=0.2, color='yellow', label='Current Interval')
+
+        # Mark interval endpoints
+        ax.plot(a_curr, f_a, 'ro', markersize=8, label='$a$', zorder=5)
+        ax.plot(b_curr, f_b, 'go', markersize=8, label='$b$', zorder=5)
+
+        # Mark midpoint
+        ax.plot(c_curr, f_c, 'ms', markersize=10, label='$c = \\frac{a+b}{2}$', zorder=5)
+
+        # Vertical lines to x-axis
+        ax.plot([a_curr, a_curr], [0, f_a], 'r--', lw=1, alpha=0.5)
+        ax.plot([b_curr, b_curr], [0, f_b], 'g--', lw=1, alpha=0.5)
+        ax.plot([c_curr, c_curr], [0, f_c], 'm--', lw=1, alpha=0.5)
+
+        # Info text box in lower right
+        interval_width = b_curr - a_curr
+
+        # Determine which interval is kept
+        if float(f.subs(x, c_curr) * f.subs(x, a_curr)) < 0:
+            next_interval = f"$[{a_curr:.3f}, {c_curr:.3f}]$"
+            reason = "$f(a) \\cdot f(c) < 0$"
+        else:
+            next_interval = f"$[{c_curr:.3f}, {b_curr:.3f}]$"
+            reason = "$f(c) \\cdot f(b) < 0$"
+
+        info_text = (
+            f"Iteration {frame + 1}\n"
+            f"$a = {a_curr:.4f}, \\quad f(a) = {f_a:.4f}$\n"
+            f"$b = {b_curr:.4f}, \\quad f(b) = {f_b:.4f}$\n"
+            f"$c = {c_curr:.4f}, \\quad f(c) = {f_c:.4f}$\n"
+            f"Interval width: ${interval_width:.4f}$\n"
+            f"{reason}\n"
+            f"Next: {next_interval}"
+        )
+
+        ax.text(0.98, 0.02, info_text,
+                transform=ax.transAxes,
+                fontsize=9,
+                verticalalignment='bottom',
+                horizontalalignment='right',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+    ax.set_xlabel('$x$')
+    ax.set_ylabel('$f(x)$')
+    ax.set_title(f"Bisection Method: Iteration {frame + 1}, a-b = {diffs[frame-1]:.4f}" if frame > 0 else "Bisection Method: Initial Interval")
+    ax.legend(loc='upper left', fontsize=8)
+    ax.set_xlim(0, 4.5)
+    ax.set_ylim(-8, 10)
+
+anim = FuncAnimation(fig, animate, frames=len(c_vals), interval=1000, repeat=True)
+plt.close()
+
+mk.to_responsive_html(anim, container_id='bisection-animation')
+
+````
+
+:::
+
+### Convergence Analysis
+
+Having established the bisection algorithm, we now analyze its convergence properties. Two questions arise naturally: Does the method always converge to a solution? And how close are we to the root after $k$ iterations? We address these questions through a rigorous yet intuitive analysis.
+
+#### The Interval Shrinks to Zero
+
+Let $[a_k, b_k]$ denote the interval after $k$ iterations. The key observation is that the algorithm systematically shrinks the interval while maintaining the bracketing property. At each iteration, we select one of the two halves, so the interval length decreases by exactly half:
+
+$$
+b_k-a_k=\frac{1}{2}\left(b_{k-1}-a_{k-1}\right)
+$$
+
+Applying this relation repeatedly shows that after $k$ iterations, the interval has shrunk by a factor of $2^k$:
+
+$$
+b_k-a_k=2^{-k}\left(b_0-a_0\right)
+$$
+
+This exponential decay is powerful. Since $2^{-k} \to 0$ as $k \to \infty$, the interval width vanishes in the limit, forcing the endpoints to converge to the same point. To make this concrete, after 10 iterations the interval is approximately 1000 times smaller than the original ($2^{10} = 1024$), and after 20 iterations it is about one million times smaller ($2^{20} \approx 10^6$).
+
+#### The Sequences Converge
+
+The endpoint sequences exhibit special structure. The left endpoints form a non-decreasing sequence:
+$$
+a_0 \leq a_1 \leq a_2 \leq \ldots
+$$
+while the right endpoints form a non-increasing sequence:
+$$
+b_0 \geq b_1 \geq b_2 \geq \ldots
+$$
+
+Moreover, both sequences are bounded since $a_0 \leq a_k \leq b_k \leq b_0$ for all $k$. A fundamental theorem from real analysis states that any monotone bounded sequence converges. Therefore, both $\{a_k\}$ and $\{b_k\}$ converge to limits.
+
+Since the interval width $b_k - a_k \to 0$, the two sequences must converge to the *same* limit, which we denote by $x^*$:
+
+$$
+\lim _{k \rightarrow \infty} a_k=\lim _{k \rightarrow \infty} b_k=x^*
+$$
+
+#### The Limit is a Root
+
+We have established that the sequences converge to some point $x^*$, but why is this point a root of $f$? The algorithm maintains the bracketing property at every iteration, meaning $f(a_k)f(b_k) \leq 0$ for all $k$. In other words, the function values at the endpoints always have opposite signs (or one is zero).
+
+Taking the limit as $k \to \infty$ and invoking the continuity of $f$, we obtain:
+$$
+f(x^*)f(x^*) = f(x^*)^2 \leq 0
+$$
+
+Since the square of any real number is non-negative, the only way $f(x^*)^2 \leq 0$ can hold is if $f(x^*)^2 = 0$, which implies $f(x^*)=0$. Therefore, $x^*$ is indeed a root.
+
+#### Error Bounds and Convergence Rate
+
+A practical question remains: how accurate is our approximation after $k$ iterations? Since the true root $x^*$ lies within the interval $[a_k, b_k]$ and we use the midpoint $c_k = \frac{1}{2}(a_k + b_k)$ as our approximation, the error satisfies:
+
+$$
+|x^* - c_k| \leq \frac{b_k - a_k}{2} = \frac{b_0 - a_0}{2^{k+1}}
+$$
+
+This formula provides a guaranteed error bound. For example, if we start with the interval $[1, 4]$ (length 3) and want accuracy to within $10^{-3}$, we need:
+
+$$
+\frac{3}{2^{k+1}} < 10^{-3} \implies 2^{k+1} > 3000 \implies k+1 > \log_2(3000) \approx 11.55
+$$
+
+Therefore, 12 iterations suffice to guarantee three decimal places of accuracy.
+
+The bisection method exhibits *linear convergence* in the sense that each iteration reduces the error by a constant factor (one half). This is slower than methods like Newton's method, which exhibits quadratic convergence, but the simplicity and guaranteed convergence of bisection often make it the preferred choice when reliability is paramount.
+
+This proof gives the central guarantee of bisection: with a valid bracketing interval, the method converges and provides a predictable error bound. This is why bisection remains the most reliable choice when function behavior is poorly understood and accuracy requirements must be guaranteed.
+
+
+See the video explanation: [Bisection Method Video](https://www.youtube.com/watch?v=qBAMl94gMjc)
+
+
+## Fixed Point Iteration
+
+[Fixed Point Method Video](https://youtu.be/qBAMl94gMjc?t=153)
+
+### Kepler's problem
+
+{{< video https://youtu.be/hBkmyJ3TE0g >}}
+
+## Newton's Method
+
+[Newton's method video](https://youtu.be/qBAMl94gMjc?t=300)
+
+[Newton’s fractal. Involving root finding using Newton's method](https://www.youtube.com/watch?v=-RdOwhmqP5s)
+
+## The Secant Method
+
+
+
+
+
+## Computer Arithmetic and Error Analysis
+
+After introducing the core algorithms, we now address how finite‑precision arithmetic affects their behavior. When implementing numerical methods on a computer, we immediately confront a fundamental limitation: computers cannot represent arbitrary real numbers exactly. Understanding how numbers are stored and how errors accumulate during computation is essential for writing reliable numerical code. This section explores the floating-point representation used by modern computers, quantifies the inherent limitations of finite-precision arithmetic, and provides practical guidance for managing numerical errors in iterative methods like bisection.
+
+### Floating-Point Representation
+
+Modern computers represent real numbers using the IEEE 754 standard for floating-point arithmetic, established in 1985 and nearly universal today. A 64-bit double-precision floating-point number consists of three parts: one sign bit $s$, eleven bits for the exponent $e$, and fifty-two bits for the fractional part (mantissa) $m$. The represented value is
+
+$$
+(-1)^s \times 2^{e-1023} \times (1 + m),
+$$
+
+where $m$ is interpreted as a binary fraction $m = \sum_{i=1}^{52} b_i 2^{-i}$ with binary digits $b_i \in \{0,1\}$. The exponent bias of 1023 allows representation of both very large and very small numbers. The implicit leading 1 in $(1 + m)$ provides one extra bit of precision—numbers are normalized so the leading bit is always 1 and need not be stored.
+
+This representation has several important consequences. First, not all decimal numbers have exact binary representations. The fraction $1/10 = 0.1$ in decimal becomes the repeating binary expansion $0.0001100110011\ldots_2$, which must be truncated to fit in 52 bits. This is why seemingly simple calculations like `0.1 + 0.2` in Python produce `0.30000000000000004` rather than exactly `0.3`. The representation error is small but unavoidable.
+
+
+````{python}
+#| code-fold: false
+# Demonstrate floating-point representation error
+result = 0.1 + 0.2
+print(f"0.1 + 0.2 = {result}")
+print(f"Is 0.1 + 0.2 == 0.3? {result == 0.3}")
+print(f"Exact representation: {result:.20f}")
+````
+
+Second, the gaps between representable numbers vary with magnitude. Numbers near zero are densely packed, while numbers near the maximum representable value (approximately $1.8 \times 10^{308}$) are separated by huge gaps. The relative spacing between consecutive representable numbers is characterized by a fundamental constant called machine epsilon.
+
+````{python}
+#| code-fold: false
+# Compute machine epsilon experimentally
+eps = 1.0
+while (1.0 + eps) > 1.0:
+    eps_last = eps
+    eps = eps / 2.0
+
+print(f"Computed machine epsilon: {eps_last}")
+print(f"Theoretical value (2^-52): {2**-52}")
+print(f"NumPy's value: {np.finfo(float).eps}")
+print(f"Match: {eps_last == 2**-52 == np.finfo(float).eps}")
+````
+
+
+The values agree perfectly with theory. This fundamental limit means Python cannot distinguish between $1$ and $1 + \varepsilon$ for any $\varepsilon < \varepsilon_{\text{mach}}$. No computation can reliably resolve differences smaller than roughly $10^{-16}$ times the magnitude of the numbers involved. This sets an absolute floor on achievable accuracy.
+
+### Sources of Error in Numerical Computation
+
+When implementing iterative methods like bisection, multiple error sources affect the final result. Understanding the distinction between error types is essential for writing robust numerical code.
+
+Truncation error arises when we terminate an infinite process after finitely many steps. In the bisection method with tolerance $\varepsilon = 0.01$, we stopped after 9 iterations, still $0.002$ units from the exact root $x^* = 3$. This gap is truncation error—we truncated the (theoretically) infinite sequence of bisections. Our theoretical bound $|x_k - x^*| \leq 2^{-k}(b_0 - a_0)$ quantifies this truncation error precisely.
+
+Roundoff error accumulates from representation errors at each arithmetic operation. Every addition, multiplication, or function evaluation introduces a small error of magnitude roughly $\varepsilon_{\text{mach}}$ relative to the operands. Over many operations, these can accumulate or sometimes catastrophically amplify. Fortunately, bisection performs only simple operations (midpoint calculation, function evaluation) and is remarkably robust to roundoff.
+
+To see the interplay, consider evaluating $f(c) = c^2 - c - 6$ at $c = 2.998$ during bisection. First, $c$ itself carries a representation error. Then computing $c^2$ introduces roundoff, as does the subtraction. Each error scales with $\varepsilon_{\text{mach}}$, so for values near unity, total accumulated error is perhaps $10^{-15}$. This is negligible compared to our truncation error of $0.002$, explaining why bisection reliably produces accurate results despite finite-precision arithmetic.
+
+### Measuring and Controlling Error
+
+When assessing a numerical approximation $x$ to an unknown exact value $x^*$, we use two complementary measures. The absolute error $|x - x^*|$ gives the raw difference, useful when the problem scale is known. The relative error $|x - x^*|/|x^*|$ expresses error as a fraction, providing scale-independent assessment.
+
+For our bisection example, the final midpoint $c \approx 2.998$ has absolute error $|2.998 - 3| = 0.002$, meeting tolerance $\varepsilon = 0.01$. The relative error is $0.002/3 \approx 0.00067$ or 0.067%, indicating high relative accuracy.
+
+However, relative error becomes problematic when $|x^*| \approx 0$. Dividing by a near-zero number produces arbitrarily large relative errors even when absolute error is small. To handle all scales robustly, practical codes often use
+
+$$
+\text{error measure} = \frac{|x - x^*|}{1 + |x^*|},
+$$
+
+which reduces to absolute error when $|x^*| \ll 1$ and relative error when $|x^*| \gg 1$.
+
+Of course, in practice we don't know $x^*$—that's why we need numerical methods! Iterative methods instead estimate error using consecutive iterates: $|x_{k+1} - x_k| < \varepsilon$ as a termination criterion. For bisection specifically, we have the stronger guarantee $|x_k - x^*| \leq b_k - a_k$, allowing direct error bounds.
+
+Let's examine how errors evolve during bisection, running the method to very high precision to observe when roundoff error eventually dominates:
+
+````{python}
+#| code-fold: true
+# Track error during bisection for visualization
+import sympy as sp
+import numpy as np
+import matplotlib.pyplot as plt
+import mechanicskit as mk
+
+x = sp.symbols('x')
+f_expr = x**2 - x - 6
+x_exact = 3.0  # Known exact root
+
+a, b = 1.0, 4.0
+tol = 1e-10  # Very tight tolerance to see many iterations
+errors_abs = []
+errors_rel = []
+interval_widths = []
+midpoints = []
+
+for k in range(40):  # Limit iterations
+    c = (a + b) / 2
+    midpoints.append(c)
+    
+    # Compute errors
+    err_abs = abs(c - x_exact)
+    err_rel = err_abs / abs(x_exact)
+    interval_width = b - a
+    
+    errors_abs.append(err_abs)
+    errors_rel.append(err_rel)
+    interval_widths.append(interval_width)
+    
+    if interval_width < tol:
+        break
+    
+    # Update interval
+    if float(f_expr.subs(x, c) * f_expr.subs(x, a)) < 0:
+        b = c
+    else:
+        a = c
+
+# Plot error convergence
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4), dpi=150)
+
+iterations = list(range(len(errors_abs)))
+
+# Absolute error plot
+ax1.semilogy(iterations, errors_abs, 'bo-', label='Absolute error', markersize=4)
+ax1.semilogy(iterations, interval_widths, 'r--', label='Interval width', linewidth=2, alpha=0.7)
+ax1.axhline(np.finfo(float).eps, color='gray', linestyle=':', linewidth=2, label='Machine epsilon')
+ax1.set_xlabel('Iteration $k$')
+ax1.set_ylabel('Error')
+ax1.set_title('Absolute Error Convergence')
+ax1.legend()
+ax1.grid(True, alpha=0.3)
+
+# Relative error plot
+ax2.semilogy(iterations, errors_rel, 'go-', label='Relative error', markersize=4)
+ax2.set_xlabel('Iteration $k$')
+ax2.set_ylabel('Relative Error')
+ax2.set_title('Relative Error Convergence')
+ax2.legend()
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+print(f"After {len(errors_abs)} iterations:")
+print(f"Final approximation: {midpoints[-1]:.15f}")
+print(f"Exact root:          {x_exact:.15f}")
+print(f"Absolute error:      {errors_abs[-1]:.3e}")
+print(f"Relative error:      {errors_rel[-1]:.3e}")
+print(f"Machine epsilon:     {np.finfo(float).eps:.3e}")
+````
+
+The plots reveal geometric convergence: both errors decrease linearly on the logarithmic scale, halving with each iteration. The absolute error closely tracks the interval width (red dashed line), confirming our theoretical bound. Crucially, error stagnates near machine epsilon $\varepsilon_{\text{mach}} \approx 10^{-16}$ after about 50 iterations. Further iteration cannot improve accuracy because roundoff error in evaluating $f(c)$ and computing midpoints prevents resolving differences smaller than $\varepsilon_{\text{mach}}|x^*|$.
+
+This observation provides practical guidance: setting tolerance much smaller than $10^{-14}$ wastes computation without improving accuracy. For double-precision arithmetic, targeting 10-12 significant digits balances accuracy against computational efficiency.
+
+### Practical Recommendations
+
+The interplay between truncation and roundoff error characterizes all numerical computation, so we need practical rules for implementation. For double‑precision arithmetic, absolute tolerances below $10^{-14}$ or relative tolerances below $10^{-12}$ rarely make sense because roundoff dominates. We should also match tolerance to the physical scale, e.g., when measuring lengths in meters, $10^{-6}$ often suffices.
+
+When solution magnitude is unknown, relative error provides scale‑independent stopping criteria, but we must switch to absolute error or mixed criteria near $x^* \approx 0$ to avoid division by small numbers. Bisection's bound $|x_k - x^*| \leq 2^{-k}(b_0-a_0)$ lets us predict iteration counts in advance, while Newton's method lacks such guarantees and requires careful monitoring. Finally, we must avoid catastrophic cancellation. When computing numerical derivatives $[f(x+h) - f(x)]/h$, choosing $h$ too small destroys accuracy even though the truncation error is smaller. This is a recurring theme in scientific computing: we balance modeling error, truncation error, and roundoff error rather than pursuing arbitrarily small step sizes.
+
+
+
+### Case Study: Fast Inverse Square Root
+
+ne of the most celebrated examples of exploiting floating-point representation for performance is the "fast inverse square root" algorithm from the Quake III Arena video game engine (1999). We include it here because it illustrates a recurring scientific computing trade‑off: approximate arithmetic combined with one iteration of Newton's method can be faster and accurate enough for real‑time simulation. This algorithm computes $1/\sqrt{x}$ approximately 4 times faster than standard methods, using a clever combination of bit manipulation and Newton's method. The problem arises constantly in 3D graphics: normalizing vectors (making them unit length) requires dividing by their magnitude, which involves computing $1/\sqrt{x^2 + y^2 + z^2}$. When rendering thousands of polygons per frame at 60 frames per second, this operation becomes a critical bottleneck.
+
+The video below provides an excellent explanation of the algorithm's inner workings, connecting the IEEE 754 representation we just studied to practical performance optimization:
+
+{{< video https://www.youtube.com/watch?v=p8u_k2LIZyo >}}
+
+The algorithm exploits the IEEE 754 floating-point representation we discussed earlier. Recall that a 32-bit float has the form
+
+$$
+\text{float} = (-1)^s \times 2^{e-127} \times (1 + m),
+$$
+
+where $s$ is the sign bit, $e$ is an 8-bit exponent, and $m$ is the 23-bit mantissa representing a fraction in $[0,1)$. The insight is that when interpreted as an integer, the bit pattern approximately represents $\log_2(\text{float})$. This logarithmic relationship enables fast approximate computation of inverse square roots through simple integer arithmetic.
+
+Here is the original C code from Quake III, famous for its mysterious "magic constant" and terse comment:
+
+```c
+float Q_rsqrt(float number) {
+    long i;
+    float x2, y;
+    const float threehalfs = 1.5F;
+
+    x2 = number * 0.5F;
+    y  = number;
+    i  = * ( long * ) &y;                       // evil floating point bit level hacking
+    i  = 0x5f3759df - ( i >> 1 );               // what the fuck?
+    y  = * ( float * ) &i;
+    y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration of Newton's method
+    return y;
+}
+```
+
+The algorithm has three phases. First, it interprets the floating-point bits as an integer (`i = * ( long * ) &y`). Second, it performs the "magic" integer operation `0x5f3759df - (i >> 1)`, which exploits the logarithmic structure to approximate $\log_2(1/\sqrt{x})$. The right shift by 1 corresponds to dividing the logarithm by 2 (taking a square root in log space), and subtracting from the magic constant inverts and adjusts the bias. Third, it applies one iteration of Newton's method to refine the approximation.
+
+While we cannot do direct bit-casting in pure Python as elegantly as C, we can implement the algorithm using the `struct` module to manipulate bit representations:
+
+````{python}
+#| code-fold: false
+import struct
+
+def fast_inverse_sqrt(number):
+    """Fast inverse square root using Quake III algorithm."""
+    threehalfs = 1.5
+    x2 = number * 0.5
+    
+    # Convert float to integer bits
+    i = struct.unpack('>l', struct.pack('>f', number))[0]
+    
+    # Magic bit hack
+    i = 0x5f3759df - (i >> 1)
+    
+    # Convert back to float
+    y = struct.unpack('>f', struct.pack('>l', i))[0]
+    
+    # Newton iteration
+    y = y * (threehalfs - (x2 * y * y))
+    
+    return y
+
+# Test the implementation
+test_values = [1.0, 4.0, 9.0, 16.0, 100.0]
+print("x      | Fast 1/√x  | Actual 1/√x | Error")
+print("-" * 50)
+for val in test_values:
+    fast_result = fast_inverse_sqrt(val)
+    actual_result = 1.0 / np.sqrt(val)
+    error = abs(fast_result - actual_result)
+    print(f"{val:6.1f} | {fast_result:10.7f} | {actual_result:11.7f} | {error:.2e}")
+````
+
+The algorithm achieves remarkable accuracy with just one Newton iteration. The magic constant `0x5f3759df` was determined empirically to minimize maximum error across the range of inputs. To understand why this works so well, let's visualize how the magic initial guess compares to the exact value, and how Newton's method refines it:
+
+````{python}
+#| code-fold: true
+# Analyze the algorithm's accuracy across a range of inputs
+x_range = np.linspace(0.1, 100, 500)
+exact = 1.0 / np.sqrt(x_range)
+fast_results = np.array([fast_inverse_sqrt(val) for val in x_range])
+
+# Also compute the magic guess before Newton iteration
+def magic_guess_only(number):
+    """Just the magic bit hack, no Newton iteration."""
+    i = struct.unpack('>l', struct.pack('>f', number))[0]
+    i = 0x5f3759df - (i >> 1)
+    y = struct.unpack('>f', struct.pack('>l', i))[0]
+    return y
+
+magic_only = np.array([magic_guess_only(val) for val in x_range])
+
+# Create visualization
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5), dpi=150)
+
+# Plot 1: Function values
+ax1.plot(x_range, exact, 'b-', label='Exact $1/\\sqrt{x}$', linewidth=2)
+ax1.plot(x_range, magic_only, 'r--', label='Magic guess (before Newton)', linewidth=1.5, alpha=0.7)
+ax1.plot(x_range, fast_results, 'g:', label='After 1 Newton iteration', linewidth=2)
+ax1.set_xlabel('$x$')
+ax1.set_ylabel('$1/\\sqrt{x}$')
+ax1.set_title('Fast Inverse Square Root Approximation')
+ax1.legend()
+ax1.grid(True, alpha=0.3)
+ax1.set_xlim(0, 20)
+ax1.set_ylim(0, 3)
+
+# Plot 2: Relative error
+rel_error_magic = np.abs((magic_only - exact) / exact)
+rel_error_fast = np.abs((fast_results - exact) / exact)
+
+ax2.semilogy(x_range, rel_error_magic, 'r--', label='Magic guess error', linewidth=1.5, alpha=0.7)
+ax2.semilogy(x_range, rel_error_fast, 'g-', label='After Newton iteration', linewidth=2)
+ax2.axhline(np.finfo(np.float32).eps, color='gray', linestyle=':', linewidth=2, label='Float32 machine epsilon')
+ax2.set_xlabel('$x$')
+ax2.set_ylabel('Relative Error')
+ax2.set_title('Relative Error Analysis')
+ax2.legend()
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+print(f"\nMagic guess max relative error: {np.max(rel_error_magic):.2%}")
+print(f"After Newton max relative error: {np.max(rel_error_fast):.2%}")
+print(f"Float32 machine epsilon: {np.finfo(np.float32).eps:.2e}")
+````
+
+
+
+The visualization reveals the algorithm's brilliance. The magic bit hack alone produces an initial guess with relative error around 1-2%, which is already remarkably close given that it requires only integer arithmetic. One Newton iteration then reduces this error to below 0.2%, approaching the precision limits of 32-bit floats. This combines our understanding of IEEE 754 representation (the bit manipulation exploits the exponential-mantissa structure), error analysis (we can quantify the approximation quality), and Newton's method (covered in the next section, which uses iterative refinement to achieve quadratic convergence). The algorithm exemplifies how deep understanding of computer arithmetic can yield dramatic performance improvements—a 4x speedup that was crucial for real-time 3D graphics in the late 1990s, and remains a masterclass in numerical optimization.
+
