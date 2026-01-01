@@ -251,7 +251,7 @@ Having established the bisection algorithm, we now analyze its convergence prope
 
 #### Stage 1: The Interval Converges to a Point
 
-Let $[a_k, b_k]$ denote the interval after $k$ iterations. The key observation is that the algorithm systematically shrinks this interval. At each step, we select one of the two halves, so the interval length decreases by exactly a factor of two:
+Let $[a_k, b_k]$ denote the interval after $k$ iterations. The algorithm systematically shrinks this interval. At each step, we select one of the two halves, so the interval length decreases by exactly a factor of two:
 $$
 b_k - a_k = \frac{1}{2}(b_{k-1} - a_{k-1})
 $$
@@ -294,7 +294,7 @@ See the video explanation: [Bisection Method Video](https://www.youtube.com/watc
 
 ## Fixed Point Iteration
 
-While bisection guarantees convergence, its linear rate means that many iterations are required to achieve high accuracy. We now introduce fixed-point iteration, a different approach that can converge faster when properly formulated. The key idea is to reformulate the root-finding problem $f(x) = 0$ as an equivalent fixed-point problem $x = g(x)$, then iterate this relation directly.
+While bisection guarantees convergence, its linear rate means that many iterations are required to achieve high accuracy. We now introduce fixed-point iteration, a different approach that can converge faster when properly formulated. The method reformulates the root-finding problem $f(x) = 0$ as an equivalent fixed-point problem $x = g(x)$, then iterates this relation directly.
 
 The method begins by choosing a function $g(x)$ such that a solution to $f(x) = 0$ corresponds to a fixed point of $g$, meaning a point where $x^* = g(x^*)$. Starting from an initial guess $x_0$, we generate the sequence $x_1 = g(x_0)$, $x_2 = g(x_1)$, and in general
 
@@ -805,7 +805,7 @@ plt.close()
 mk.to_responsive_html(anim, container_id='newton-animation')
 ````
 
-The animation demonstrates Newton's method's rapid convergence. Each tangent line approximation brings us significantly closer to the root, with the error decreasing quadratically at each step. This quadratic convergence is Newton's method's key advantage over bisection (which has linear convergence) and fixed-point iteration (which typically has linear convergence unless $g'(x^*) = 0$).
+The animation demonstrates Newton's method's rapid convergence. Each tangent line approximation brings us significantly closer to the root, with the error decreasing quadratically at each step. This quadratic convergence distinguishes Newton's method from bisection (which has linear convergence) and fixed-point iteration (which typically has linear convergence unless $g'(x^*) = 0$).
 
 :::{#exm-newton1}
 
@@ -1419,7 +1419,7 @@ Newton's method delivers rapid quadratic convergence but requires evaluating the
 
 ### Derivation and Geometric Interpretation
 
-The key idea is to replace the derivative $f'(x_k)$ in Newton's formula with a finite difference approximation using the two most recent points. If we have iterates $x_{k-1}$ and $x_k$, we approximate the slope by:
+We replace the derivative $f'(x_k)$ in Newton's formula with a finite difference approximation using the two most recent points. If we have iterates $x_{k-1}$ and $x_k$, we approximate the slope by:
 
 $$
 f'(x_k) \approx \frac{f(x_k) - f(x_{k-1})}{x_k - x_{k-1}}
