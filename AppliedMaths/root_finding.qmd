@@ -376,7 +376,11 @@ $$
 Since $L<1$, we have $L^k \rightarrow 0$, hence $\left|x_k-x^*\right| \rightarrow 0$. 
 :::
 
-A function $g$ satisfying the condition in the theorem is called a contraction because $|g(x)-g(y)| \leq L|x-y|, x, y \in I$, where $L<1$. Furthermore, $L$ gives information on the speed of convergence, smaller $L$ implies faster convergence, i.e. less number of iterations. Note, $|g(x)-g(y)| \leq L|x-y|$ is called the Lipschitz condition ([Rudolf Lipschitz](https://en.wikipedia.org/wiki/Rudolf_Lipschitz)) where $L$ is the Lipschitz constant, and offer an alternative and more demanding definition of continuity and derivation that is constructive, in comparison with the "usual" Cauchy existence $\varepsilon-\delta$ definitions we happened to learn in a standard analysis course. This theorem will guarantee convergence to a fixed point, $x^*$, of $g(x)$ if we start the iterations sufficiently close to that point $x^*$. Starting "far" from $x^*$ may or may not lead to a convergence to $x^*$. Also, since we consider only a neighborhood of the fixed point $x^*$, we can no longer guarantee the uniqueness of the fixed point. Finally, we illustrate the fixed point iteration process. The behavior of the iteration, whether it converges or diverges, is determined by the derivative of the iteration function $g(x)$ at the fixed point $x^*$. If $|g'(x^*)| < 1$, the iteration will converge if started sufficiently close to the fixed point. If $|g'(x^*)| > 1$, it will diverge, even when starting close to $x^*$. The following plots demonstrate both scenarios.
+A function $g$ satisfying the condition in the theorem is called a contraction because $|g(x)-g(y)| \leq L|x-y|$ for all $x, y \in I$, where $L<1$. Furthermore, $L$ gives information on the speed of convergence: smaller $L$ implies faster convergence. The inequality $|g(x)-g(y)| \leq L|x-y|$ is called the Lipschitz condition ([Rudolf Lipschitz](https://en.wikipedia.org/wiki/Rudolf_Lipschitz)), where $L$ is the Lipschitz constant. This provides a constructive definition of continuity and differentiability, in contrast with the "usual" Cauchy $\varepsilon$-$\delta$ existence definitions from standard analysis courses.
+
+The theorem guarantees convergence to a fixed point $x^*$ of $g(x)$ if we start the iterations sufficiently close to that point. Starting far from $x^*$ may or may not lead to convergence. Since we consider only a neighborhood of the fixed point, we can no longer guarantee uniqueness.
+
+The behavior of the iteration depends on the magnitude of the derivative $g'(x^*)$ at the fixed point. If $|g'(x^*)| < 1$, the iteration converges when started sufficiently close to $x^*$. If $|g'(x^*)| > 1$, the iteration diverges, even when starting close to $x^*$. The absolute value notation captures both positive and negative slopes—what matters for convergence is the magnitude, not the sign. The following plots demonstrate both scenarios.
 
 ::: {layout="[1,1]"}
 
@@ -501,13 +505,553 @@ plt.show()
 
 :::
 
+:::{#exm-fixed-point}
+
+Find the largest root to $x^2-x-6=0$ using fixed point iteration. Compare with the exact one.
+
+Solution: The roots are $x_1=-2$ and $x_2=3$. See Example 6.1. Rewrite the equation into the form $x=g(x)=\sqrt{x+6}$. Clearly $g^{\prime}(3)=\frac{1}{2 \sqrt{3+6}}<1$, and the conditions are satisfied for convergence, if we start sufficiently close to 3 .
+
+````{python}
+#| code-fold: false
+import numpy as np
+
+g = lambda x: np.sqrt(x + 6)
+x0 = 3.25
+
+xi = x0
+for i in range(10):
+    xi = g(xi)
+    fi = xi**2 - xi - 6
+    print(f"Iteration {i+1}: x = {xi:0.6f}, f(x) = {fi:0.6f}")
+    if fi < 1e-4:
+        break
+
+````
+
+:::
+
 [Fixed Point Method Video](https://youtu.be/qBAMl94gMjc?t=153)
 
 ### Kepler's problem
 
 {{< video https://youtu.be/hBkmyJ3TE0g >}}
 
+Problem: Given the mean anomaly $M$ and the eccentricity $e$, find the eccentric anomaly $E$ such that
+
+$$
+M = E - e \sin E
+$$
+
+using Kepler's method, which is a fixed point iteration method, we begin by rewriting the equation as
+
+$$
+E = M + e \sin E
+$$
+
+````{python}
+#| code-fold: false
+import numpy as np
+
+M = 19/88*2*np.pi  # example from video
+e = 0.21  # example eccentricity
+
+E_hat = M  # initial guess
+for i in range(10):
+    M_hat = E_hat - e * np.sin(E_hat)
+    error = M - M_hat
+    E_hat = E_hat + error
+
+    print(f"Iteration {i+1}: E = {E_hat:0.6f}, M_hat = {M_hat:0.6f}, error = {error:0.6f}")
+    if abs(error) < 1e-6:
+        break
+````
+
+The algorithm converges rapidly, reaching high accuracy within a few iterations. But why does this work? Let us examine the connection to fixed-point iteration theory, show that it is indeed the same thing!
+
+#### Connection to Fixed-Point Iteration
+
+The code above uses the notation from the video, but we can reveal its structure by simplifying the update step. Starting from:
+
+```python
+M_hat = E_hat - e * np.sin(E_hat)
+error = M - M_hat
+E_hat = E_hat + error
+```
+
+We substitute the expression for `error`:
+$$
+\text{error} = M - \hat M = M - (\hat E - e\sin \hat E) = M - \hat E + e\sin \hat E
+$$
+
+Therefore, the update becomes:
+$$
+\hat E \leftarrow \hat E + \text{error} =\hat E + (M - \hat E + e\sin \hat E) = M + e\sin \hat E
+$$
+
+This is precisely the fixed-point iteration $E_{k+1} = g(E_k)$ with the iteration function:
+$$
+g(E) = M + e\sin E
+$$
+
+We can verify that $E^*$ is a fixed point of $g$ if and only if it solves Kepler's equation:
+$$
+E^* = g(E^*) = M + e\sin(E^*) \implies M = E^* - e\sin(E^*)
+$$
+
+The convergence of this iteration follows from (@thm-Banach). The derivative of the iteration function is:
+$$
+g'(E) = e\cos(E)
+$$
+
+For typical orbital eccentricities ($0 \leq e < 1$), we have $|g'(E)| = |e\cos(E)| \leq e < 1$ for all $E$. This satisfies the contraction condition, guaranteeing convergence from any starting point. In our example with $e = 0.21$, the Lipschitz constant is $L \leq 0.21$, which explains the rapid convergence we observe.
+
+Let's verify this by implementing the simplified fixed-point form directly:
+
+````{python}
+#| code-fold: false
+# Simplified fixed-point iteration form
+M = 19/88*2*np.pi
+e = 0.21
+
+E = M  # initial guess
+print("Simplified fixed-point iteration: E_{k+1} = M + e*sin(E_k)")
+for i in range(10):
+    E = M + e * np.sin(E)
+    error = M - (E - e * np.sin(E))
+    M_hat = E - e * np.sin(E)
+    print(f"Iteration {i+1}: E = {E:0.6f}, M_hat = {M_hat:0.6f}, error = {error:0.6f}")
+    if abs(error) < 1e-6:
+        break
+````
+
+The two implementations produce identical results, confirming that Kepler's method is indeed a fixed-point iteration in disguise. The video's notation emphasizes the error-correction perspective (compute error, then correct), while the fixed-point formulation emphasizes the theoretical structure. Both are equivalent, but understanding the connection helps us apply convergence theory to predict and analyze the method's behavior.
+
+
+
+
+
+
+
 ## Newton's Method
+
+Newton's method, also known as the Newton-Raphson's method ([Joseph Raphson](https://en.wikipedia.org/wiki/Joseph_Raphson)), is a relatively simple, practical, and widely-used solution finding method. The derivative of $f$ is required. This extra information is paid back in speed. It's easy to see that while in some cases the method rapidly converges to a root of the function, in some other cases it may fail to converge at all. This is one reason why it is important not only to understand the construction of the method, but also to understand its limitations.
+
+As always, we assume that $f(x)=0$ has at least one (real) solution, and denote it by $x^*$. We start with an initial guess for the location of the solution, say $x_0$. We then let $l(x)$ be the tangent line to $f(x)$ at $x_0$, i.e.,
+
+$$
+l(x)-f\left(x_0\right)=f^{\prime}\left(x_0\right)\left(x-x_0\right) .
+$$
+
+
+The intersection of $l(x)$ with the $x$-axis serves as the next estimate of the solution. We denote this point by $x_1$ and write
+
+$$
+0-f\left(x_0\right)=f^{\prime}\left(x_0\right)\left(x_1-x_0\right) \Rightarrow x_1=x_0-\frac{f\left(x_0\right)}{f^{\prime}\left(x_0\right)} .
+$$
+
+
+In general, the Newton's method for finding a solution is now given by iterating (6.2) repeatedly, i.e.
+
+$$
+x_{k+1}=x_k-\frac{f\left(x_k\right)}{f^{\prime}\left(x_k\right)} .
+$$ {#eq-newton}
+
+The stopping criterion is usually the same as for the previous methods: if $\left|f\left(x_{k+1}\right)\right|<\delta$ or $\left|x_{k+1}-x_k\right|<\varepsilon$ is satisfied with some predefined small parameters $\delta, \varepsilon>0$, then we choose $x^*=x_{k+1}$.
+
+To illustrate the method, consider finding a root of the curved function $f(x) = x^2 - 2$. The animation below shows the iterative process: starting from an initial guess $x_0$, we draw a vertical line to $f(x_0)$, construct the tangent line at that point, and find where it crosses the x-axis to obtain $x_1$. This process repeats, with each iteration bringing us closer to the root $x^* \approx 2.0946$.
+
+````{python}
+#| code-fold: true
+from matplotlib.animation import FuncAnimation
+import sympy as sp
+import numpy as np
+import matplotlib.pyplot as plt
+import mechanicskit as mk
+
+# Define function and derivative
+x = sp.symbols('x')
+f = x**2 - 2
+f_prime = sp.diff(f, x)
+
+# Convert to numpy functions
+f_numpy = sp.lambdify(x, f, 'numpy')
+f_prime_numpy = sp.lambdify(x, f_prime, 'numpy')
+
+x_min, x_max = (0, 10)
+y_min, y_max = (-10, 40)
+
+# Newton's method iterations
+x0 = 6.5  # Initial guess
+x_vals = [x0]
+n_iter = 4
+
+x_current = x0
+for _ in range(n_iter):
+    x_next = x_current - f_numpy(x_current) / f_prime_numpy(x_current)
+    x_vals.append(x_next)
+    x_current = x_next
+
+# Generate plot data
+x_plot = np.linspace(x_min, x_max, 400)
+y_plot = f_numpy(x_plot)
+
+# Create animation frames structure
+# Each iteration has 4 steps: mark x_i, vertical line, tangent line, mark x_{i+1}
+frames_data = []
+for i in range(len(x_vals) - 1):
+    # Step 0: Mark x_i on x-axis
+    frames_data.append({'iter': i, 'step': 0})
+    # Step 1: Vertical line to f(x_i)
+    frames_data.append({'iter': i, 'step': 1})
+    # Step 2: Tangent line at f(x_i)
+    frames_data.append({'iter': i, 'step': 2})
+    # Step 3: Mark x_{i+1} on x-axis
+    frames_data.append({'iter': i, 'step': 3})
+
+# Create animation
+fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
+
+def animate(frame_idx):
+    ax.clear()
+
+    # Get current frame data
+    frame_data = frames_data[frame_idx]
+    i = frame_data['iter']
+    step = frame_data['step']
+
+    x_curr = x_vals[i]
+    x_next = x_vals[i + 1]
+    f_curr = f_numpy(x_curr)
+    f_prime_curr = f_prime_numpy(x_curr)
+
+    # Problem info box
+    problem_text = f"$f(x) = {sp.latex(f)}$"
+    ax.text(0.5, 0.98, problem_text,
+            transform=ax.transAxes,
+            fontsize=12,
+            verticalalignment='top',
+            horizontalalignment='center',
+            bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
+
+    # Plot function
+    ax.plot(x_plot, y_plot, 'b-', lw=2, label='$f(x)$')
+    ax.axhline(0, color='black', lw=0.5, linestyle='--', alpha=0.5)
+    ax.grid(True, alpha=0.3)
+
+    # Step descriptions
+    step_desc = [
+        f"Mark $x_{i}$ on x-axis",
+        f"Draw vertical line to $f(x_{i})$",
+        f"Construct tangent line at $(x_{i}, f(x_{i}))$",
+        f"Find $x_{i+1}$ where tangent crosses x-axis"
+    ]
+
+    # Step 0: Mark x_i on x-axis
+    if step >= 0:
+        ax.plot(x_curr, 0, 'ro', markersize=10, label=f'$x_{i}$ = {x_curr:.4f}', zorder=5)
+
+    # Step 1: Vertical line from x_curr to f(x_curr)
+    if step >= 1:
+        ax.plot([x_curr, x_curr], [0, f_curr], 'r--', lw=2, alpha=0.7)
+        ax.plot(x_curr, f_curr, 'ro', markersize=10, zorder=5)
+
+    # Step 2: Tangent line
+    if step >= 2:
+        tangent_x = np.linspace(x_min, x_max, 100)
+        tangent_y = f_curr + f_prime_curr * (tangent_x - x_curr)
+        ax.plot(tangent_x, tangent_y, 'g-', lw=2, alpha=0.7, label='Tangent line')
+
+    # Step 3: Mark x_{i+1}
+    if step >= 3:
+        ax.plot(x_next, 0, 'gs', markersize=10, label=f'$x_{i+1}$ = {x_next:.4f}', zorder=5)
+
+    # Info text box
+    exact_root = float(sp.nsolve(f, 2))
+    error_curr = abs(x_curr - exact_root)
+    error_next = abs(x_next - exact_root)
+
+    info_text = (
+        f"Iteration {i}, Step {step+1}/4\n"
+        f"{step_desc[step]}\n"
+        f"\n"
+        f"$x_{i} = {x_curr:.6f}$\n"
+        f"$f(x_{i}) = {f_curr:.6f}$\n"
+        f"$f'(x_{i}) = {f_prime_curr:.6f}$\n"
+    )
+
+    if step >= 3:
+        info_text += f"\n$x_{i+1} = x_{i} - \\frac{{f(x_{i})}}{{f'(x_{i})}} = {x_next:.6f}$\n"
+        info_text += f"Error: ${error_curr:.2e}$ → ${error_next:.2e}$"
+
+    ax.text(0.02, 0.98, info_text,
+            transform=ax.transAxes,
+            fontsize=9,
+            verticalalignment='top',
+            horizontalalignment='left',
+            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8),
+            family='monospace')
+
+    ax.set_xlabel('$x$')
+    ax.set_ylabel('$f(x)$')
+    ax.set_title(f"Newton's Method: Iteration {i}, Step {step+1}/4")
+    ax.legend(loc='lower right', fontsize=9)
+    ax.set_xlim(x_min, x_max)
+    ax.set_ylim(y_min, y_max)
+
+anim = FuncAnimation(fig, animate, frames=len(frames_data), interval=1000, repeat=True)
+plt.close()
+
+mk.to_responsive_html(anim, container_id='newton-animation')
+````
+
+The animation demonstrates Newton's method's rapid convergence. Each tangent line approximation brings us significantly closer to the root, with the error decreasing quadratically at each step. This quadratic convergence is Newton's method's key advantage over bisection (which has linear convergence) and fixed-point iteration (which typically has linear convergence unless $g'(x^*) = 0$).
+
+:::{#exm-newton1}
+
+Find the largest root to $x^2-x-6=0$ using Newton's method. Compare with the exact one.
+The roots are $x_1=-2$ and $x_2=3$. See previous examples. Use (@eq-newton) with $x_0=2.5$.
+
+````{python}
+#| code-fold: false
+
+f = lambda x: x**2 - x - 6
+f_prime = lambda x: 2*x - 1
+
+x0 = 2.5  # Initial guess
+xi = x0
+for i in range(5):
+    xi = xi - f(xi) / f_prime(xi)
+    fi = f(xi)
+    error = abs(fi)
+    print(f"Iteration {i+1}: x = {xi:0.6f}, f(x) = {fi:0.6f}, error = {error:0.6f}")
+    if error < 1e-6:
+        break
+
+````
+
+:::
+
+### Error Analysis and Convergence
+
+
+
+However, Newton's method does not always converge. We now examine two failure modes: cycling and divergence.
+
+### Failure Mode 1: Cycling
+
+For certain starting points, Newton's method can get stuck in an infinite loop, cycling between two or more values without ever reaching the root. Consider $f(x) = \arctan(x)$, which has a root at $x^* = 0$. If we start from $x_0 \approx 1.39175$, the method oscillates between two points indefinitely.
+
+````{python}
+#| code-fold: true
+from matplotlib.animation import FuncAnimation
+import sympy as sp
+import numpy as np
+import matplotlib.pyplot as plt
+import mechanicskit as mk
+
+# Define function and derivative
+x = sp.symbols('x')
+f = sp.atan(x)
+f_prime = sp.diff(f, x)
+
+# Convert to numpy functions
+f_numpy = sp.lambdify(x, f, 'numpy')
+f_prime_numpy = sp.lambdify(x, f_prime, 'numpy')
+
+# Find the cycling point numerically
+# For arctan, we want x where g(g(x)) = x but g(x) ≠ x
+# where g(x) = x - arctan(x)*(1+x^2)
+x0 = 1.39174754  # This value creates a 2-cycle
+
+# Newton's method iterations
+x_vals = [x0]
+n_iter = 6
+
+x_current = x0
+for _ in range(n_iter):
+    x_next = x_current - f_numpy(x_current) / f_prime_numpy(x_current)
+    x_vals.append(x_next)
+    x_current = x_next
+
+# Generate plot data
+x_plot = np.linspace(-3, 3, 400)
+y_plot = f_numpy(x_plot)
+
+# Create animation
+fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
+
+def animate(frame):
+    ax.clear()
+
+    # Problem info box
+    problem_text = r"$f(x) = \arctan(x)$, root at $x^* = 0$"
+    ax.text(0.5, 0.98, problem_text,
+            transform=ax.transAxes,
+            fontsize=12,
+            verticalalignment='top',
+            horizontalalignment='center',
+            bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.8))
+
+    # Plot function
+    ax.plot(x_plot, y_plot, 'b-', lw=2, label='$f(x) = \\arctan(x)$')
+    ax.axhline(0, color='black', lw=0.5, linestyle='--', alpha=0.5)
+    ax.axvline(0, color='black', lw=0.5, linestyle='--', alpha=0.5)
+    ax.grid(True, alpha=0.3)
+
+    # Show all iterations up to current frame
+    for i in range(frame + 1):
+        if i < len(x_vals) - 1:
+            x_curr = x_vals[i]
+            x_next = x_vals[i + 1]
+            f_curr = f_numpy(x_curr)
+            f_prime_curr = f_prime_numpy(x_curr)
+
+            # Vertical line from x_curr to f(x_curr)
+            alpha_val = 0.3 if i < frame else 1.0
+            ax.plot([x_curr, x_curr], [0, f_curr], 'r--', lw=1.5, alpha=alpha_val)
+
+            # Point on curve
+            ax.plot(x_curr, f_curr, 'ro', markersize=8, alpha=alpha_val, zorder=5)
+
+            # Tangent line
+            tangent_x = np.linspace(-3, 3, 100)
+            tangent_y = f_curr + f_prime_curr * (tangent_x - x_curr)
+            ax.plot(tangent_x, tangent_y, 'g-', lw=1.5, alpha=alpha_val * 0.5)
+
+            # Mark x values on axis
+            ax.plot(x_curr, 0, 'ro', markersize=8, alpha=alpha_val, zorder=5)
+            if i < frame:
+                ax.plot(x_next, 0, 'gs', markersize=8, alpha=alpha_val, zorder=5)
+
+    # Highlight current iteration
+    if frame < len(x_vals) - 1:
+        x_curr = x_vals[frame]
+        x_next = x_vals[frame + 1]
+        ax.plot(x_next, 0, 'gs', markersize=10, label=f'$x_{frame+1}$ = {x_next:.5f}', zorder=6)
+
+    # Info text box
+    info_text = f"Iteration {frame}\n"
+    if frame < len(x_vals) - 1:
+        info_text += f"$x_{frame} = {x_vals[frame]:.6f}$\n"
+        info_text += f"$x_{frame+1} = {x_vals[frame+1]:.6f}$\n"
+        if frame >= 2:
+            info_text += f"\nCycling between:\n"
+            info_text += f"{x_vals[0]:.6f} and {x_vals[1]:.6f}"
+
+    ax.text(0.02, 0.98, info_text,
+            transform=ax.transAxes,
+            fontsize=9,
+            verticalalignment='top',
+            horizontalalignment='left',
+            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8),
+            family='monospace')
+
+    ax.set_xlabel('$x$')
+    ax.set_ylabel('$f(x)$')
+    ax.set_title(f"Newton's Method Failure: Cycling (Iteration {frame})")
+    ax.legend(loc='upper left', fontsize=9)
+    ax.set_xlim(-3, 3)
+    ax.set_ylim(-1.6, 1.6)
+
+anim = FuncAnimation(fig, animate, frames=len(x_vals)-1, interval=1200, repeat=True)
+plt.close()
+
+mk.to_responsive_html(anim, container_id='newton-cycling')
+````
+
+The animation shows the method trapped in a 2-cycle, oscillating between approximately $x \approx 1.39175$ and $x \approx -1.39175$, never approaching the root at $x^* = 0$. This occurs because the starting point lies at a periodic orbit of the Newton iteration map.
+
+### Failure Mode 2: Divergence
+
+Newton's method can also diverge, sending iterates progressively farther from the root. This happens when the tangent line has a very gentle slope, causing the next iterate to overshoot dramatically. A classic example is $f(x) = x^{1/3}$ with root at $x^* = 0$.
+
+````{python}
+#| code-fold: false
+# Demonstrate divergence with f(x) = x^(1/3)
+x = sp.symbols('x', real=True)
+f = x**(sp.Rational(1, 3))
+f_prime = sp.diff(f, x)
+
+# Create custom cube root that handles negative numbers properly
+def cbrt(x):
+    """Real cube root that works for negative numbers."""
+    return np.sign(x) * np.abs(x)**(1/3)
+
+def cbrt_derivative(x):
+    """Derivative of real cube root."""
+    return 1 / (3 * np.abs(x)**(2/3))
+
+# Newton's method from x_0 = 1
+x_vals_div = [1.0]
+for _ in range(4):
+    x_curr = x_vals_div[-1]
+    x_next = x_curr - cbrt(x_curr) / cbrt_derivative(x_curr)
+    x_vals_div.append(x_next)
+
+print("Newton's method on f(x) = x^(1/3) starting from x_0 = 1:")
+for i, x_val in enumerate(x_vals_div):
+    print(f"x_{i} = {x_val:10.4f}")
+````
+
+Notice the iterates diverge: $x_0 = 1$, $x_1 = -2$, $x_2 = 4$, $x_3 = -8$, doubling in magnitude (with alternating sign) at each step. The issue is that $f'(0) = \infty$ (vertical tangent at the root), violating Newton's method's assumptions.
+
+We can visualize the first few iterations:
+
+````{python}
+#| code-fold: true
+fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
+
+# Plot function using the real cube root
+x_plot = np.linspace(-5, 5, 400)
+x_plot = x_plot[x_plot != 0]  # Remove zero to avoid issues
+y_plot = cbrt(x_plot)
+
+ax.plot(x_plot, y_plot, 'b-', lw=2, label='$f(x) = x^{1/3}$')
+ax.axhline(0, color='black', lw=0.5, linestyle='--', alpha=0.5)
+ax.axvline(0, color='red', lw=2, linestyle='--', alpha=0.7, label='Root at $x^* = 0$')
+ax.grid(True, alpha=0.3)
+
+# Show first 3 Newton iterations
+colors = ['red', 'orange', 'purple']
+for i in range(min(3, len(x_vals_div)-1)):
+    x_curr = x_vals_div[i]
+    x_next = x_vals_div[i+1]
+    f_curr = cbrt(x_curr)
+    f_prime_curr = cbrt_derivative(x_curr)
+
+    # Vertical line
+    ax.plot([x_curr, x_curr], [0, f_curr], '--', color=colors[i], lw=1.5, alpha=0.7)
+
+    # Point on curve
+    ax.plot(x_curr, f_curr, 'o', color=colors[i], markersize=10, zorder=5,
+            label=f'$x_{i}$ = {x_curr:.1f}')
+
+    # Tangent line
+    if abs(x_next) < 10:  # Don't draw if too far
+        tangent_x = np.linspace(max(-5, x_curr-3), min(5, x_curr+3), 100)
+        tangent_y = f_curr + f_prime_curr * (tangent_x - x_curr)
+        ax.plot(tangent_x, tangent_y, '-', color=colors[i], lw=1.5, alpha=0.5)
+
+    # Next point on x-axis
+    if abs(x_next) < 5:
+        ax.plot(x_next, 0, 's', color=colors[i], markersize=10, zorder=5)
+
+ax.set_xlabel('$x$')
+ax.set_ylabel('$f(x)$')
+ax.set_title("Newton's Method Failure: Divergence on $f(x) = x^{1/3}$")
+ax.legend(loc='upper left', fontsize=9)
+ax.set_xlim(-5, 5)
+ax.set_ylim(-2, 2)
+
+plt.tight_layout()
+plt.show()
+````
+
+The plot shows how each tangent line sends us farther from the root. The steep curve near the root (approaching a vertical tangent) causes the tangent line to intersect the x-axis far away, and the iterates diverge to $\pm\infty$.
+
+These examples illustrate why Newton's method requires careful initialization and why bisection, despite its slower convergence, is sometimes preferred for its guaranteed convergence.
+
+
 
 [Newton's method video](https://youtu.be/qBAMl94gMjc?t=300)
 
