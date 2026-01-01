@@ -958,9 +958,11 @@ for i in range(min(10, len(bisection_errors))):
     print(f"{i:9d} | {bis_err:10.2e} | {fp_err:11.2e} | {newt_err:10.2e}")
 ````
 
-    The table shows that bisection reduces the error by a factor of two each iteration, which is linear convergence with rate 0.5, fixed-point iteration reduces the error by a roughly constant factor, which is also linear convergence, and Newton’s method squares the error once the iterates are close, which yields quadratic convergence and reaches machine precision in a few iterations for this problem.
 
-    We can visualize the convergence order by plotting $\log(e_{k+1})$ vs $\log(e_k)$. On such a plot, the slope reveals the convergence order: slope = 1 for linear (P1), slope = 2 for quadratic (P2).
+The table shows that bisection reduces the error by a factor of two each iteration, which is linear convergence with rate 0.5, fixed-point iteration reduces the error by a roughly constant factor, which is also linear convergence, and Newton’s method squares the error once the iterates are close, which yields quadratic convergence and reaches machine precision in a few iterations for this problem.
+
+We can visualize the convergence order by plotting $\log(e_{k+1})$ vs $\log(e_k)$. On such a plot, the slope reveals the convergence order: slope = 1 for linear ($P_1$), slope = 2 for quadratic ($P_2$).
+
 ````{python}
 #| code-fold: true
 #| fig-cap: "Analysis of convergence rates. (a) Absolute error vs. iteration on a log-linear scale, showing Newton's method reaching machine precision much faster. (b) A log-log plot of successive errors, where the slope indicates the order of convergence (slope=1 for linear, slope=2 for quadratic)."
@@ -1013,8 +1015,8 @@ e_ref = np.logspace(-3, 0, 50)
 p1_line = 0.5 * e_ref  # Slope = 1 on log-log
 p2_line = 0.5 * e_ref**2  # Slope = 2 on log-log
 
-ax2.loglog(e_ref, p1_line, 'k--', linewidth=2, alpha=0.5, label='P1: slope = 1')
-ax2.loglog(e_ref, p2_line, 'k:', linewidth=2, alpha=0.5, label='P2: slope = 2')
+ax2.loglog(e_ref, p1_line, 'k--', linewidth=2, alpha=0.5, label='$P_1$: slope = 1')
+ax2.loglog(e_ref, p2_line, 'k:', linewidth=2, alpha=0.5, label='$P_2$: slope = 2')
 
 ax2.set_xlabel('$|e_k|$', fontsize=12)
 ax2.set_ylabel('$|e_{k+1}|$', fontsize=12)
@@ -1028,7 +1030,7 @@ plt.tight_layout()
 plt.show()
 ````
 
-The right plot reveals the convergence orders. Bisection and fixed-point follow the P1 reference line (slope = 1 on log-log plot), confirming linear convergence. Newton's method follows the P2 reference line (slope = 2), confirming quadratic convergence. This means that for Newton's method, when the error is $10^{-2}$, the next error is roughly $(10^{-2})^2 = 10^{-4}$, then $10^{-8}$, then $10^{-16}$, reaching machine precision in just 4 iterations.
+The right plot reveals the convergence orders. Bisection and fixed-point follow the $P_1$ reference line (slope = 1 on log-log plot), confirming linear convergence. Newton's method follows the P2 reference line (slope = 2), confirming quadratic convergence. This means that for Newton's method, when the error is $10^{-2}$, the next error is roughly $(10^{-2})^2 = 10^{-4}$, then $10^{-8}$, then $10^{-16}$, reaching machine precision in just 4 iterations.
 
 This analysis explains why Newton's method is the default choice for root finding in most scientific computing applications: when it works, it works spectacularly well. However, the "when it works" qualification is important. Newton's method does not always converge. We now examine two failure modes: cycling and divergence.
 
@@ -1719,7 +1721,7 @@ plt.tight_layout()
 plt.show()
 ````
 
-The log-log plot reveals the dramatic differences in convergence orders. Bisection and fixed-point iteration follow the P1 reference line (slope = 1), confirming linear convergence. Each iteration reduces the error by a roughly constant factor. The secant method tracks the golden ratio line (slope ≈ 1.618), demonstrating superlinear convergence between linear and quadratic rates. Newton's method follows the P2 reference line (slope = 2), showing quadratic convergence where the error squares at each iteration. Once Newton's method gets close to the root, it achieves machine precision in just a few iterations, while bisection requires many more steps to reach the same accuracy.
+The log-log plot reveals the dramatic differences in convergence orders. Bisection and fixed-point iteration follow the $P_1$ reference line (slope = 1), confirming linear convergence. Each iteration reduces the error by a roughly constant factor. The secant method tracks the golden ratio line (slope ≈ 1.618), demonstrating superlinear convergence between linear and quadratic rates. Newton's method follows the P2 reference line (slope = 2), showing quadratic convergence where the error squares at each iteration. Once Newton's method gets close to the root, it achieves machine precision in just a few iterations, while bisection requires many more steps to reach the same accuracy.
 
 
 #### Discussion: Choosing the Right Method
