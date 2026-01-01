@@ -380,7 +380,7 @@ A function $g$ satisfying the condition in the theorem is called a contraction b
 
 The theorem guarantees convergence to a fixed point $x^*$ of $g(x)$ if we start the iterations sufficiently close to that point. Starting far from $x^*$ may or may not lead to convergence. Since we consider only a neighborhood of the fixed point, we can no longer guarantee uniqueness.
 
-The behavior of the iteration depends on the magnitude of the derivative $g'(x^*)$ at the fixed point. If $|g'(x^*)| < 1$, the iteration converges when started sufficiently close to $x^*$. If $|g'(x^*)| > 1$, the iteration diverges, even when starting close to $x^*$. The absolute value notation captures both positive and negative slopes—what matters for convergence is the magnitude, not the sign. The following plots demonstrate both scenarios.
+The behavior of the iteration depends on the magnitude of the derivative $g'(x^*)$ at the fixed point. If $|g'(x^*)| < 1$, the iteration converges when started sufficiently close to $x^*$. If $|g'(x^*)| > 1$, the iteration diverges, even when starting close to $x^*$. The absolute value notation captures both positive and negative slopes: what matters for convergence is the magnitude, not the sign. The following plots demonstrate both scenarios.
 
 ::: {layout="[1,1]"}
 
@@ -634,23 +634,22 @@ The two implementations produce identical results, confirming that Kepler's meth
 
 ## Newton's Method
 
-Newton's method, also known as the Newton-Raphson's method ([Joseph Raphson](https://en.wikipedia.org/wiki/Joseph_Raphson)), is a relatively simple, practical, and widely-used solution finding method. The derivative of $f$ is required. This extra information is paid back in speed. It's easy to see that while in some cases the method rapidly converges to a root of the function, in some other cases it may fail to converge at all. This is one reason why it is important not only to understand the construction of the method, but also to understand its limitations.
+Newton's method, also known as Newton-Raphson's method ([Joseph Raphson](https://en.wikipedia.org/wiki/Joseph_Raphson)), is a practical and widely-used root-finding method. We need the derivative of $f$ to use it, but this extra information pays off with much faster convergence. The method converges rapidly in many cases, but can also fail completely for certain starting points or functions. We therefore need to understand both how to use the method effectively and when it might fail.
 
-As always, we assume that $f(x)=0$ has at least one (real) solution, and denote it by $x^*$. We start with an initial guess for the location of the solution, say $x_0$. We then let $l(x)$ be the tangent line to $f(x)$ at $x_0$, i.e.,
+We assume that $f(x)=0$ has at least one solution $x^*$. Starting with an initial guess $x_0$, we construct the tangent line to $f(x)$ at $x_0$:
 
 $$
 l(x)-f\left(x_0\right)=f^{\prime}\left(x_0\right)\left(x-x_0\right) .
 $$
 
 
-The intersection of $l(x)$ with the $x$-axis serves as the next estimate of the solution. We denote this point by $x_1$ and write
+We use this tangent line as a linear approximation to $f$ near $x_0$. Where the tangent crosses the x-axis becomes our next guess $x_1$. Setting $l(x_1) = 0$ gives:
 
 $$
-0-f\left(x_0\right)=f^{\prime}\left(x_0\right)\left(x_1-x_0\right) \Rightarrow x_1=x_0-\frac{f\left(x_0\right)}{f^{\prime}\left(x_0\right)} .
+0-f\left(x_0\right)=f^{\prime}\left(x_0\right)\left(x_1-x_0\right) \implies x_1=x_0-\frac{f\left(x_0\right)}{f^{\prime}\left(x_0\right)}
 $$
 
-
-In general, the Newton's method for finding a solution is now given by iterating (6.2) repeatedly, i.e.
+Repeating this process gives the Newton iteration:
 
 $$
 x_{k+1}=x_k-\frac{f\left(x_k\right)}{f^{\prime}\left(x_k\right)} .
@@ -658,7 +657,7 @@ $$ {#eq-newton}
 
 The stopping criterion is usually the same as for the previous methods: if $\left|f\left(x_{k+1}\right)\right|<\delta$ or $\left|x_{k+1}-x_k\right|<\varepsilon$ is satisfied with some predefined small parameters $\delta, \varepsilon>0$, then we choose $x^*=x_{k+1}$.
 
-To illustrate the method, consider finding a root of the curved function $f(x) = x^2 - 2$. The animation below shows the iterative process: starting from an initial guess $x_0$, we draw a vertical line to $f(x_0)$, construct the tangent line at that point, and find where it crosses the x-axis to obtain $x_1$. This process repeats, with each iteration bringing us closer to the root $x^* \approx 2.0946$.
+To illustrate the method, we find a root of $f(x) = x^2 - 2$. The animation below shows the iterative process: starting from an initial guess $x_0$, we draw a vertical line to $f(x_0)$, construct the tangent line at that point, and find where it crosses the x-axis to obtain $x_1$. Each iteration brings us closer to the root $x^* = \sqrt{2} \approx 1.414$.
 
 ````{python}
 #| code-fold: true
@@ -833,7 +832,209 @@ for i in range(5):
 
 ### Error Analysis and Convergence
 
+We now analyze why Newton's method converges so quickly when it works, and under what conditions convergence is guaranteed. The analysis reveals the method's quadratic convergence property, the defining characteristic that makes Newton's method so powerful.
 
+#### Convergence Theory
+
+Newton's method can be viewed as a special case of fixed-point iteration. Rearranging (@eq-newton), we write:
+
+$$
+x_{k+1} = x_k - \frac{f(x_k)}{f'(x_k)} = g(x_k)
+$$
+
+where the iteration function is $g(x) = x - \frac{f(x)}{f'(x)}$. At a root $x^*$ where $f(x^*) = 0$, we have $g(x^*) = x^* - 0/f'(x^*) = x^*$, confirming that $x^*$ is a fixed point.
+
+The convergence rate depends on $|g'(x^*)|$. Computing the derivative using the [quotient rule](https://en.wikipedia.org/wiki/Quotient_rule):
+
+$$
+g'(x) = 1 - \frac{f'(x)^2 - f(x)f''(x)}{f'(x)^2} = \frac{f(x)f''(x)}{f'(x)^2}
+$$
+
+At the root $x^*$ where $f(x^*) = 0$, we obtain:
+
+$$
+g'(x^*) = \frac{f(x^*)f''(x^*)}{f'(x^*)^2} = 0
+$$
+
+This is remarkable: not only is $|g'(x^*)| < 1$ (which would guarantee linear convergence), but $g'(x^*) = 0$ exactly. This leads to *quadratic convergence*, meaning the error roughly squares at each iteration.
+
+To make this precise, we use Taylor expansion around $x^*$:
+
+$$
+0 = f(x^*) = f(x_k) + f'(x_k)(x^* - x_k) + \frac{1}{2}f''(\xi)(x^* - x_k)^2
+$$
+
+for some $\xi$ between $x_k$ and $x^*$. Dividing by $f'(x_k)$ and rearranging:
+
+$$
+x^* - x_k + \frac{f(x_k)}{f'(x_k)} = -\frac{f''(\xi)}{2f'(x_k)}(x^* - x_k)^2
+$$
+
+and with @eq-newton, we have
+$$
+x^* - x_{k+1} = x^* - \left(x_k - \frac{f(x_k)}{f'(x_k)}\right)
+= x^* - x_k + \frac{f(x_k)}{f'(x_k)}.
+$$
+Thus the left side is exactly $x^* - x_{k+1}$, and taking absolute values gives:
+
+$$
+|x_{k+1} - x^*| = \frac{|f''(\xi)|}{2|f'(x_k)|}|x_k - x^*|^2
+$$
+
+If $f'$ and $f''$ are bounded near $x^*$ with $f'(x^*) \neq 0$, then there exists a constant $C$ such that:
+
+$$
+|x_{k+1} - x^*| \leq C|x_k - x^*|^2
+$$
+
+This is quadratic convergence: the error at step $k+1$ is proportional to the *square* of the error at step $k$. Once the iterates are close to $x^*$, the number of correct digits roughly doubles at each step.
+
+**Requirements for convergence:**
+1. $f'(x^*) \neq 0$ (root is simple, not multiple)
+2. $f'$ and $f''$ exist and are continuous near $x^*$
+3. Initial guess $x_0$ is sufficiently close to $x^*$
+
+Condition 3 is crucial: Newton's method has only *local* convergence. Starting far from a root can lead to divergence or cycling, as we demonstrate below.
+
+#### Comparing Convergence Rates
+
+To see quadratic convergence in action, we compare bisection, fixed-point iteration, and Newton's method on the same problem: finding the root $x^* = 3$ of $f(x) = x^2 - x - 6$.
+
+````{python}
+#| code-fold: true
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define the function and derivatives
+f = lambda x: x**2 - x - 6
+f_prime = lambda x: 2*x - 1
+x_star = 3.0  # Exact root
+
+# Bisection method
+def bisection(f, a, b, max_iter=50):
+    errors = []
+    for _ in range(max_iter):
+        c = (a + b) / 2
+        errors.append(abs(c - x_star))
+        if f(a) * f(c) < 0:
+            b = c
+        else:
+            a = c
+    return errors
+
+# Fixed-point iteration: x = sqrt(x + 6)
+def fixed_point(g, x0, max_iter=50):
+    errors = []
+    x = x0
+    for _ in range(max_iter):
+        x = g(x)
+        errors.append(abs(x - x_star))
+        if errors[-1] < 1e-12:
+            break
+    return errors
+
+# Newton's method
+def newton(f, f_prime, x0, max_iter=50):
+    errors = []
+    x = x0
+    for _ in range(max_iter):
+        x = x - f(x) / f_prime(x)
+        errors.append(abs(x - x_star))
+        if errors[-1] < 1e-12:
+            break
+    return errors
+
+# Run all three methods
+bisection_errors = bisection(f, 1, 4)
+fixed_point_errors = fixed_point(lambda x: np.sqrt(x + 6), 2.5)
+newton_errors = newton(f, f_prime, 1.0)  # Start further from root for more iterations
+
+# Display first 10 iterations
+print("Iteration | Bisection  | Fixed-Point | Newton")
+print("-" * 55)
+for i in range(min(10, len(bisection_errors))):
+    bis_err = bisection_errors[i] if i < len(bisection_errors) else np.nan
+    fp_err = fixed_point_errors[i] if i < len(fixed_point_errors) else np.nan
+    newt_err = newton_errors[i] if i < len(newton_errors) else np.nan
+    print(f"{i:9d} | {bis_err:10.2e} | {fp_err:11.2e} | {newt_err:10.2e}")
+````
+
+The table shows the dramatic difference:
+- **Bisection**: Error decreases by factor of 2 each iteration (linear convergence with rate 0.5)
+- **Fixed-point**: Error decreases by roughly constant factor each iteration (linear convergence)
+- **Newton**: Error squares each iteration (quadratic convergence), by iteration 4, we have machine precision
+
+We can visualize the convergence order by plotting $\log(e_{k+1})$ vs $\log(e_k)$. On such a plot, the slope reveals the convergence order: slope = 1 for linear (P1), slope = 2 for quadratic (P2).
+
+````{python}
+#| code-fold: true
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5), dpi=150)
+
+# Left plot: Error vs iteration (log scale)
+ax1.semilogy(range(len(bisection_errors)), bisection_errors, 'b-o',
+            label='Bisection', markersize=6, linewidth=2)
+ax1.semilogy(range(len(fixed_point_errors)), fixed_point_errors, 'g-s',
+            label='Fixed-Point', markersize=6, linewidth=2)
+ax1.semilogy(range(len(newton_errors)), newton_errors, 'r-^',
+            label="Newton", markersize=6, linewidth=2)
+
+ax1.axhline(np.finfo(float).eps, color='gray', linestyle=':',
+           linewidth=1.5, alpha=0.7, label='Machine epsilon')
+
+ax1.set_xlabel('Iteration $k$', fontsize=12)
+ax1.set_ylabel('Absolute Error $|x_k - x^*|$', fontsize=12)
+ax1.set_title('Error vs Iteration', fontsize=13)
+ax1.legend(loc='upper right', fontsize=10)
+ax1.grid(True, alpha=0.3, which='both')
+ax1.set_xlim(-0.5, 12)
+
+# Right plot: log(e_{k+1}) vs log(e_k) - shows convergence order
+# For bisection
+bis_ek = np.array(bisection_errors[:-1])
+bis_ek1 = np.array(bisection_errors[1:])
+# Filter out only errors at machine precision
+eps_threshold = np.finfo(float).eps * 10
+mask_bis = (bis_ek > eps_threshold) & (bis_ek1 > eps_threshold)
+ax2.loglog(bis_ek[mask_bis], bis_ek1[mask_bis], 'bo-',
+          label='Bisection', markersize=6, linewidth=2)
+
+# For fixed-point
+fp_ek = np.array(fixed_point_errors[:-1])
+fp_ek1 = np.array(fixed_point_errors[1:])
+mask_fp = (fp_ek > eps_threshold) & (fp_ek1 > eps_threshold)
+ax2.loglog(fp_ek[mask_fp], fp_ek1[mask_fp], 'gs-',
+          label='Fixed-Point', markersize=6, linewidth=2)
+
+# For Newton
+newt_ek = np.array(newton_errors[:-1])
+newt_ek1 = np.array(newton_errors[1:])
+mask_newt = (newt_ek > eps_threshold) & (newt_ek1 > eps_threshold)
+ax2.loglog(newt_ek[mask_newt], newt_ek1[mask_newt], 'r^-',
+          label="Newton", markersize=6, linewidth=2)
+
+# Add reference lines for P1 and P2
+e_ref = np.logspace(-3, 0, 50)
+p1_line = 0.5 * e_ref  # Slope = 1 on log-log
+p2_line = 0.5 * e_ref**2  # Slope = 2 on log-log
+
+ax2.loglog(e_ref, p1_line, 'k--', linewidth=2, alpha=0.5, label='P1: slope = 1')
+ax2.loglog(e_ref, p2_line, 'k:', linewidth=2, alpha=0.5, label='P2: slope = 2')
+
+ax2.set_xlabel('$|e_k|$', fontsize=12)
+ax2.set_ylabel('$|e_{k+1}|$', fontsize=12)
+ax2.set_title('Convergence Order Analysis', fontsize=13)
+ax2.legend(loc='upper left', fontsize=10)
+ax2.grid(True, alpha=0.3, which='both')
+ax2.set_xlim(1e-4, 1)
+ax2.set_ylim(1e-8, 1)
+
+plt.tight_layout()
+plt.show()
+````
+
+The right plot clearly reveals the convergence orders. Bisection and fixed-point follow the P1 reference line (slope = 1 on log-log plot), confirming linear convergence. Newton's method follows the P2 reference line (slope = 2), confirming quadratic convergence. This means that for Newton's method, when the error is $10^{-2}$, the next error is roughly $(10^{-2})^2 = 10^{-4}$, then $10^{-8}$, then $10^{-16}$, reaching machine precision in just 4 iterations.
+
+This analysis explains why Newton's method is the default choice for root finding in most scientific computing applications: when it works, it works spectacularly well. However, the "when it works" qualification is important, as we now demonstrate.
 
 However, Newton's method does not always converge. We now examine two failure modes: cycling and divergence.
 
@@ -1075,7 +1276,7 @@ $$
 (-1)^s \times 2^{e-1023} \times (1 + m),
 $$
 
-where $m$ is interpreted as a binary fraction $m = \sum_{i=1}^{52} b_i 2^{-i}$ with binary digits $b_i \in \{0,1\}$. The exponent bias of 1023 allows representation of both very large and very small numbers. The implicit leading 1 in $(1 + m)$ provides one extra bit of precision—numbers are normalized so the leading bit is always 1 and need not be stored.
+where $m$ is interpreted as a binary fraction $m = \sum_{i=1}^{52} b_i 2^{-i}$ with binary digits $b_i \in \{0,1\}$. The exponent bias of 1023 allows representation of both very large and very small numbers. The implicit leading 1 in $(1 + m)$ provides one extra bit of precision: numbers are normalized so the leading bit is always 1 and need not be stored.
 
 This representation has several important consequences. First, not all decimal numbers have exact binary representations. The fraction $1/10 = 0.1$ in decimal becomes the repeating binary expansion $0.0001100110011\ldots_2$, which must be truncated to fit in 52 bits. This is why seemingly simple calculations like `0.1 + 0.2` in Python produce `0.30000000000000004` rather than exactly `0.3`. The representation error is small but unavoidable.
 
@@ -1112,7 +1313,7 @@ The values agree perfectly with theory. This fundamental limit means Python cann
 
 When implementing iterative methods like bisection, multiple error sources affect the final result. Understanding the distinction between error types is essential for writing robust numerical code.
 
-Truncation error arises when we terminate an infinite process after finitely many steps. In the bisection method with tolerance $\varepsilon = 0.01$, we stopped after 9 iterations, still $0.002$ units from the exact root $x^* = 3$. This gap is truncation error—we truncated the (theoretically) infinite sequence of bisections. Our theoretical bound $|x_k - x^*| \leq 2^{-k}(b_0 - a_0)$ quantifies this truncation error precisely.
+Truncation error arises when we terminate an infinite process after finitely many steps. In the bisection method with tolerance $\varepsilon = 0.01$, we stopped after 9 iterations, still $0.002$ units from the exact root $x^* = 3$. This gap is truncation error: we truncated the (theoretically) infinite sequence of bisections. Our theoretical bound $|x_k - x^*| \leq 2^{-k}(b_0 - a_0)$ quantifies this truncation error precisely.
 
 Roundoff error accumulates from representation errors at each arithmetic operation. Every addition, multiplication, or function evaluation introduces a small error of magnitude roughly $\varepsilon_{\text{mach}}$ relative to the operands. Over many operations, these can accumulate or sometimes catastrophically amplify. Fortunately, bisection performs only simple operations (midpoint calculation, function evaluation) and is remarkably robust to roundoff.
 
@@ -1132,7 +1333,7 @@ $$
 
 which reduces to absolute error when $|x^*| \ll 1$ and relative error when $|x^*| \gg 1$.
 
-Of course, in practice we don't know $x^*$—that's why we need numerical methods! Iterative methods instead estimate error using consecutive iterates: $|x_{k+1} - x_k| < \varepsilon$ as a termination criterion. For bisection specifically, we have the stronger guarantee $|x_k - x^*| \leq b_k - a_k$, allowing direct error bounds.
+Of course, in practice we don't know $x^*$, that's why we need numerical methods! Iterative methods instead estimate error using consecutive iterates: $|x_{k+1} - x_k| < \varepsilon$ as a termination criterion. For bisection specifically, we have the stronger guarantee $|x_k - x^*| \leq b_k - a_k$, allowing direct error bounds.
 
 Let's examine how errors evolve during bisection, running the method to very high precision to observe when roundoff error eventually dominates:
 
@@ -1353,4 +1554,3 @@ print(f"Float32 machine epsilon: {np.finfo(np.float32).eps:.2e}")
 
 
 The visualization reveals the algorithm's brilliance. The magic bit hack alone produces an initial guess with relative error around 1-2%, which is already remarkably close given that it requires only integer arithmetic. One Newton iteration then reduces this error to below 0.2%, approaching the precision limits of 32-bit floats. This combines our understanding of IEEE 754 representation (the bit manipulation exploits the exponential-mantissa structure), error analysis (we can quantify the approximation quality), and Newton's method (covered in the next section, which uses iterative refinement to achieve quadratic convergence). The algorithm exemplifies how deep understanding of computer arithmetic can yield dramatic performance improvements—a 4x speedup that was crucial for real-time 3D graphics in the late 1990s, and remains a masterclass in numerical optimization.
-
