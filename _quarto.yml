@@ -43,6 +43,7 @@ book:
         - ProgrammingFundamentals/debugging.qmd
         - ProgrammingFundamentals/version_control.qmd
         - ProgrammingFundamentals/writing_documentation.ipynb
+        - ProgrammingFundamentals/RichMediaReports.ipynb
     - part: "NumPy/SciPy"
       chapters:
         - NumpyScipy/numpy_arrays.qmd
