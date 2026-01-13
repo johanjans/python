@@ -30,3 +30,6 @@ planning/documentation_plan.pdf
 planning/documentation_plan.qmd
 todo.md
 GEMINI.md
+publishSite.sh
+requirements.txt
+build.log
