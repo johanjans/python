@@ -5,11 +5,11 @@ function Div(el)
 
     local content = el.content or {}  -- Prevent nil errors
     local result = {openTag}
-  
+
     for _, item in ipairs(content) do
       table.insert(result, item)
     end
-  
+
     table.insert(result, closeTag)
     return result
   end
@@ -21,14 +21,13 @@ function Div(el)
 
     local content = el.content or {}  -- Prevent nil errors
     local result = {openTag}
-  
+
     for _, item in ipairs(content) do
       table.insert(result, item)
     end
-  
+
     table.insert(result, closeTag)
     return result
   end
 
 end
-  

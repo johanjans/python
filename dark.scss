@@ -30,7 +30,7 @@ figcaption {
 
 .hintFrame::before {
     content: "Hint!";
-    color: #212529; 
+    color: #212529;
     margin-top: 0px;
     font-weight: 400;
     font-size: 1.2em;
@@ -44,7 +44,7 @@ figcaption {
     padding: 0.1em 0.8em;
     text-align: center;
     margin-top: 0.0em;
-    
+
 }
 
 .hintInnerFrame * {
@@ -76,7 +76,7 @@ figure img[src*=".svg"] {
     margin: 1em 0em;
     background: hsl(159, 58%, 27%);
     color: hsl(0, 0%, 85%);
-    
+
 }
 
 

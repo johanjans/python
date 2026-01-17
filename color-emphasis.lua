@@ -10,10 +10,10 @@ local emphasis_classes = {
   emphasis = true, -- Or a more specific name like 'emphasize'
   -- Add more emphasis styles if needed
 }
-  
+
 function Span(span)
   local color = span.attributes["color"]
-  
+
   -- Fallback: check for known class names like .yellow
   if not color then
     for _, class in ipairs(span.classes) do
@@ -23,7 +23,7 @@ function Span(span)
       end
     end
   end
-  
+
   -- If color found, apply it
   if color then
     local content = pandoc.utils.stringify(span.content)
@@ -42,7 +42,7 @@ function Span(span)
   if span.attributes["emphasize"] == "true" then
     emphasize = true
   end
-  
+
   -- Fallback: check for a known class name
   for _, class in ipairs(span.classes) do
     if emphasis_classes[class] then
@@ -64,7 +64,6 @@ function Span(span)
       return span
     end
   end
-  
+
   return span
 end
-  

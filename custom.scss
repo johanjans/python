@@ -47,7 +47,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Change Python comment color */
-.co { 
+.co {
     color: #888888 !important; /* Adjust to a softer gray */
     font-style: italic; /* Optional: Make comments italic */
 }
@@ -117,7 +117,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1em;
     content: "□";
     display: block;
-    text-align: right; 
+    text-align: right;
 }
 
 
@@ -163,7 +163,7 @@ figure {
 .theorem::after {
     content: "■";
     display: block;
-    text-align: right; 
+    text-align: right;
     margin-bottom: 1rem;
 }
 
@@ -179,12 +179,12 @@ figure {
     font-size: 1em;
     content: "□";
     display: block;
-    text-align: right; 
+    text-align: right;
 }
 
 .proof::after {
     font-size: 1em;
     content: "□";
     display: block;
-    text-align: right; 
+    text-align: right;
 }
