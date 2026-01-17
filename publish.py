@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 """
-incrementalBuild.py - Incremental Quarto Book Builder
+publish.py - Incremental Quarto Book Builder
 
 Intelligently builds only changed files in a Quarto book project.
 - If _quarto.yml or auxiliary files changed → full rebuild
 - If only source files changed → render only those files
 - Always runs post-processing on all files (required for sidebar consistency)
-
-Alias: publish
 """
 
 import yaml
@@ -19,7 +17,7 @@ from pathlib import Path
 from typing import List, Optional, TextIO
 from datetime import datetime
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 # Constants
 PROJECT_ROOT = Path(__file__).parent.resolve()
@@ -226,6 +224,7 @@ def main():
         epilog='Examples:\n'
                '  publish              Build changed files and deploy\n'
                '  publish --full       Force full rebuild\n'
+               '  publish --no-render  Post-process and deploy only (skip quarto)\n'
                '  publish --dry-run    Show what would be built\n'
                '  publish --git        Build, deploy, and push to git',
         formatter_class=argparse.RawDescriptionHelpFormatter
@@ -241,6 +240,10 @@ def main():
     parser.add_argument(
         '--no-deploy', action='store_true',
         help='Skip deployment step (build only)'
+    )
+    parser.add_argument(
+        '--no-render', action='store_true',
+        help='Skip quarto render, only run post-processing and deploy'
     )
     parser.add_argument(
         '--dry-run', action='store_true',
@@ -270,47 +273,54 @@ def main():
         book_files = get_book_files(config)
         log(f"Found {len(book_files)} book files in _quarto.yml")
 
-        # Determine build strategy
-        if args.full:
-            do_full_rebuild = True
-            reason = "Forced via --full flag"
+        # Skip rendering if --no-render is set
+        if args.no_render:
+            log("Skipping quarto render (--no-render)")
+            # Prompt for sudo password upfront if deploying
+            if not args.no_deploy:
+                subprocess.run(['sudo', '-v'])
         else:
-            do_full_rebuild, reason = needs_full_rebuild(book_files)
-
-        if do_full_rebuild:
-            log(f"Full rebuild needed: {reason}")
-            if args.dry_run:
-                log("DRY RUN: Would run full quarto render")
+            # Determine build strategy
+            if args.full:
+                do_full_rebuild = True
+                reason = "Forced via --full flag"
             else:
-                # Prompt for sudo password upfront
-                if not args.no_deploy:
-                    subprocess.run(['sudo', '-v'])
-                if not render_full():
-                    log("ERROR: Full render failed!")
-                    sys.exit(1)
-        else:
-            changed = find_changed_files(book_files)
-            if not changed:
-                log("No changes detected - nothing to build")
-                if args.git:
-                    if not git_push(args.ssh_key):
-                        log("ERROR: Git push failed!")
-                        sys.exit(1)
-                return
-            else:
-                log(f"Found {len(changed)} changed file(s):")
-                for f in changed:
-                    log(f"  - {f.relative_to(PROJECT_ROOT)}")
+                do_full_rebuild, reason = needs_full_rebuild(book_files)
 
+            if do_full_rebuild:
+                log(f"Full rebuild needed: {reason}")
                 if args.dry_run:
-                    log("DRY RUN: Would render only the above files")
+                    log("DRY RUN: Would run full quarto render")
                 else:
                     # Prompt for sudo password upfront
                     if not args.no_deploy:
                         subprocess.run(['sudo', '-v'])
-                    if not render_files(changed):
-                        log("ERROR: Incremental render failed!")
+                    if not render_full():
+                        log("ERROR: Full render failed!")
                         sys.exit(1)
+            else:
+                changed = find_changed_files(book_files)
+                if not changed:
+                    log("No changes detected - nothing to build")
+                    if args.git:
+                        if not git_push(args.ssh_key):
+                            log("ERROR: Git push failed!")
+                            sys.exit(1)
+                    return
+                else:
+                    log(f"Found {len(changed)} changed file(s):")
+                    for f in changed:
+                        log(f"  - {f.relative_to(PROJECT_ROOT)}")
+
+                    if args.dry_run:
+                        log("DRY RUN: Would render only the above files")
+                    else:
+                        # Prompt for sudo password upfront
+                        if not args.no_deploy:
+                            subprocess.run(['sudo', '-v'])
+                        if not render_files(changed):
+                            log("ERROR: Incremental render failed!")
+                            sys.exit(1)
 
         if args.dry_run:
             log("DRY RUN: Would run post-processing, set permissions, and deploy")

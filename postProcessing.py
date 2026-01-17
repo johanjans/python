@@ -110,7 +110,7 @@ def post_process_html(numbering_map):
         
         # Fallback to browser title if all else fails
         if not incorrect_number and soup.title and soup.title.string:
-            title_match = re.match(r'^(\d+)', soup.title.string.strip())
+            title_match = re.match(r'^([\d\.]+)', soup.title.string.strip())
             if title_match:
                 incorrect_number = title_match.group(1)
 
@@ -120,7 +120,14 @@ def post_process_html(numbering_map):
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(str(soup))
             continue
-        
+
+        # Skip if already correctly numbered (prevents double-processing)
+        if incorrect_number == correct_number:
+            print(f"  -> Already correctly numbered ({correct_number}). Skipping page-specific changes.")
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(str(soup))
+            continue
+
         print(f"  -> Rewriting numbers from '{incorrect_number}' to '{correct_number}'")
         
         incorrect_prefix = f"{incorrect_number}."
