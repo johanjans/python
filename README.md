@@ -12,12 +12,19 @@ This project uses a **shared infrastructure model** where common theme files, Lu
 │   ├── theme/          # SCSS stylesheets (dark.scss, light.scss, custom.scss)
 │   ├── filters/        # Lua filters (hint.lua, color-emphasis.lua, lastModified.lua)
 │   ├── includes/       # Footer, citation style
-│   └── quarto_shared/  # Python package for build & sync
+│   └── quarto_shared/  # Python package for build, sync & post-processing
 │
 ├── python/             # This project
 ├── mechanics/          # Applied Mechanics book
 └── fem/                # Future projects...
 ```
+
+### How It Works
+
+**Static files** (SCSS, Lua, HTML) are synced/copied from quarto-shared to each project.
+
+**Python logic** (build, sync, post-processing) runs directly from `~/quarto-shared` - never copied.
+This means updates to the build system apply to all projects automatically.
 
 ---
 
@@ -62,7 +69,7 @@ pip install pyyaml beautifulsoup4 lxml
 ./publish.py --version
 ```
 
-Should show: `publish 2.0.0 (quarto_shared 1.0.0)`
+Should show: `publish 2.0.0 (quarto_shared 1.1.0)`
 
 #### 5. Sync theme files from quarto-shared
 
