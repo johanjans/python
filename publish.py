@@ -8,6 +8,7 @@ configuration. The shared build logic lives in ~/quarto-shared/quarto_shared/.
 Usage:
     ./publish.py              Build changed files and deploy
     ./publish.py --full       Force full rebuild
+    ./publish.py --deploy-only  Deploy existing _book/ (useful after quarto preview)
     ./publish.py --no-render  Post-process and deploy only (skip quarto)
     ./publish.py --dry-run    Show what would be built
     ./publish.py --git        Build, deploy, and push to git
@@ -45,6 +46,7 @@ def main():
         epilog='Examples:\n'
                '  publish              Build changed files and deploy\n'
                '  publish --full       Force full rebuild\n'
+               '  publish --deploy-only  Deploy existing _book/ (after quarto preview)\n'
                '  publish --no-render  Post-process and deploy only (skip quarto)\n'
                '  publish --dry-run    Show what would be built\n'
                '  publish --git        Build, deploy, and push to git\n'
@@ -66,6 +68,10 @@ def main():
     parser.add_argument(
         '--no-render', action='store_true',
         help='Skip quarto render, only run post-processing and deploy'
+    )
+    parser.add_argument(
+        '--deploy-only', action='store_true',
+        help='Deploy existing _book/ without rendering (useful after quarto preview)'
     )
     parser.add_argument(
         '--dry-run', action='store_true',
@@ -119,6 +125,7 @@ def main():
         no_render=args.no_render,
         dry_run=args.dry_run,
         git=args.git,
+        deploy_only=args.deploy_only,
     )
 
     # Run build
