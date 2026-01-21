@@ -1,190 +1,43 @@
-# Installing python and setup
+# Installing Python and Setup
 
-## Manual installation
+## Overview: How We Use Python
 
-### uv - Python and package manager
-[uv](https://docs.astral.sh/uv/) is **fast** and easy to install and use. It not only manages virtual environments, but also makes it easy to install and switch between different python versions. Use the three tabs below to select which type of computer you are using, university or private, windows or unix.
+In this course we use Python for three distinct workflows. The first is *interactive exploration* using [marimo](https://marimo.io/) notebooks, which are ideal for symbolic computation, visualization, and creating shareable documents (as HTML or Python files). The second is *script-based development* in VS Code, where we write `.py` files for simulations, particularly real-time applications using PyQt. The third is *Jupyter notebooks* within VS Code, useful when you need the notebook format but prefer VS Code's editing capabilities. Jupyter handles symbolic output nicely and integrates with [quarto](ProgrammingFundamentals/writing_documentation.ipynb) for generating PDF and HTML reports.
 
-::: {.panel-tabset}
+All three workflows share a common foundation: a Python installation managed by `uv` and a *virtual environment* containing the packages we need. We create this virtual environment in a local folder (`~/.venvs/default` on macOS/Linux, or `%UserProfile%\venvs\default` on Windows) rather than inside a project folder. This avoids problems that arise when project folders live on cloud drives like OneDrive, where virtual environments can cause sync issues, slow performance, and wasted storage space.
 
-#### JU PC (Win)
-Search for and start `cmd.exe` using the start menu, then run the following:
+::: {.callout-tip}
+## Quick Start for Windows Users
+Use the [Marimo installer](#marimo-installer-windows) to get started quickly. It automates the entire setup. After installation, read the [Working with the Terminal](#working-with-the-terminal) section to learn the commands you'll need for installing additional packages, updating marimo, and running quarto.
 
-```cmd
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-This will install `uv` to your user profile in e.g., `C:\Users\yourusername\.local\bin`
-
-#### Private PC (Win)
-Search for and start `cmd.exe` using the start menu, then run the following:
-
-```cmd
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-This will install `uv` to your user profile in e.g., `C:\Users\yourusername\.local\bin`
-
-#### Private PC (macOS/Linux)
-Start the terminal application, then run the following:
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
+**macOS/Linux users**: Follow the [manual installation](#manual-python-installation).
 :::
 
-### Install python
+## Why Virtual Environments?
 
-::: {.panel-tabset}
+When you install Python, you get a single global environment where all packages live together. This seems convenient until you encounter version conflicts. Suppose one project requires `numpy 1.x` while another needs `numpy 2.x`, or you want to try a new package without risking your working setup. With a single global environment, these situations lead to broken installations and frustrating debugging sessions.
 
-#### JU PC (Win)
-Restart `cmd.exe`, then run the following:
+A virtual environment solves this problem by creating an isolated Python installation with its own set of packages. Each environment is independent: installing or upgrading a package in one environment does not affect any other. You can have multiple environments for different purposes, each with exactly the packages and versions it needs. If an environment becomes corrupted or cluttered, you simply delete it and create a fresh one.
 
-```cmd
-uv python install
-```
+The `venv` folder contains a copy of the Python interpreter and a `site-packages` directory where installed packages live. When you *activate* an environment, your terminal session uses that environment's Python and packages instead of the global installation. The `(default)` prefix in your terminal prompt indicates which environment is active. Commands like `python` and `pip` then refer to the activated environment, ensuring that your code runs with the correct dependencies.
 
-This will install the latest version of `python` to your user profile in e.g., `C:\Users\yourusername\.local\bin`
+For this course, we use a single shared environment called `default` that contains all the packages we need. This simplifies setup while still providing isolation from system Python. If you later work on projects with conflicting requirements, you can create additional environments as needed.
 
-#### Private PC (Win)
-Restart `cmd.exe`, then run the following:
+## Packages and pip
 
-```cmd
-uv python install
-```
+Python's strength lies in its ecosystem of packages. A *package* is a collection of code that someone has written and shared, providing functionality you can use in your own programs. Instead of implementing matrix operations from scratch, you import `numpy`. Instead of writing plotting code, you import `matplotlib`. The Python Package Index ([PyPI](https://pypi.org/)) hosts hundreds of thousands of packages covering everything from web development to scientific computing.
 
-This will install the latest version of `python` to your user profile in e.g., `C:\Users\yourusername\.local\bin`
+The standard tool for installing packages is `pip`, which comes bundled with Python. Running `pip install numpy` downloads numpy from PyPI and installs it into your current environment. You can install specific versions with `pip install numpy==1.26.0`, upgrade packages with `pip install --upgrade numpy`, and see what you have installed with `pip list`. The command `pip show numpy` displays information about a specific package, including its version and dependencies.
 
-#### Private PC (macOS/Linux)
-Restart the terminal application, then run the following:
+Packages often depend on other packages. When you install `matplotlib`, pip automatically installs its dependencies like `numpy`, `pillow`, and others. This dependency resolution can become complex: if two packages require incompatible versions of a shared dependency, pip must find a combination that satisfies both requirements. This is another reason virtual environments matter. By isolating each project, you avoid situations where installing a package for one project breaks another.
 
-```bash
-uv python install
-```
+We use `uv pip` instead of plain `pip` because uv performs the same operations significantly faster. The command syntax is identical: where you would write `pip install numpy`, you write `uv pip install numpy`. The uv tool resolves dependencies more efficiently and caches downloads aggressively, making repeated installations nearly instantaneous. For large packages like scipy or pytorch, the speed difference is substantial.
 
-:::
+## Marimo Installer (Windows) {#marimo-installer-windows}
 
-### Create a virtual environment
+For Windows users, the marimo installer automates the entire setup process: installing uv, Python, creating the virtual environment, and adding convenient shortcuts. This is the recommended approach for getting started quickly.
 
-::: {.panel-tabset}
-
-#### JU PC (Win)
-In `cmd.exe` run the following:
-
-```cmd
-cd /d %UserProfile%\"OneDrive - Jonkoping University"
-uv venv .venv
-```
-
-This will create a new folder called `.venv` in the current directory which contains a fresh python installation. Once the above command has finnished running, "step into" the virtual environment with:
-
-```cmd
-.venv\Scripts\activate.bat
-```
-
-You should now see `(venv)` to the left in the terminal, before the path.
-
-Now, we need to install marimo and other packages that we are going to use:
-
-```cmd
-uv pip install marimo numpy sympy matplotlib pandas imageio
-```
-
-This command will download and install the packages, which can take some time depending on your internet connection.
-
-#### Private PC (Win)
-In `cmd.exe` run the following:
-
-```cmd
-cd /d %UserProfile%
-uv venv .venv
-```
-
-This will create a new folder called `.venv` in the current directory which contains a fresh python installation. Once the above command has finnished running, "step into" the virtual environment with:
-
-```cmd
-.venv\Scripts\activate.bat
-```
-
-You should now see `(venv)` to the left in the terminal, before the path.
-
-Now, we need to install marimo and other packages that we are going to use:
-
-```cmd
-uv pip install marimo numpy sympy matplotlib pandas imageio
-```
-
-This command will download and install the packages, which can take some time depending on your internet connection.
-
-#### Private PC (macOS/Linux)
-In the terminal application, run the following:
-
-```bash
-cd ~
-uv venv .venv
-```
-
-This will create a new folder called `.venv` in the current directory which contains a fresh python installation. Once the above command has finnished running, "step into" the virtual environment with:
-
-```bash
-source .venv/bin/activate
-```
-
-You should now see `(venv)` to the left in the terminal, before the path.
-
-Now, we need to install marimo and other packages that we are going to use:
-
-```cmd
-uv pip install marimo numpy sympy matplotlib pandas imageio
-```
-
-This command will download and install the packages, which can take some time depending on your internet connection.
-
-:::
-
-
-
-
-### Starting marimo - shortcut
-
-Start your favourite text-editor and put the following contents in a new file:
-
-::: {.panel-tabset}
-
-#### JU PC (Win)
-```cmd
-call "%UserProfile%\OneDrive - Jonkoping University\.venv\Scripts\activate.bat"
-marimo edit
-pause
-```
-Save the file as `START_MARIMO.bat` somewhere easily acessible, and make sure that you selected "All files" instead of "text files" before you press save.
-
-#### Private PC (Win)
-```cmd
-call %UserProfile%\.venv\Scripts\activate.bat
-marimo edit
-pause
-```
-Save the file as `START_MARIMO.bat` somewhere easily acessible, and make sure that you selected "All files" instead of "text files" before you press save.
-
-#### Private PC (macOS/Linux)
-```bash
-#!/bin/bash
-source ~/.venv/bin/activate && marimo edit
-```
-Save the file as `start_marimo.sh` somewhere easily acessible, and then run:
-```bash
-chmod +x start_marimo.sh
-```
-
-::: 
-
-Double click your new shortcut to start marimo. It will start from the directory where the shortcut is located, so you might want to move it to a directory where you keep your marimo projects.
-
-## Marimo installer (Windows only)
-
-If you want a more user-friendly way to install marimo, you can use the marimo installer for Windows. Download it from [here](https://github.com/cenmir/marimo-installer/archive/refs/heads/main.zip).
+Download the installer from [here](https://github.com/cenmir/marimo-installer/archive/refs/heads/main.zip).
 
 ::: {.panel-tabset}
 
@@ -196,15 +49,12 @@ If you want a more user-friendly way to install marimo, you can use the marimo i
 
 #### Private PC (Win)
 
-unzip it somewhere easily accessible. Then, run `setup.bat` and follow the instructions.
+Unzip it somewhere easily accessible. Then, run `setup.bat` and follow the instructions.
 
 
 :::
 
-
-
-
-### What the installer does
+### What the Installer Does
 
 The installer will:
 
@@ -227,9 +77,324 @@ See the installation video below for a step-by-step guide (in swedish):
 - You can launch Marimo by right-clicking in a folder and selecting "Open in Marimo" or by using the shortcut created on your desktop.
 - You can also run Marimo from the command line by typing `m`.
 - You can update Marimo and the installed packages by right-clicking on the `update.ps1` file and selecting "Run with PowerShell".
-- If you want to uninstall Marimo, you can run the `uninstall.ps1` file and selecting "Run with PowerShell".
+- To uninstall, run the `uninstall.ps1` file by right-clicking and selecting "Run with PowerShell".
 
+### Per-Project Environments (Advanced)
 
-### Easy .venv setup for new projects for vs-code users
+The installer includes a file called `init.bat` in the Scripts folder. Copying this to a new project folder and double-clicking it creates a local virtual environment (`.venv`) for that project with all the standard packages installed. This is useful when you need isolated dependencies for a specific project. VS Code automatically detects the `.venv` folder and offers to use it as the Python interpreter.
 
-There is a useful file in Scripts called `init.bat` which you can copy to a new project folder and double-clicking it will create a virtual environment (.venv) for that project and install the above mentioned packages. Useful if you want to keep dependencies separate between projects. VS-Code will automatically detect the .venv folder and use it as the Python interpreter for that project.
+## Working with the Terminal {#working-with-the-terminal}
+
+Even if you used the installer, you need to understand how to work with the terminal for common tasks: installing additional packages, updating marimo, and running quarto commands. The terminal gives you direct control over your Python environment.
+
+### Opening a Terminal with the Environment Active
+
+The installer adds an "Activate venv" shortcut. You can also activate the environment manually in PowerShell:
+
+```powershell
+. $env:USERPROFILE\venvs\default\Scripts\Activate.ps1
+```
+
+When activated, you see `(default)` at the beginning of your prompt. All Python commands now use the packages in this environment.
+
+In VS Code, the terminal activates automatically when you have selected the correct Python interpreter (see [Selecting the Python Interpreter](#selecting-the-python-interpreter)).
+
+### Installing and Updating Packages
+
+To install a new package:
+
+```powershell
+uv pip install package_name
+```
+
+To upgrade an existing package to its latest version:
+
+```powershell
+uv pip install --upgrade marimo
+```
+
+To see what packages are installed and their versions:
+
+```powershell
+uv pip list
+```
+
+### Running Quarto Commands
+
+See [this section](ProgrammingFundamentals/writing_documentation.ipynb) for quarto installation and detailed usage.
+
+Quarto converts Jupyter notebooks to PDF, HTML, or other formats. With the environment active, you can render a notebook:
+
+```powershell
+quarto render my_notebook.ipynb
+```
+
+To render to a specific format:
+
+```powershell
+quarto render my_notebook.ipynb --to pdf
+quarto render my_notebook.ipynb --to html
+```
+
+Quarto requires a LaTeX installation for PDF output. If you don't have LaTeX installed, quarto can install TinyTeX for you:
+
+```powershell
+quarto install tinytex
+```
+
+### Common Commands Reference
+
+| Task | Command |
+|------|---------|
+| Activate environment | `. $env:USERPROFILE\venvs\default\Scripts\Activate.ps1` |
+| Install a package | `uv pip install package_name` |
+| Upgrade a package | `uv pip install --upgrade package_name` |
+| List installed packages | `uv pip list` |
+| Render notebook to PDF | `quarto render notebook.ipynb --to pdf` |
+| Render notebook to HTML | `quarto render notebook.ipynb --to html` |
+| Update Python | `uv python install` |
+
+## Installing VS Code
+
+VS Code is the editor we use for writing Python scripts, running simulations, and working with Jupyter notebooks. Download it from [code.visualstudio.com](https://code.visualstudio.com/).
+
+::: {.callout-important}
+## Enable "Open with Code" Context Menu
+During installation on Windows, check the options **"Add 'Open with Code' action to Windows Explorer file context menu"** and **"Add 'Open with Code' action to Windows Explorer directory context menu"**. This allows you to right-click any folder and open it directly in VS Code.
+:::
+
+After installing VS Code, open it and install the **Python extension** by Microsoft. Press `Ctrl+Shift+X` to open the Extensions panel, search for "Python", and click Install on the one published by Microsoft. This extension provides syntax highlighting, debugging, and Jupyter notebook support.
+
+## Using VS Code with Your Virtual Environment
+
+With VS Code and the Python extension installed, you need to tell VS Code which Python interpreter to use. We configure it to use the Python executable from our shared virtual environment.
+
+### The Integrated Terminal
+
+VS Code includes a built-in terminal that you can open with `` Ctrl+ö `` (nordic keyboards). This terminal behaves like a regular command prompt or shell, but it runs inside VS Code with access to your workspace. You can type commands, run scripts, and interact with your system without leaving the editor.
+
+When you have selected a Python interpreter from a virtual environment, VS Code automatically activates that environment whenever you open a new terminal. You will see `(default)` appear at the beginning of your prompt, indicating the environment is active. This means commands like `python`, `pip`, and any installed tools (such as `marimo`) use the correct environment without manual activation.
+
+The terminal is essential for running Python scripts, especially those with graphical interfaces. While VS Code can run simple scripts with a button click, PyQt applications and simulations often need the full terminal environment to display windows and handle user interaction properly. You can have multiple terminal instances open simultaneously (click the `+` icon in the terminal panel) and switch between them using the dropdown menu.
+
+### Selecting the Python Interpreter {#selecting-the-python-interpreter}
+
+Open any Python file or create a new one, then press `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS) to open the Command Palette. Type "Python: Select Interpreter" and press Enter. You will see a list of detected Python installations.
+
+::: {.panel-tabset}
+
+#### Windows
+
+If your venv appears in the list, select it. Otherwise, click **"Enter interpreter path..."** and then **"Find..."**. Navigate to:
+
+```
+C:\Users\yourusername\venvs\default\Scripts\python.exe
+```
+
+Replace `yourusername` with your actual Windows username.
+
+#### macOS/Linux
+
+If your venv appears in the list, select it. Otherwise, click **"Enter interpreter path..."** and then **"Find..."**. Navigate to:
+
+```
+~/.venvs/default/bin/python
+```
+
+:::
+
+Once selected, VS Code remembers this interpreter for the current workspace. The selected interpreter appears in the bottom status bar, showing both the Python version and the environment name. Clicking this status bar item provides a quick way to switch interpreters if needed.
+
+### Running Python Scripts
+
+With the interpreter configured, you can run Python scripts in several ways. Press `F5` to run the current file with the debugger, which allows you to set breakpoints and step through code. For quick execution without debugging, press `Ctrl+F5`. You can also right-click in the editor and select "Run Python File in Terminal".
+
+For PyQt applications that create windows and run simulations, use the integrated terminal directly. Open the terminal with `` Ctrl+ö `` (or `` Ctrl+` `` on non-Nordic keyboards), verify that you see `(default)` in the prompt confirming the environment is active, then run your script with `python my_simulation.py`. The terminal remains interactive while your application runs, and you can stop execution with `Ctrl+C` if needed.
+
+### Working with Jupyter Notebooks in VS Code
+
+VS Code provides excellent support for Jupyter notebooks (`.ipynb` files). When you open a notebook, VS Code prompts you to select a kernel. Choose the Python interpreter from your virtual environment (`venvs/default`). The kernel selection appears in the top-right corner of the notebook editor.
+
+If you create a new notebook (`Ctrl+Shift+P` → "Create: New Jupyter Notebook"), VS Code asks which kernel to use. Select your configured interpreter. The notebook then has access to all packages installed in the virtual environment: numpy, sympy, matplotlib, and the rest.
+
+Jupyter notebooks in VS Code offer advantages over the browser-based interface: integrated version control, the familiar VS Code editor with its keybindings and extensions, and the ability to work with notebooks alongside regular Python files in the same workspace.
+
+## Manual Python Installation {#manual-python-installation}
+
+This section covers manual installation for macOS/Linux users and Windows users who prefer more control over the setup process. If you used the marimo installer on Windows, you can skip this section.
+
+Python can be installed in many ways: downloading the official installer from python.org, using Anaconda, or through system package managers. We use a different approach based on the terminal and a tool called `uv`. The terminal may feel unfamiliar at first, but it offers precision and reproducibility that graphical installers cannot match. When you type a command, you know exactly what happens. When something goes wrong, error messages tell you why. When you need to repeat the process on another machine, the same commands work identically.
+
+Anaconda bundles Python with hundreds of scientific packages, which sounds convenient but creates bloated installations and version conflicts that are difficult to resolve. The official Python installer works, but managing multiple Python versions and virtual environments requires additional tools. The `uv` approach gives us exactly what we need: fast installation, easy version switching, and clean virtual environment management, all through simple terminal commands that we can document and share.
+
+### uv: Python and Package Manager
+
+[uv](https://docs.astral.sh/uv/) is a modern Python package manager written in Rust. It installs packages significantly faster than pip (often 10-100x faster) and handles virtual environments elegantly. It also manages Python versions, so we can install and switch between different Python releases without conflicts.
+
+::: {.panel-tabset}
+
+#### Windows
+Search for and start `cmd.exe` using the Start menu, then run:
+
+```cmd
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+This installs `uv` to your user profile, e.g., `C:\Users\yourusername\.local\bin`.
+
+#### macOS/Linux
+Start the terminal application and run:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+:::
+
+### Install Python
+
+::: {.panel-tabset}
+
+#### Windows
+Restart `cmd.exe`, then run:
+
+```cmd
+uv python install
+```
+
+This installs the latest Python version to your user profile.
+
+#### macOS/Linux
+Restart the terminal application and run:
+
+```bash
+uv python install
+```
+
+:::
+
+### Create a Virtual Environment
+
+We create a shared virtual environment in a local folder that will be used across all projects. This location avoids cloud sync issues and keeps dependencies consistent.
+
+::: {.panel-tabset}
+
+#### Windows
+Open PowerShell (search for "PowerShell" in the Start menu) and run:
+
+```powershell
+mkdir $env:USERPROFILE\venvs
+uv venv $env:USERPROFILE\venvs\default
+```
+
+This creates a folder called `venvs\default` in your user profile containing a fresh Python installation. To activate the virtual environment:
+
+```powershell
+. $env:USERPROFILE\venvs\default\Scripts\Activate.ps1
+```
+
+If you get an error about execution policies, allow script execution for the current user:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+You should now see `(default)` at the beginning of your prompt. Now install the packages:
+
+```powershell
+uv pip install marimo numpy sympy scipy matplotlib pandas pyqt6 pyqtgraph ipykernel
+```
+
+#### macOS/Linux
+In the terminal, run:
+
+```bash
+mkdir -p ~/.venvs
+uv venv ~/.venvs/default
+```
+
+This creates a folder called `.venvs/default` in your home directory containing a fresh Python installation. To activate the virtual environment:
+
+```bash
+source ~/.venvs/default/bin/activate
+```
+
+You should now see `(default)` at the beginning of your prompt. Now install the packages:
+
+```bash
+uv pip install marimo numpy sympy scipy matplotlib pandas pyqt6 pyqtgraph ipykernel
+```
+
+:::
+
+Package installation can take some time depending on your internet connection.
+
+### Package Overview
+
+The following table describes the packages we install and their purpose in the course:
+
+| Package | Description |
+|---------|-------------|
+| `marimo` | Interactive notebook environment for Python, ideal for symbolic computation and visualization with interactivity |
+| `numpy` | Numerical computing library providing arrays, linear algebra, and mathematical functions |
+| `sympy` | Symbolic mathematics library for algebraic manipulation, calculus, and equation solving |
+| `scipy` | Scientific computing library with optimization, integration, interpolation, and signal processing |
+| `matplotlib` | Plotting library for creating static, animated, and interactive visualizations |
+| `pandas` | Data analysis library for working with tabular data and time series |
+| `pyqt6` | GUI framework for building desktop applications with windows, buttons, and interactive elements |
+| `pyqtgraph` | Fast plotting library built on PyQt, suitable for real-time data visualization in simulations |
+| `ipykernel` | Jupyter kernel that enables notebook support in VS Code |
+
+### Starting Marimo: Shortcut
+
+To launch marimo conveniently, create a shortcut script. Open a text editor and create a new file with the following contents:
+
+::: {.panel-tabset}
+
+#### Windows
+```cmd
+call %UserProfile%\venvs\default\Scripts\activate.bat
+marimo edit
+pause
+```
+Save the file as `START_MARIMO.bat` somewhere easily accessible. Make sure to select "All files" instead of "Text files" in the save dialog before pressing save.
+
+#### macOS/Linux
+```bash
+#!/bin/bash
+source ~/.venvs/default/bin/activate && marimo edit
+```
+Save the file as `start_marimo.sh` somewhere easily accessible, then make it executable:
+```bash
+chmod +x start_marimo.sh
+```
+
+:::
+
+Double-click your new shortcut to start marimo. It launches from the directory where the shortcut is located, so place it in the folder where you keep your marimo projects.
+
+## Verify Your Installation
+
+To confirm everything works, open a terminal with the environment active and run:
+
+```powershell
+python -c "import numpy; import sympy; import matplotlib; print('All packages working!')"
+```
+
+If you see "All packages working!" your setup is complete. If you get import errors, reinstall the missing package with `uv pip install package_name`.
+
+## Troubleshooting
+
+**"uv is not recognized"**: Restart your terminal after installing uv. The PATH update only takes effect in new terminal sessions.
+
+**PowerShell execution policy error**: Run 
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+``` 
+
+and try again.
+
+**VS Code doesn't find my interpreter**: Click the Python version in the status bar, select "Enter interpreter path", and manually navigate to the python.exe in your venvs folder.
+
+**Starting fresh**: If your environment becomes corrupted, delete the entire `venvs/default` folder and recreate it following the installation steps.
