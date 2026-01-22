@@ -37,7 +37,7 @@ We use `uv pip` instead of plain `pip` because uv performs the same operations s
 
 For Windows users, the marimo installer automates the entire setup process: installing uv, Python, creating the virtual environment, and adding convenient shortcuts. This is the recommended approach for getting started quickly.
 
-Download the installer from [here](https://github.com/cenmir/marimo-installer/archive/refs/heads/main.zip).
+[Download Installer](https://github.com/cenmir/marimo-installer/archive/refs/heads/main.zip){.btn .btn-primary .btn-lg}
 
 ::: {.panel-tabset}
 
@@ -63,6 +63,7 @@ The installer will:
 - Create a virtual environment at `C:\Users\username\venvs\default`
 - Install packages, including Marimo, into the virtual environment along with numpy, sympy, matplotlib, pandas, pyqt6, pyqtgraph and scipy. This is configurable using the `requirements.txt` file.
 - Copy the run scripts to a folder in `C:\Users\username\marimo` and put that folder in your user PATH environment variable
+- Add convenience commands like `activate default` for quickly activating the virtual environment in VS Code's terminal
 - Create shortcuts to launch Marimo
 - Create a context menu entry to open folders in Marimo (very useful for opening projects!)
 
@@ -119,40 +120,33 @@ To see what packages are installed and their versions:
 uv pip list
 ```
 
-### Running Quarto Commands
-
-See [this section](ProgrammingFundamentals/writing_documentation.ipynb) for quarto installation and detailed usage.
-
-Quarto converts Jupyter notebooks to PDF, HTML, or other formats. With the environment active, you can render a notebook:
-
-```powershell
-quarto render my_notebook.ipynb
-```
-
-To render to a specific format:
-
-```powershell
-quarto render my_notebook.ipynb --to pdf
-quarto render my_notebook.ipynb --to html
-```
-
-Quarto requires a LaTeX installation for PDF output. If you don't have LaTeX installed, quarto can install TinyTeX for you:
-
-```powershell
-quarto install tinytex
-```
 
 ### Common Commands Reference
 
+::: {.panel-tabset}
+
+#### Windows
+
 | Task | Command |
 |------|---------|
-| Activate environment | `. $env:USERPROFILE\venvs\default\Scripts\Activate.ps1` |
+| Activate environment | `activate default` |
+| Activate environment (manual) | `. $env:USERPROFILE\venvs\default\Scripts\Activate.ps1` |
 | Install a package | `uv pip install package_name` |
 | Upgrade a package | `uv pip install --upgrade package_name` |
 | List installed packages | `uv pip list` |
-| Render notebook to PDF | `quarto render notebook.ipynb --to pdf` |
-| Render notebook to HTML | `quarto render notebook.ipynb --to html` |
 | Update Python | `uv python install` |
+
+#### macOS/Linux
+
+| Task | Command |
+|------|---------|
+| Activate environment | `source ~/.venvs/default/bin/activate` |
+| Install a package | `uv pip install package_name` |
+| Upgrade a package | `uv pip install --upgrade package_name` |
+| List installed packages | `uv pip list` |
+| Update Python | `uv python install` |
+
+:::
 
 ## Installing VS Code
 
@@ -168,14 +162,6 @@ After installing VS Code, open it and install the **Python extension** by Micros
 ## Using VS Code with Your Virtual Environment
 
 With VS Code and the Python extension installed, you need to tell VS Code which Python interpreter to use. We configure it to use the Python executable from our shared virtual environment.
-
-### The Integrated Terminal
-
-VS Code includes a built-in terminal that you can open with `` Ctrl+ö `` (nordic keyboards). This terminal behaves like a regular command prompt or shell, but it runs inside VS Code with access to your workspace. You can type commands, run scripts, and interact with your system without leaving the editor.
-
-When you have selected a Python interpreter from a virtual environment, VS Code automatically activates that environment whenever you open a new terminal. You will see `(default)` appear at the beginning of your prompt, indicating the environment is active. This means commands like `python`, `pip`, and any installed tools (such as `marimo`) use the correct environment without manual activation.
-
-The terminal is essential for running Python scripts, especially those with graphical interfaces. While VS Code can run simple scripts with a button click, PyQt applications and simulations often need the full terminal environment to display windows and handle user interaction properly. You can have multiple terminal instances open simultaneously (click the `+` icon in the terminal panel) and switch between them using the dropdown menu.
 
 ### Selecting the Python Interpreter {#selecting-the-python-interpreter}
 
@@ -204,6 +190,14 @@ If your venv appears in the list, select it. Otherwise, click **"Enter interpret
 :::
 
 Once selected, VS Code remembers this interpreter for the current workspace. The selected interpreter appears in the bottom status bar, showing both the Python version and the environment name. Clicking this status bar item provides a quick way to switch interpreters if needed.
+
+### The Integrated Terminal
+
+VS Code includes a built-in terminal that you can open with `` Ctrl+ö `` (nordic keyboards). This terminal behaves like a regular command prompt or shell, but it runs inside VS Code with access to your workspace. You can type commands, run scripts, and interact with your system without leaving the editor.
+
+When you have selected a Python interpreter from a virtual environment, VS Code automatically activates that environment whenever you open a new terminal. You will see `(default)` appear at the beginning of your prompt, indicating the environment is active. This means commands like `python`, `pip`, and any installed tools (such as `marimo`) use the correct environment without manual activation.
+
+The terminal is essential for running Python scripts, especially those with graphical interfaces. While VS Code can run simple scripts with a button click, PyQt applications and simulations often need the full terminal environment to display windows and handle user interaction properly. You can have multiple terminal instances open simultaneously (click the `+` icon in the terminal panel) and switch between them using the dropdown menu.
 
 ### Running Python Scripts
 
