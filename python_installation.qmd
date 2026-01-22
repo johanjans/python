@@ -4,7 +4,7 @@
 
 In this course we use Python for three distinct workflows. The first is *interactive exploration* using [marimo](https://marimo.io/) notebooks, which are ideal for symbolic computation, visualization, and creating shareable documents (as HTML or Python files). The second is *script-based development* in VS Code, where we write `.py` files for simulations, particularly real-time applications using PyQt. The third is *Jupyter notebooks* within VS Code, useful when you need the notebook format but prefer VS Code's editing capabilities. Jupyter handles symbolic output nicely and integrates with [quarto](ProgrammingFundamentals/writing_documentation.ipynb) for generating PDF and HTML reports.
 
-All three workflows share a common foundation: a Python installation managed by `uv` and a *virtual environment* containing the packages we need. We create this virtual environment in a local folder (`~/.venvs/default` on macOS/Linux, or `%UserProfile%\venvs\default` on Windows) rather than inside a project folder. This avoids problems that arise when project folders live on cloud drives like OneDrive, where virtual environments can cause sync issues, slow performance, and wasted storage space.
+All three workflows share a common foundation: a Python installation managed by `uv` and a *virtual environment* containing the packages we need. We create this virtual environment in a local folder (`~/.venvs/default` on macOS/Linux, or `%UserProfile%\.venvs\default` on Windows) rather than inside a project folder. This avoids problems that arise when project folders live on cloud drives like OneDrive, where virtual environments can cause sync issues, slow performance, and wasted storage space.
 
 ::: {.callout-tip}
 ## Quick Start for Windows Users
@@ -60,16 +60,13 @@ The installer will:
 
 - Install the package manager uv
 - Install the latest version of Python
-- Create a virtual environment at `C:\Users\username\venvs\default`
+- Create a virtual environment at `C:\Users\username\.venvs\default`
 - Install packages, including Marimo, into the virtual environment along with numpy, sympy, matplotlib, pandas, pyqt6, pyqtgraph and scipy. This is configurable using the `requirements.txt` file.
 - Copy the run scripts to a folder in `C:\Users\username\marimo` and put that folder in your user PATH environment variable
 - Add convenience commands like `activate default` for quickly activating the virtual environment in VS Code's terminal
 - Create shortcuts to launch Marimo
 - Create a context menu entry to open folders in Marimo (very useful for opening projects!)
 
-See the installation video below for a step-by-step guide (in swedish):
-
-{{< video https://www.youtube.com/watch?v=qcwZ5bx_egI >}}
 
 ### Usage
 
@@ -90,13 +87,15 @@ Even if you used the installer, you need to understand how to work with the term
 
 ### Opening a Terminal with the Environment Active
 
-The installer adds an "Activate venv" shortcut. You can also activate the environment manually in PowerShell:
+The installer adds an "Activate venv" shortcut:
 
 ```powershell
-. $env:USERPROFILE\venvs\default\Scripts\Activate.ps1
+activate default
 ```
 
 When activated, you see `(default)` at the beginning of your prompt. All Python commands now use the packages in this environment.
+
+![](https://i.imgur.com/PQ4HdPf.png)
 
 In VS Code, the terminal activates automatically when you have selected the correct Python interpreter (see [Selecting the Python Interpreter](#selecting-the-python-interpreter)).
 
@@ -128,9 +127,9 @@ uv pip list
 #### Windows
 
 | Task | Command |
-|------|---------|
+|----|---------|
 | Activate environment | `activate default` |
-| Activate environment (manual) | `. $env:USERPROFILE\venvs\default\Scripts\Activate.ps1` |
+| Activate environment (manual) | `. $env:USERPROFILE\.venvs\default\Scripts\Activate.ps1`  |
 | Install a package | `uv pip install package_name` |
 | Upgrade a package | `uv pip install --upgrade package_name` |
 | List installed packages | `uv pip list` |
@@ -159,6 +158,22 @@ During installation on Windows, check the options **"Add 'Open with Code' action
 
 After installing VS Code, open it and install the **Python extension** by Microsoft. Press `Ctrl+Shift+X` to open the Extensions panel, search for "Python", and click Install on the one published by Microsoft. This extension provides syntax highlighting, debugging, and Jupyter notebook support.
 
+### Adding context menu for VS Code
+If you have not added the context menu during installation, you can do it manually, open powershell and run
+
+```powershell
+New-Item -Path "HKCU:\Software\Classes\Directory\Background\shell\VSCode" -Force | New-ItemProperty -Name "(default)" -Value "Open with Code"
+New-ItemProperty -Path "HKCU:\Software\Classes\Directory\Background\shell\VSCode" -Name "Icon" -Value "C:\Program Files\Microsoft VS Code\Code.exe"
+New-Item -Path "HKCU:\Software\Classes\Directory\Background\shell\VSCode\command" -Force | New-ItemProperty -Name "(default)" -Value "`"C:\Program Files\Microsoft VS Code\Code.exe`" `"%V`""
+```
+
+Just make sure that the path to `Code.exe` matches your installation location.
+
+
+{{< video https://youtu.be/kzJg63ZS8kU >}}
+
+
+
 ## Using VS Code with Your Virtual Environment
 
 With VS Code and the Python extension installed, you need to tell VS Code which Python interpreter to use. We configure it to use the Python executable from our shared virtual environment.
@@ -174,7 +189,7 @@ Open any Python file or create a new one, then press `Ctrl+Shift+P` (or `Cmd+Shi
 If your venv appears in the list, select it. Otherwise, click **"Enter interpreter path..."** and then **"Find..."**. Navigate to:
 
 ```
-C:\Users\yourusername\venvs\default\Scripts\python.exe
+C:\Users\yourusername\.venvs\default\Scripts\python.exe
 ```
 
 Replace `yourusername` with your actual Windows username.
@@ -207,11 +222,13 @@ For PyQt applications that create windows and run simulations, use the integrate
 
 ### Working with Jupyter Notebooks in VS Code
 
-VS Code provides excellent support for Jupyter notebooks (`.ipynb` files). When you open a notebook, VS Code prompts you to select a kernel. Choose the Python interpreter from your virtual environment (`venvs/default`). The kernel selection appears in the top-right corner of the notebook editor.
+VS Code provides excellent support for Jupyter notebooks (`.ipynb` files). When you open a notebook, VS Code prompts you to select a kernel. Choose the Python interpreter from your virtual environment (`.venvs/default`). The kernel selection appears in the top-right corner of the notebook editor.
 
 If you create a new notebook (`Ctrl+Shift+P` → "Create: New Jupyter Notebook"), VS Code asks which kernel to use. Select your configured interpreter. The notebook then has access to all packages installed in the virtual environment: numpy, sympy, matplotlib, and the rest.
 
 Jupyter notebooks in VS Code offer advantages over the browser-based interface: integrated version control, the familiar VS Code editor with its keybindings and extensions, and the ability to work with notebooks alongside regular Python files in the same workspace.
+
+{{< video https://youtu.be/XtNNjFtxE4w >}}
 
 ## Manual Python Installation {#manual-python-installation}
 
@@ -277,14 +294,14 @@ We create a shared virtual environment in a local folder that will be used acros
 Open PowerShell (search for "PowerShell" in the Start menu) and run:
 
 ```powershell
-mkdir $env:USERPROFILE\venvs
-uv venv $env:USERPROFILE\venvs\default
+mkdir $env:USERPROFILE\.venvs
+uv venv $env:USERPROFILE\.venvs\default
 ```
 
-This creates a folder called `venvs\default` in your user profile containing a fresh Python installation. To activate the virtual environment:
+This creates a folder called `.venvs\default` in your user profile containing a fresh Python installation. To activate the virtual environment:
 
 ```powershell
-. $env:USERPROFILE\venvs\default\Scripts\Activate.ps1
+. $env:USERPROFILE\.venvs\default\Scripts\Activate.ps1
 ```
 
 If you get an error about execution policies, allow script execution for the current user:
@@ -323,6 +340,35 @@ uv pip install marimo numpy sympy scipy matplotlib pandas pyqt6 pyqtgraph ipyker
 
 Package installation can take some time depending on your internet connection.
 
+### Adding a shortcut to activate the environment
+
+Launch the terminal (powershell) and create a profile script if you don't have one already:
+
+```powershell
+New-Item -Path $PROFILE -Force
+```
+
+Then add the command to the profile with:
+
+```powershell
+Add-Content $PROFILE 'function activate($name) { & "$env:USERPROFILE\.venvs\$name\Scripts\Activate.ps1" }'
+```
+
+Then reload the profile:
+
+```powershell
+. $PROFILE
+```
+
+Now you can activate the environment in any terminal by typing:
+
+```powershell
+activate default
+```
+
+{{< video https://youtu.be/FoIGBN-R3O8 >}}
+
+
 ### Package Overview
 
 The following table describes the packages we install and their purpose in the course:
@@ -347,7 +393,7 @@ To launch marimo conveniently, create a shortcut script. Open a text editor and 
 
 #### Windows
 ```cmd
-call %UserProfile%\venvs\default\Scripts\activate.bat
+call %UserProfile%\.venvs\default\Scripts\activate.bat
 marimo edit
 pause
 ```
@@ -391,4 +437,4 @@ and try again.
 
 **VS Code doesn't find my interpreter**: Click the Python version in the status bar, select "Enter interpreter path", and manually navigate to the python.exe in your venvs folder.
 
-**Starting fresh**: If your environment becomes corrupted, delete the entire `venvs/default` folder and recreate it following the installation steps.
+**Starting fresh**: If your environment becomes corrupted, delete the entire `.venvs/default` folder and recreate it following the installation steps.
