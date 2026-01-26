@@ -7,11 +7,68 @@ In this course we use Python for three distinct workflows. The first is *interac
 All three workflows share a common foundation: a Python installation managed by `uv` and a *virtual environment* containing the packages we need. We create this virtual environment in a local folder (`~/.venvs/default` on macOS/Linux, or `%UserProfile%\.venvs\default` on Windows) rather than inside a project folder. This avoids problems that arise when project folders live on cloud drives like OneDrive, where virtual environments can cause sync issues, slow performance, and wasted storage space.
 
 ::: {.callout-tip}
-## Quick Start for Windows Users
-Use the [Marimo installer](#marimo-installer-windows) to get started quickly. It automates the entire setup. After installation, read the [Working with the Terminal](#working-with-the-terminal) section to learn the commands you'll need for installing additional packages, updating marimo, and running quarto.
+## Quick Start
 
-**macOS/Linux users**: Follow the [manual installation](#manual-python-installation).
+**Windows users:**
+
+1. Run the commands in [Configuring Windows for Development](#configuring-windows) to unlock your machine
+2. Use the [Marimo installer](#marimo-installer-windows) to automate the Python setup
+3. Read [Working with the Terminal](#working-with-the-terminal) for package management commands
+
+**macOS users:**
+
+1. Read [Terminal Basics](#macos-terminal) if you are new to the command line
+2. Follow the [manual installation](#manual-python-installation) to install Python and marimo
+3. Set up shortcuts in [Configuring macOS for Development](#macos-config)
 :::
+
+## Configuring Windows for Development {#configuring-windows}
+
+Windows ships with security defaults designed for users who should not be trusted with their own computers. For software development, these defaults create constant friction: scripts won't run, downloaded files are blocked, and the system treats every action as potentially malicious. Before installing anything, we configure Windows to behave like a proper development machine.
+
+Open **PowerShell as Administrator** (right-click the Start button → "Terminal (Admin)" or search for PowerShell and select "Run as administrator"). Then run the following commands.
+
+### Allow PowerShell Scripts
+
+Windows blocks PowerShell scripts by default. This prevents the activation scripts for virtual environments from running:
+
+```powershell
+Set-ExecutionPolicy Bypass -Scope CurrentUser -Force
+```
+
+The `CurrentUser` scope takes precedence over machine-wide settings, so this ensures scripts run regardless of other policies.
+
+### Unblock Downloaded Files Automatically
+
+Windows adds a hidden "Zone.Identifier" stream to downloaded files, marking them as untrusted. This causes warnings and blocks when you try to run installers, scripts, or extract zip files. To stop Windows from marking future downloads:
+
+```powershell
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments" -Name "SaveZoneInformation" -Value 1 -Type DWord -Force
+New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Associations" -Name "DefaultFileTypeRisk" -Value 0x1808 -PropertyType DWord -Force 2>$null
+```
+
+To unblock files you have already downloaded, navigate to the folder containing them and run:
+
+```powershell
+Get-ChildItem -Recurse | Unblock-File
+```
+
+### Disable SmartScreen for Development
+
+SmartScreen blocks executables that Microsoft has not seen before, which includes most development tools, Python packages with native components, and anything you compile yourself. To disable it:
+
+```powershell
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Name "SmartScreenEnabled" -Value "Off" -Force
+```
+
+::: {.callout-note}
+## What about security?
+These changes do not make your computer insecure. They make *you* responsible for what you run, rather than delegating that judgment to Microsoft. A developer who understands what they are installing is better protected than one who blindly clicks through warnings. The real security comes from understanding your tools, not from operating system babysitting.
+:::
+
+After running these commands, **restart your computer** for all changes to take effect. You can now proceed with the installation.
+
+
 
 ## Why Virtual Environments?
 
@@ -230,6 +287,60 @@ Jupyter notebooks in VS Code offer advantages over the browser-based interface: 
 
 {{< video https://youtu.be/XtNNjFtxE4w >}}
 
+## Terminal Basics (macOS) {#macos-terminal}
+
+macOS includes a powerful terminal that gives you direct control over your system. Unlike Windows, macOS does not fight you at every step. The terminal is ready to use without configuration changes. If you are comfortable with the terminal, skip to [Manual Python Installation](#manual-python-installation).
+
+### Opening the Terminal
+
+Press `Cmd+Space` to open Spotlight, type "Terminal", and press Enter. A window appears with a command prompt waiting for input. This is where you type commands and see their output.
+
+The prompt shows your username and current folder, ending with `$` or `%`. When you see instructions to "run" a command, you type it after this prompt and press Enter.
+
+### The Home Folder and ~
+
+Every user has a *home folder* where personal files live. On macOS, this is `/Users/yourusername`. The terminal uses `~` (tilde) as a shorthand for this path. When you see `~/.venvs` in documentation, it means `/Users/yourusername/.venvs`.
+
+When you open a new terminal, you start in your home folder. The `~` symbol appears in your prompt to confirm this. Files and folders starting with a dot (like `.venvs` or `.zshrc`) are hidden by default in Finder, but the terminal shows them when you ask.
+
+### Essential Terminal Commands
+
+These commands let you navigate and manage files:
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `pwd` | Print working directory (where you are) | `pwd` → `/Users/anna/Documents` |
+| `ls` | List files in current folder | `ls` |
+| `ls -alh` | List all files (including hidden) with details | `ls -alh` |
+| `cd` | Change directory | `cd Documents` |
+| `cd ~` | Go to home folder | `cd ~` |
+| `cd ..` | Go up one folder | `cd ..` |
+| `mkdir` | Create a new folder | `mkdir projects` |
+| `rm` | Remove a file | `rm oldfile.py` |
+| `rm -r` | Remove a folder and its contents | `rm -r oldfolder` |
+| `cp` | Copy a file | `cp file.py backup.py` |
+| `mv` | Move or rename a file | `mv old.py new.py` |
+
+Paths can be *absolute* (starting with `/` or `~`) or *relative* (starting from your current location). For example, if you are in `~/Documents`, typing `cd projects` takes you to `~/Documents/projects`.
+
+### Editing Files with nano
+
+`nano` is a simple text editor that runs in the terminal. To create or edit a file:
+
+```bash
+nano filename.txt
+```
+
+The file opens in the terminal. Type or edit text as needed. The bottom of the screen shows available commands, where `^` means the Control key.
+
+To save and exit:
+
+1. Press `Ctrl+X` (exit)
+2. Press `Y` (yes, save changes)
+3. Press `Enter` (confirm filename)
+
+If you made no changes, `Ctrl+X` exits immediately.
+
 ## Manual Python Installation {#manual-python-installation}
 
 This section covers manual installation for macOS/Linux users and Windows users who prefer more control over the setup process. If you used the marimo installer on Windows, you can skip this section.
@@ -342,7 +453,11 @@ Package installation can take some time depending on your internet connection.
 
 ### Adding a shortcut to activate the environment
 
-Launch the terminal (powershell) and create a profile script if you don't have one already:
+::: {.panel-tabset}
+
+#### Windows
+
+Launch PowerShell and create a profile script if you don't have one already:
 
 ```powershell
 New-Item -Path $PROFILE -Force
@@ -368,6 +483,35 @@ activate default
 
 {{< video https://youtu.be/FoIGBN-R3O8 >}}
 
+#### macOS/Linux
+
+Open your shell configuration file:
+
+```bash
+nano ~/.zshrc
+```
+
+Add this line at the end:
+
+```bash
+alias activate="source ~/.venvs/default/bin/activate"
+```
+
+Save and exit (`Ctrl+X`, `Y`, `Enter`), then reload the configuration:
+
+```bash
+source ~/.zshrc
+```
+
+Now you can activate the environment in any terminal by typing:
+
+```bash
+activate
+```
+
+:::
+
+
 
 ### Package Overview
 
@@ -387,31 +531,49 @@ The following table describes the packages we install and their purpose in the c
 
 ### Starting Marimo: Shortcut
 
-To launch marimo conveniently, create a shortcut script. Open a text editor and create a new file with the following contents:
+We add a command to launch marimo directly from the terminal, activating the environment automatically.
 
 ::: {.panel-tabset}
 
 #### Windows
-```cmd
-call %UserProfile%\.venvs\default\Scripts\activate.bat
-marimo edit
-pause
+
+Add a function to your PowerShell profile. If you already created the profile in the previous step, just add the function:
+
+```powershell
+Add-Content $PROFILE 'function startMarimo { & "$env:USERPROFILE\.venvs\default\Scripts\Activate.ps1"; Write-Host "venv: $env:VIRTUAL_ENV"; marimo --version; marimo edit }'
 ```
-Save the file as `START_MARIMO.bat` somewhere easily accessible. Make sure to select "All files" instead of "Text files" in the save dialog before pressing save.
+
+Reload the profile:
+
+```powershell
+. $PROFILE
+```
+
+Now you can start marimo from any folder, just navigate there in explorer and right-click → "Open in Terminal", then run:
+
+```powershell
+startMarimo
+```
 
 #### macOS/Linux
+
+Add the alias to your shell configuration:
+
 ```bash
-#!/bin/bash
-source ~/.venvs/default/bin/activate && marimo edit
+echo 'alias startMarimo="source ~/.venvs/default/bin/activate && echo \"venv: \$VIRTUAL_ENV\" && marimo --version && marimo edit"' >> ~/.zshrc
+source ~/.zshrc
 ```
-Save the file as `start_marimo.sh` somewhere easily accessible, then make it executable:
+
+Now you can start marimo from any folder:
+
 ```bash
-chmod +x start_marimo.sh
+cd ~/OneDrive/Programming
+startMarimo
 ```
 
 :::
 
-Double-click your new shortcut to start marimo. It launches from the directory where the shortcut is located, so place it in the folder where you keep your marimo projects.
+Marimo opens in your browser with access to files in the current folder. The terminal shows the server running. Press `Ctrl+C` to stop marimo when done.
 
 ## Verify Your Installation
 
@@ -423,18 +585,63 @@ python -c "import numpy; import sympy; import matplotlib; print('All packages wo
 
 If you see "All packages working!" your setup is complete. If you get import errors, reinstall the missing package with `uv pip install package_name`.
 
+## Configuring macOS for Development {#macos-config}
+
+A few additional settings for macOS users.
+
+### Python 3 Alias
+
+macOS ships with an ancient Python 2 that you should never use. Add an alias so `python` runs Python 3:
+
+```bash
+echo 'alias python=python3' >> ~/.zshrc
+source ~/.zshrc
+```
+
+### Where to Save Your Python Files
+
+Save your Python files and marimo notebooks on **OneDrive** so they sync across devices and are backed up. A good structure:
+
+```
+~/OneDrive/Programming/
+├── marimo_notebooks/
+├── pyqt_projects/
+└── exercises/
+```
+
+::: {.callout-warning}
+Do **not** put virtual environments (`.venvs`) on OneDrive. Virtual environments contain thousands of small files that cause sync issues and waste storage. Keep them in `~/.venvs` on your local drive, which is why we set it up that way.
+:::
+
+
+To navigate to your OneDrive folder:
+
+```bash
+cd ~/OneDrive
+```
+
+Or if OneDrive uses a different folder name:
+
+```bash
+cd ~/Library/CloudStorage/OneDrive-Personal
+```
+
+You can find the exact path by dragging your OneDrive folder from Finder into the terminal window.
+
 ## Troubleshooting
 
-**"uv is not recognized"**: Restart your terminal after installing uv. The PATH update only takes effect in new terminal sessions.
+#### "uv is not recognized"
 
-**PowerShell execution policy error**: Run 
+Restart your terminal after installing uv. The PATH update only takes effect in new terminal sessions.
 
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-``` 
+#### PowerShell execution policy error or script blocked
 
-and try again.
+You skipped the [Configuring Windows for Development](#configuring-windows) section. Go back and run those commands, then restart your terminal.
 
-**VS Code doesn't find my interpreter**: Click the Python version in the status bar, select "Enter interpreter path", and manually navigate to the python.exe in your venvs folder.
 
-**Starting fresh**: If your environment becomes corrupted, delete the entire `.venvs/default` folder and recreate it following the installation steps.
+#### VS Code doesn't find my interpreter
+
+Click the Python version in the status bar, select "Enter interpreter path", and manually navigate to the python.exe in your venvs folder.
+
+#### Starting fresh
+If your environment becomes corrupted, delete the entire `.venvs/default` folder and recreate it following the installation steps.
