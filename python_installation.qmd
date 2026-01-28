@@ -11,9 +11,8 @@ All three workflows share a common foundation: a Python installation managed by 
 
 **Windows users:**
 
-1. Run the commands in [Configuring Windows for Development](#configuring-windows) to unlock your machine
-2. Use the [Marimo installer](#marimo-installer-windows) to automate the Python setup
-3. Read [Working with the Terminal](#working-with-the-terminal) for package management commands
+1. Use the [Python Development Installer](#python-dev-installer-windows) — it handles everything: Git, VS Code, Python, and Marimo
+2. Read [Working with the Terminal](#working-with-the-terminal) for package management commands
 
 **macOS users:**
 
@@ -23,6 +22,11 @@ All three workflows share a common foundation: a Python installation managed by 
 :::
 
 ## Configuring Windows for Development {#configuring-windows}
+
+::: {.callout-note}
+## Installer Users
+The [Python Development Installer](#python-dev-installer-windows) automatically sets the PowerShell execution policy and enables the classic context menu. You only need this section if you want additional configuration (like disabling SmartScreen) or if you're setting up manually.
+:::
 
 Windows ships with security defaults designed for users who should not be trusted with their own computers. For software development, these defaults create constant friction: scripts won't run, downloaded files are blocked, and the system treats every action as potentially malicious. Before installing anything, we configure Windows to behave like a proper development machine.
 
@@ -61,8 +65,13 @@ SmartScreen blocks executables that Microsoft has not seen before, which include
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Name "SmartScreenEnabled" -Value "Off" -Force
 ```
 
+::: {.callout-tip collapse="true"}
+## A note on perseverance
+If the battle against Windows defaults ever feels exhausting, you are not alone. [Here is a song about it.](assets/No%20room%20to%20run.mp3)
+:::
+
 ::: {.callout-note}
-## What about security?
+### What about security?
 These changes do not make your computer insecure. They make *you* responsible for what you run, rather than delegating that judgment to Microsoft. A developer who understands what they are installing is better protected than one who blindly clicks through warnings. The real security comes from understanding your tools, not from operating system babysitting.
 :::
 
@@ -109,53 +118,77 @@ Packages often depend on other packages. When you install `matplotlib`, pip auto
 
 We use `uv pip` instead of plain `pip` because uv performs the same operations significantly faster. The command syntax is identical: where you would write `pip install numpy`, you write `uv pip install numpy`. The uv tool resolves dependencies more efficiently and caches downloads aggressively, making repeated installations nearly instantaneous. For large packages like scipy or pytorch, the speed difference is substantial.
 
-## Marimo Installer (Windows) {#marimo-installer-windows}
+## Python Development Installer (Windows) {#python-dev-installer-windows}
 
-For Windows users, the marimo installer automates the entire setup process: installing uv, Python, creating the virtual environment, and adding convenient shortcuts. This is the recommended approach for getting started quickly.
+For Windows users, the installer automates the entire setup: Git, VS Code, Python, virtual environment, packages, and Marimo with convenient shortcuts. This is the recommended approach for getting started quickly.
 
-[Download Installer](https://github.com/cenmir/marimo-installer/archive/refs/heads/main.zip){.btn .btn-primary .btn-lg}
+::: {.callout-important}
+## One-liner Installation
 
-::: {.panel-tabset}
+Open PowerShell and paste this command:
 
-#### JU PC (Win)
+```powershell
+irm https://raw.githubusercontent.com/cenmir/python-dev-installer/main/install.ps1 | iex
+```
 
-1. Right-click the downloaded zip file and select "more options" -> properties, then check "unblock" and press OK.
-2. Double-click the zip file and go into marimo-installer-main and double-click `setup.bat`.
+That's it. Follow the on-screen prompts and you're done.
+:::
 
+::: {.callout-tip collapse="true"}
+## Alternative: Manual Download
 
-#### Private PC (Win)
+[Download Installer](https://github.com/cenmir/python-dev-installer/archive/refs/heads/main.zip){.btn .btn-primary .btn-lg}
 
-Unzip it somewhere easily accessible. Then, run `setup.bat` and follow the instructions.
+**JU PC:** Right-click the downloaded zip file → Properties → check "Unblock" → OK. Then extract and double-click `setup.bat`.
 
-
+**Private PC:** Extract the zip file and run `setup.bat`.
 :::
 
 ### What the Installer Does
 
-The installer will:
+The installer handles the complete development environment setup:
 
-- Install the package manager uv
-- Install the latest version of Python
-- Create a virtual environment at `C:\Users\username\.venvs\default`
-- Install packages, including Marimo, into the virtual environment along with numpy, sympy, matplotlib, pandas, pyqt6, pyqtgraph and scipy. This is configurable using the `requirements.txt` file.
-- Copy the run scripts to a folder in `C:\Users\username\marimo` and put that folder in your user PATH environment variable
-- Add convenience commands like `activate default` for quickly activating the virtual environment in VS Code's terminal
-- Create shortcuts to launch Marimo
-- Create a context menu entry to open folders in Marimo (very useful for opening projects!)
+**Software Installation**
+
+- **Git** — version control, with prompts to configure your name and email
+- **VS Code** — code editor with Python and Jupyter extensions pre-installed
+- **uv** — fast Python package manager
+- **Python** — latest version via uv
+
+**Environment Setup**
+
+- Creates a virtual environment at `C:\Users\username\.venvs\default`
+- Installs packages: numpy, sympy, scipy, matplotlib, marimo, imageio, pyqt6, pyqtgraph, pandas, ipykernel
+- Configures VS Code to use the virtual environment automatically
+
+**Shortcuts and Integration**
+
+- Adds `activate default` command to quickly activate the environment
+- Adds `m` command to launch Marimo from any terminal
+- Creates Start Menu shortcuts for Marimo
+- Adds "Open in Marimo" to the right-click context menu
+- Adds "Open with VS Code" to the right-click context menu
+- Enables classic context menu on Windows 11 (removes "Show more options")
+- Configures Marimo to use dark mode by default
 
 
 ### Usage
 
 ![](https://i.imgur.com/dowpY0T.png)
 
-- You can launch Marimo by right-clicking in a folder and selecting "Open in Marimo" or by using the shortcut created on your desktop.
-- You can also run Marimo from the command line by typing `m`.
-- You can update Marimo and the installed packages by right-clicking on the `update.ps1` file and selecting "Run with PowerShell".
-- To uninstall, run the `uninstall.ps1` file by right-clicking and selecting "Run with PowerShell".
+| Task | How |
+|------|-----|
+| Launch Marimo | Right-click in a folder → "Open in Marimo", or type `m` in terminal, or use Start Menu |
+| Open folder in VS Code | Right-click on folder → "Open with VS Code" |
+| Activate environment | Type `activate default` in PowerShell |
+| Update packages | Double-click `update.bat` in `C:\Users\username\marimo` |
+| Uninstall | Double-click `uninstall.bat` in `C:\Users\username\marimo` |
 
 ### Per-Project Environments (Advanced)
 
-The installer includes a file called `init.bat` in the Scripts folder. Copying this to a new project folder and double-clicking it creates a local virtual environment (`.venv`) for that project with all the standard packages installed. This is useful when you need isolated dependencies for a specific project. VS Code automatically detects the `.venv` folder and offers to use it as the Python interpreter.
+The installer includes `init.bat` in `C:\Users\username\marimo`. Copy this file to any project folder and double-click it to create a local `.venv` with all standard packages. This is useful when you need isolated dependencies for a specific project. VS Code automatically detects the `.venv` folder and uses it as the Python interpreter.
+
+The script handles everything: checking for uv, installing Python if needed, creating the environment, and installing packages.
 
 ## Working with the Terminal {#working-with-the-terminal}
 
@@ -341,26 +374,14 @@ uv pip list
 
 ## Installing VS Code
 
-VS Code is the editor we use for writing Python scripts, running simulations, and working with Jupyter notebooks. Download it from [code.visualstudio.com](https://code.visualstudio.com/).
-
-::: {.callout-important}
-## Enable "Open with Code" Context Menu
-During installation on Windows, check the options **"Add 'Open with Code' action to Windows Explorer file context menu"** and **"Add 'Open with Code' action to Windows Explorer directory context menu"**. This allows you to right-click any folder and open it directly in VS Code.
+::: {.callout-note}
+## Windows Users
+If you used the [Python Development Installer](#python-dev-installer-windows), VS Code is already installed and configured. Skip to [Using VS Code with Your Virtual Environment](#using-vs-code-with-your-virtual-environment).
 :::
 
+VS Code is the editor we use for writing Python scripts, running simulations, and working with Jupyter notebooks. Download it from [code.visualstudio.com](https://code.visualstudio.com/).
+
 After installing VS Code, open it and install the **Python extension** by Microsoft. Press `Ctrl+Shift+X` to open the Extensions panel, search for "Python", and click Install on the one published by Microsoft. This extension provides syntax highlighting, debugging, and Jupyter notebook support.
-
-### Adding context menu for VS Code
-If you have not added the context menu during installation, you can do it manually, open powershell and run
-
-```powershell
-New-Item -Path "HKCU:\Software\Classes\Directory\Background\shell\VSCode" -Force | New-ItemProperty -Name "(default)" -Value "Open with Code"
-New-ItemProperty -Path "HKCU:\Software\Classes\Directory\Background\shell\VSCode" -Name "Icon" -Value "C:\Program Files\Microsoft VS Code\Code.exe"
-New-Item -Path "HKCU:\Software\Classes\Directory\Background\shell\VSCode\command" -Force | New-ItemProperty -Name "(default)" -Value "`"C:\Program Files\Microsoft VS Code\Code.exe`" `"%V`""
-```
-
-Just make sure that the path to `Code.exe` matches your installation location.
-
 
 {{< video https://youtu.be/kzJg63ZS8kU >}}
 
@@ -478,7 +499,7 @@ If you made no changes, `Ctrl+X` exits immediately.
 
 ## Manual Python Installation {#manual-python-installation}
 
-This section covers manual installation for macOS/Linux users and Windows users who prefer more control over the setup process. If you used the marimo installer on Windows, you can skip this section.
+This section covers manual installation for macOS/Linux users and Windows users who prefer more control over the setup process. If you used the [Python Development Installer](#python-dev-installer-windows) on Windows, skip this section.
 
 Python can be installed in many ways: downloading the official installer from python.org, using Anaconda, or through system package managers. We use a different approach based on the terminal and a tool called `uv`. The terminal may feel unfamiliar at first, but it offers precision and reproducibility that graphical installers cannot match. When you type a command, you know exactly what happens. When something goes wrong, error messages tell you why. When you need to repeat the process on another machine, the same commands work identically.
 
@@ -563,7 +584,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 You should now see `(default)` at the beginning of your prompt. Now install the packages:
 
 ```powershell
-uv pip install marimo numpy sympy scipy matplotlib pandas pyqt6 pyqtgraph ipykernel
+uv pip install marimo numpy sympy scipy matplotlib pandas pyqt6 pyqtgraph imageio ipykernel
 ```
 
 #### macOS/Linux
@@ -583,7 +604,7 @@ source ~/.venvs/default/bin/activate
 You should now see `(default)` at the beginning of your prompt. Now install the packages:
 
 ```bash
-uv pip install marimo numpy sympy scipy matplotlib pandas pyqt6 pyqtgraph ipykernel
+uv pip install marimo numpy sympy scipy matplotlib pandas pyqt6 pyqtgraph imageio ipykernel
 ```
 
 #### WSL
@@ -603,7 +624,7 @@ source ~/.venvs/default/bin/activate
 You should now see `(default)` at the beginning of your prompt. Now install the packages:
 
 ```bash
-uv pip install marimo numpy sympy scipy matplotlib pandas pyqt6 pyqtgraph ipykernel
+uv pip install marimo numpy sympy scipy matplotlib pandas pyqt6 pyqtgraph imageio ipykernel
 ```
 
 Your Python files can live on OneDrive (at `/mnt/c/Users/yourusername/OneDrive/`) while the virtual environment stays in the fast WSL filesystem.
@@ -688,6 +709,7 @@ The following table describes the packages we install and their purpose in the c
 | `pandas` | Data analysis library for working with tabular data and time series |
 | `pyqt6` | GUI framework for building desktop applications with windows, buttons, and interactive elements |
 | `pyqtgraph` | Fast plotting library built on PyQt, suitable for real-time data visualization in simulations |
+| `imageio` | Library for reading and writing image and video data |
 | `ipykernel` | Jupyter kernel that enables notebook support in VS Code |
 
 ### Starting Marimo: Shortcut
