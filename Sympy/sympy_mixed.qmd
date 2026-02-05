@@ -98,15 +98,20 @@ SymPy has its own Matrix class for symbolic linear algebra.
 
 ```{python}
 M = sp.Matrix([[1, x], [y, 1]])
-print(f"Matrix M:\n{M}")
+M
+```
 
+
+```{python}
 # Determinant
-det = M.det()
-print(f"Determinant: {det}")
+detM = M.det()
+detM
+```
 
+```{python}
 # Inverse
-inv = M.inv()
-print(f"Inverse:\n{inv}")
+invM = M.inv()
+invM
 ```
 
 ## Rotation Matrices
@@ -190,10 +195,19 @@ x_sol
 ## Differentiation
 
 ```{python}
+#| echo: false
+from IPython.display import Markdown
+```
+
+```{python}
 # Derivative of sin(x) * e^x
 f = sp.sin(x) * sp.exp(x)
 df_dx = sp.diff(f, x)
-print(f"Derivative: {df_dx}")
+```
+
+```{python}
+#| echo: false
+Markdown(f"$\\frac{{d}}{{dx}} {sp.latex(f)}$ = ${sp.latex(df_dx)}$")
 ```
 
 ## Integration
@@ -201,12 +215,31 @@ print(f"Derivative: {df_dx}")
 ```{python}
 # Indefinite integral of cos(x)
 integral = sp.integrate(sp.cos(x), x)
-print(f"Indefinite integral: {integral}")
+```
 
+```{python}
+#| echo: false
+Markdown(f"$\\int {sp.latex(sp.cos(x))}$ = ${sp.latex(integral)}$")
+```
+
+```{python}
 # Definite integral of x^2 from 0 to 1
 def_integral = sp.integrate(x**2, (x, 0, 1))
-print(f"Definite integral: {def_integral}")
+def_integral
 ```
+
+### Double integrals
+
+Integrate $\int_0^1 \int_0^1 x y \, dx \, dy$.
+
+```{python}
+# Double integral of f(x, y) = x*y over the unit square
+x, y = sp.symbols('x y')
+f = x * y
+double_integral = sp.integrate(f, (x, 0, 1), (y, 0, 1))
+double_integral
+``` 
+
 
 ## Differential Equations
 
