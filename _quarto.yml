@@ -4,7 +4,7 @@ project:
   resources:
     - assets/*
   preview:
-    port: 4200
+    port: 4201 # different for python and mechanics
 
 execute:
   freeze: auto  # Only re-execute when source files change
